@@ -59,7 +59,7 @@ function initIntroJS() {
 						+ "<li>Let us declare an <span class='ct-code-b-yellow'>int</span>" 
 						+ " array variable <span class='ct-code-b-yellow'>queue</span>" 
 						+ " and <span class='ct-code-b-yellow'>int</span> " 
-						+ "variables are <y>front</y>, <y>rear</y>.</li>";	
+						+ "variables are <y>front</y>, <y>rear1</y>.</li>";	
 				
 			typing($(".introjs-tooltiptext ul"), text, function() {
 				$(".introjs-nextbutton").show();
