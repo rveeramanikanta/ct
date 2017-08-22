@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+
+<style type="text/css">
+body {
+	text-align: center;
+}
+
+[contenteditable=true]:empty:before {
+	color: #cbcbcb;
+	content: attr(placeholder);
+}
+
+#char {
+	padding: 0 5px;
+	border: 1px solid gray;
+	outline: none;
+}
+</style>
+
+</head>
+<body>
+	<input type='text' id='exp' name='expression' placeholder='Expression'>
+	<span contenteditable='true' id='char' placeholder='char'></span>
+	<input type="button" value="submit" id='submitBtn'>
+	<br/>
+	<br/>
+	<br/>
+	<div id='result'></div>
+
+	<script type="text/javascript">
+		document.getElementById("submitBtn").addEventListener("click", function() {
+			var exp = document.getElementById("exp").value;
+			var ch = document.getElementById("char").innerHTML;
+			countChar(exp, ch);
+		});
+	
+		function countChar(str, ch) {
+			var index = 0, count = 0;
+			while (str.indexOf(ch, index) != -1) {
+				count++;
+				index = str.indexOf(ch, index) + 1;
+			}
+			document.getElementById("result").innerHTML = "<h1>" + ch + " is repeated " + count + " times.</h1>";
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style type="text/css">
+body {
+	background-color: rgb(22, 142, 229);
+	color: white;
+}
+
+#mainDiv {
+	height: 275px;
+	padding: 0;
+}
+
+#leftDiv {
+	background-color: rgb(53, 152, 219);
+	height: 100%;
+	padding: 10px;
+}
+
+#rightDiv {
+	background-color: rgb(39, 128, 184);
+	height: 100%;
+	padding: 10px;
+}
+
+.fa {
+	font-weight: bold;
+}
+
+#points {
+	bottom: 50px;
+	position: absolute;
+}
+
+#points > div {
+	margin-bottom: 10px;
+	font-weight: bold;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+#signInBtn {
+	background-color: rgb(53, 152, 219);
+}
+
+#signInWithFBBtn {
+	background-color: #3C5B9C;
+}
+
+input {
+	margin-bottom: 15px;
+}
+
+.container {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+</style>
+
+</head>
+<body>
+	<div class='container'>
+		<div
+			class='col-xs-offset-0 col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8'
+			id='mainDiv'>
+			<div class='col-xs-6' id='leftDiv'>
+				<h4>Your App</h4>
+				<span>Simple.Clearn.Beautiful</span>
+				<div id='points'>
+					<div><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp;lorem imsum dolor sit amet</div>
+					<div><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp;lorem imsum dolor sit amet</div>
+					<div><i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp;lorem imsum dolor sit amet</div>
+				</div>
+			</div>
+			<div class='col-xs-6 text-center' id='rightDiv'>
+				<h5 class='text-center bold'>Sign In</h5>
+				<form>
+					<input type='text' class='form-control input-xs'
+						placeholder='E-mail' /> <input type='password'
+						class='form-control input-xs' placeholder='Password' />
+					<button class='btn btn-sm btn-block bold' id='signInBtn'>
+						<i aria-hidden="true" class="fa fa-location-arrow"></i> &nbsp;Sign
+						in
+					</button>
+					<h5>OR</h5>
+					<button class='btn btn-sm btn-block bold' id='signInWithFBBtn'>
+						<i aria-hidden="true" class="fa fa-facebook"></i> &nbsp;Sign in
+						with Facebook
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
