@@ -54,10 +54,10 @@ function initIntroJS() {
 		case "queueInit":
 			$(".introjs-nextbutton").hide();
 				$(".introjs-tooltiptext").append("<ul></ul>");
-				var text = "<li>Let us define jaksjdjfds a <span class='ct-code-b-yellow'>QUEUE_MAX_SIZE</span> with " 
+				var text = "<li>Let us define a <span class='ct-code-b-yellow'>QUEUE_MAX_SIZE</span> with " 
 						+ "value <span class='ct-code-b-yellow'>10</span>.</li>" 
 						+ "<li>Let us declare an <span class='ct-code-b-yellow'>int</span>" 
-						+ " array variable <span class='ct-code-b-yellow'>queue</span>" 
+						+ " array variable <span class='ct-code-b-yellow'>queue</span> and stack" 
 						+ " and <span class='ct-code-b-yellow'>int</span> " 
 						+ "variables are <y>front</y>, <y>rear</y>.</li>";	
 				
