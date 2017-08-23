@@ -256,6 +256,7 @@ CircularQueueArray.prototype.push = function(elemToPush) {
 		this.cmd("CreateLabel", labPushValID, elemToPush, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 		
 		this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF", REAR_LABEL_X + 135, REAR_LABEL_Y);
+		this.cmd("Step");
 		this.cmd("SetText", this.rearID, this.rear + 1);
 		this.cmd("Step");
 		
@@ -330,42 +331,47 @@ CircularQueueArray.prototype.pop = function(ignored) {
 		this.cmd("Step");
 		this.cmd("SetText", this.frontID, this.front)
 		this.cmd("Step");
+		this.cmd("SetNextIntroStep", "#dequeueElseIfElseBlk", "", "right", "");
+		this.cmd("RunNextIntroStep");
+		this.cmd("Step");
 		
 		if (this.rear == this.front) {
+			this.cmd("CreateHighlightCircle", this.highlight2ID, "#0000FF", REAR_LABEL_X + 35, REAR_LABEL_Y);
+			this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF", REAR_LABEL_X + 135, REAR_LABEL_Y);
 			this.cmd("Step");
-			this.cmd("Step");
+			this.cmd("SetText", this.frontID, -1)
+			this.cmd("SetText", this.rearID, -1);
 			this.cmd("DISCONNECT", this.dummyID[11], this.dummyID[this.rear]);
 			this.cmd("DISCONNECT", this.dummyID[12], this.dummyID[this.front]);
-			this.rear = -1;
-			this.front = -1;
-			this.cmd("SetText", this.frontID, this.front);
-			this.cmd("SetText", this.rearID, this.rear);
+			this.front = this.rear = -1;
 			this.cmd("Connect", this.dummyID[11], this.lineID[0], "gray");
 			this.cmd("Connect", this.dummyID[12], this.lineID[0], "gray");
+			this.cmd("Delete", this.highlight1ID);
+			this.cmd("Delete", this.highlight2ID);
 			this.cmd("Step");
-			this.cmd("Delete", labPopValID)
-			this.cmd("Delete", labPopID);
-		} else if (this.rear == SIZE - 1) {
+		} else if (this.rear == SIZE -1) {
+			this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF", REAR_LABEL_X + 35, REAR_LABEL_Y);
 			this.cmd("Step");
-			this.cmd("SetHighlight", this.dummyID[12], 0);
-			this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF",
-					REAR_POS_X + 15, REAR_POS_Y);
+			this.cmd("SetText", this.frontID, 0);
+			this.cmd("DISCONNECT", this.dummyID[12], this.dummyID[this.front]);
+			this.front = 0;
+			this.cmd("Connect", this.dummyID[12], this.dummyID[this.front], "gray");
 			this.cmd("Step");
-			if (this.rear == SIZE - 1) {
-				this.front = 0;
-			} else {
-				this.front = this.front + 1;
-			}
+			this.cmd("Delete", this.highlight1ID);
+		} else {
+			this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF", REAR_LABEL_X + 35, REAR_LABEL_Y);
+			this.front = this.front + 1;
+			this.cmd("Step");
 			this.cmd("SetText", this.frontID, this.front);
 			this.cmd("Step");
-			this.cmd("DISCONNECT", this.dummyID[12],
-					this.dummyID[this.front - 1]);
-			this.cmd("CONNECT", this.dummyID[12], this.dummyID[this.front]);
-			this.cmd("Delete", this.highlight1ID);
+			this.cmd("DISCONNECT", this.dummyID[12], this.dummyID[this.front - 1]);
+			this.cmd("Connect", this.dummyID[12], this.dummyID[this.front], "gray");
 			this.cmd("Step");
-			this.cmd("Delete", labPopValID)
-			this.cmd("Delete", labPopID);
+			this.cmd("Delete", this.highlight1ID);
 		}
+		
+		this.cmd("Delete", labPopID);
+		this.cmd("Delete", labPopValID);
 	}
 	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#outputDiv", "", "right", "hide");

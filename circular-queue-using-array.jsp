@@ -195,13 +195,13 @@ void dequeue() {
 		<span id='dequeueIfPrintf'>printf("Queue is underflow.");</span>
 	} else {
 		<span id='dequeueElsePrintf'>printf("Deleted value = %d.", queue[front]);</span>
-		<span id='dequeueElseIfElseBlk'>if (<span id='dequeuElseIfCndtn'>rear == front</span>) {
+		<span id='dequeueElseIfElseBlk'><span id='dequeueElseIfElseBlk'>if (<span id='dequeuElseIfCndtn'>rear == front</span>) {
 			<span id='dequeuRearFrontInit'>rear = front = -1;</span>
 		} else if (<span id='dequeueElseIfElseIfCndtn'>rear == QUEUE_MAX_SIZE - 1</span>) {
 			<span id='dequeueFrontToZero'>front = 0;</span>
 		} else {
 			<span id='dequeueFrontInc'>front = front + 1;</span>
-		}</span>
+		}</span></span>
 	}
 }
 					</pre>
