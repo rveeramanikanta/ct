@@ -345,13 +345,17 @@ CircularQueueArray.prototype.pop = function(ignored) {
 			this.cmd("Step");
 			this.cmd("Delete", labPopValID)
 			this.cmd("Delete", labPopID);
-		} else {
+		} else if (this.rear == SIZE - 1) {
 			this.cmd("Step");
 			this.cmd("SetHighlight", this.dummyID[12], 0);
 			this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF",
 					REAR_POS_X + 15, REAR_POS_Y);
 			this.cmd("Step");
-			this.front = this.front + 1;
+			if (this.rear == SIZE - 1) {
+				this.front = 0;
+			} else {
+				this.front = this.front + 1;
+			}
 			this.cmd("SetText", this.frontID, this.front);
 			this.cmd("Step");
 			this.cmd("DISCONNECT", this.dummyID[12],
@@ -362,8 +366,6 @@ CircularQueueArray.prototype.pop = function(ignored) {
 			this.cmd("Delete", labPopValID)
 			this.cmd("Delete", labPopID);
 		}
-	} else {
-		this.cmd("Step");
 	}
 	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#outputDiv", "", "right", "hide");

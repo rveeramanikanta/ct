@@ -195,9 +195,11 @@ function initIntroJS() {
 								$("#dequeuIfCndtn").removeAttr("style");
 								if (frontVal == -1) {
 									$("#output").append("<div class='opacity00'>Queue is underflow.</div>");
+									$("#dequeueIfPrintf").addClass("background-color-yellow");
 									getIntrojsStep("#animationDiv", "", "", "hide");
 									$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 								} else {
+									$("#output").append("<div class='opacity00'>Deleted value = " + arr.pop() + ".</div>");
 									$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='dequeueStep1()'>Next &#8594;</a>")
 								}
 							});
@@ -409,15 +411,13 @@ function dequeueStep3() {
 	$(".user-btn").remove();
 	$("#dequeueElseIfElseIfCndtn").removeAttr("style");
 	$(".introjs-tooltiptext ul li *").removeAttr("id");
-	$(".introjs-tooltiptext ul").append("<li><span> <span id='tooltipFront1'>front</span> == </span> <span id='tooltipFrontPlus1'><span id='tooltipFront2'>front</span> + 1</span></li>");
+	$(".introjs-tooltiptext ul").append("<li><span> <span id='tooltipFront1'>front</span> = </span> <span id='tooltipFrontPlus1'><span id='tooltipFront2'>front</span> + 1</span></li>");
 	travel("#dequeueFrontInc", $(".introjs-tooltiptext ul li:last-child span"), function () {
 		flip("#tooltipFront2", frontVal, function() {
 			flip("#tooltipFrontPlus1", frontVal + 1, function() {
-				flip("#tooltipFront1", frontVal, function() {
-					frontVal = frontVal + 1;
-					getIntrojsStep("#animationDiv", "", "", "hide");
-					$(".introjs-nextbutton").removeClass("introjs-disabled").show();
-				});
+				frontVal = frontVal + 1;
+				getIntrojsStep("#animationDiv", "", "", "hide");
+				$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 			});
 		});
 	});
