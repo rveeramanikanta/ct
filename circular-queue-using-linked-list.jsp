@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Queue LinkedList</title>
+<title>Circular Queue LinkedList</title>
 <!-- css sheet for how the page is laid out -->
-
-<!-- <link rel="stylesheet" href="visualizationPageStyle.css"> -->
 
 <link rel="stylesheet" href="/css/bootstrap.css">
 <link rel="stylesheet" href="/css/jquery-ui.css">
@@ -18,8 +16,7 @@
 <script type="text/javascript" src="/js/typewriting.min.js"></script>
 <script type="text/javascript" src="/js/gs/TweenMax.min.js"></script>
 <script type="text/javascript" src="/js/jquery.scrollTo.js"></script>
-<!-- <script type="text/javascript" src="js-min/qull.min.js"></script> -->
-<script type="text/javascript" src="js/queue-using-linked-list.js"></script>
+<script type="text/javascript" src="js/circular-queue-using-linked-list.js"></script>
 
 <!-- Javascript for the actual visualization code -->
 <script type="text/javascript" src="js/an-li/custom-events.js"></script>
@@ -138,14 +135,14 @@ r {
 <script type="text/javascript">
 
 $(document).ready(function() {
-	queueLinkedListReady();
+	circularQueueLinkedListReady();
 });
 </script>
 </head>
 <body onload="init();" class="VisualizationMainPage">
 	<div id="container">
 		<div class='col-xs-12 text-center' style="margin-top: 20px;">
-			<h1 class='label label-default ct-demo-heading'>Queue using LinkedList</h1>
+			<h1 class='label label-default ct-demo-heading'>Circular Queue using LinkedList</h1>
 		</div>
 
 		<div id="mainContent" class='col-xs-12 margin-top-20 padding0'>
@@ -177,6 +174,7 @@ void enqueue(<span id='enqueueParameter'>int element</span>) {
 			<span id='enqueueRearNextInit'>rear -> next = temp;</span>
 		}</span>
 		<span id='queueElsePrintfBlk'><span id='enqueueRearInit'>rear = temp;</span>
+		<span id='enqueueRearNextToFront'>rear -> next = front;</span>
 		<span id='enqueueElsePrintf'>printf("Successfully inserted.");</span></span>
 	}
 }
@@ -194,6 +192,7 @@ void dequeue() {
 			<span id='dequeuRearFrontInit'>front = rear = NULL;</span>
 		} else {
 			<span id='dequeueFrontInit'>front = front -> next;</span>
+			<span id='dequeueRearNextToFront'>rear -> next = front;</span>
 		}</span>
 		<span id='dequeueElsePrintfBlk'><span id='dequeueElsePrintf'>printf("Deleted value = %d.", temp -> next);</span>
 		<span id='dequeueRemoveTemp'>free(temp);</span></span>
