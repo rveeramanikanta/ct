@@ -69,7 +69,7 @@ function initIntroJS() {
 			if ($("#enqueueText").is(":disabled")) {
 				doPlayPause();
 			}
-			
+			$("#btnsDiv [disabled]").removeAttr("disabled");
 			$(".introjs-helperLayer").one("transitionend", function() {
 				if (introjs._currentStep == 1) {
 					var text = "Provide a number to be inserted.";
@@ -131,8 +131,6 @@ function initIntroJS() {
 																		getIntrojsStep("#animationDiv", "", "", "hide");
 																		$("#enqueueElsePrintf").addClass("background-color-yellow");
 																		$("#output").append("<div class='opacity00'>Successfully inserted.</div>");
-																		//$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='isFrontMinusOne()'>Next &#8594;</a>")
-																		
 																		$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 																	});
 																});
@@ -159,10 +157,8 @@ function initIntroJS() {
 		case "enqueueSecondIfBlk":
 			$(".introjs-nextbutton").hide();
 			introjs.refresh();
-			//doPlayPause();
 			$(".background-color-yellow").removeClass("background-color-yellow");
 			$(".introjs-helperLayer").one("transitionend", function() {
-				//getIntrojsStep("#animationDiv", "", "", "hide");
 				$(".introjs-tooltiptext").append("<ul></ul>");
 				$("#enqueueSecondIfCndtn").addClass("background-color-yellow");
 				$(".introjs-tooltiptext ul li *").removeAttr("id");
@@ -205,7 +201,6 @@ function initIntroJS() {
 		case "dequeueFun":
 			$(".introjs-nextbutton").hide();
 			introjs.refresh();
-			/*doPlayPause();*/
 			$(".introjs-helperLayer").one("transitionend", function() {
 				var text = "By using this code we are removing the element from the <span class='ct-code-b-yellow'>queue</span>.";
 				typing(".introjs-tooltiptext", text, function() {
@@ -302,6 +297,7 @@ function initIntroJS() {
 			
 		case "animationDiv":
 			$(".introjs-nextbutton").hide();
+			$("#btnsDiv .btn").attr("disabled", "disabled");
 			$(".introjs-helperLayer").one("transitionend", function() {
 				if (introjs._introItems[introjs._currentStep].tooltipClass == "hide") {
 					doPlayPause();
