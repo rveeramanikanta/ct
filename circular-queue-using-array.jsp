@@ -184,7 +184,7 @@ void enqueue(<span id='enqueueParameter'>int element</span>) {
 		<span id='enqueueBlk1'><span id='enqueueRearInc'>rear = rear + 1;</span>
 		<span id='elementInsert'>queue[rear] = element;</span>
 		<span id='enqueueElsePrintf'>printf("Successfully inserted.");</span></span>
-	}
+	} 
 }
 					</pre>
 
