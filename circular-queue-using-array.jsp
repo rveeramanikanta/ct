@@ -42,7 +42,7 @@
 	font-size: 18px;
 	position: relative;
 	z-index: 9999999;
-	position: relative;
+	position: relative;  
 }
 
 .padding0 {
