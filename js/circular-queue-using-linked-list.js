@@ -298,7 +298,7 @@ function enqueueStep2() {
 			$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 		});
 	});
-}
+} 
 
 function dequeueStep1() {
 	$(".user-btn").remove();
