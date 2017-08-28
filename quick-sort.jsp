@@ -39,6 +39,7 @@
 .creampretab4 {
 	font-size:11px;
 	tab-size: 2;
+	-moz-tab-size: 2;
 	background-color:lavender !important;
 }
 
@@ -131,10 +132,6 @@ table {
     width: 96%;
 }
 
-div, span {
-	position: relative;
-}
-
 .blinking-green {
 	animation-name: blink-border-background-green ;
 	animation-duration: 1s ;
@@ -179,6 +176,22 @@ div, span {
 	min-width: 300px;
 }
 
+y, r {
+	font-family: monospace;
+	font-weight: bold;
+}
+
+y {
+	color: yellow;
+}
+
+r {
+	color: red;
+}
+
+#stackDiv > div {
+	position: relative;
+}
 </style>
 
 <script type="text/javascript">
@@ -315,7 +328,7 @@ function introGuide() {
 		switch (elementId) {
 		case "javaCode":
 			$(".introjs-nextbutton").hide();
-			var text = "This is java code.";
+			var text = "Here, we will learn how to sort the array elements in an <y>assending</y> order using the <y>quick sort</y>.";
 			typing(".introjs-tooltiptext", text, function() {
 				$(".introjs-nextbutton").show();
 			});
@@ -345,6 +358,9 @@ function introGuide() {
 					
 					$('#arrInit').effect( "transfer", { to: $("#tr3"), className: "ui-effects-transfer" }, 1000, function() {
 						$("#arrTable").removeClass("opacity00");
+						$("#tr1 > td").addClass("opacity00");
+						$("#arrows div").addClass("opacity00");
+						
 						pivotVal = parseInt($("#arrVal0").text());
 						setTimeout(function() {
 							introjs.nextStep();
@@ -356,6 +372,8 @@ function introGuide() {
 						var text = "In the right side code we are initializing the variables pivot, down, up, temp.";
 						typing(".introjs-tooltiptext", text, function() {
 							$("#varInit").addClass("blinking-yellow");
+							$("#tr1 > td").addClass("opacity00").removeAttr("style");
+							$("#arrows > td > div").addClass("opacity00").removeAttr("style");
 							$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='partitionAnimation()'>Next &#8594;</a>");
 						});
 					});
@@ -399,6 +417,7 @@ function introGuide() {
 			
 		case "ifInQuickSort":
 			$(".introjs-nextbutton").hide();
+			introjs.refresh();
 			$(".introjs-helperLayer").one("transitionend", function() {
 				var text = "Here we are checking low &lt; high i.e 0 &lt; "+upItr+" evaluates true. so control enters in to the condition.";
 				typing(".introjs-tooltiptext", text, function() {
@@ -477,6 +496,8 @@ function charAtEnd(elementId) {
 }
 
 function partitionAnimation() {
+	/* $("#tr1 > td").addClass("opacity00");
+	$("#arrows > td > div").addClass("opacity00"); */
 	$(".user-btn").remove();
 	$(".introjs-tooltiptext").append("<ul><li id='liDown' class='opacity00 ct-code-b-yellow'>  down = <span id='flipLb'>lb</span> </li>" +
 			"<li id='liUp' class='opacity00 ct-code-b-yellow'> up = <span id='flipUb'>ub</span> </li>" + 
@@ -493,7 +514,10 @@ function partitionAnimation() {
 	
 	tl.to("#liDown", 1, {opacity:1, delay:1, top: 0, left: 0, onComplete: function() {
 		$("#downInit").removeClass("blinking-yellow");
-		flipEffect("#flipLb", 0, function() {
+		flipEffect("#flipLb", downItr, function() {
+			$("#tr1 > td").eq(downItr + 1).removeClass("opacity00").find("b").text("downIndex");
+			$("#arrows > td > div").eq(downItr).removeClass("opacity00");
+			
 			var l2 = $("#UpInit").offset();
 			$("#liUp").offset({"top": l1.top, "left": l1.left});
 			$("#upInit").addClass("blinking-yellow");
@@ -502,6 +526,8 @@ function partitionAnimation() {
 			tl.to("#liUp", 1, {opacity:1, top: 0, left: 0, onComplete: function() { 
 				$("#upInit").removeClass("blinking-yellow");
 				flipEffect("#flipUb", upItr, function() {
+					$("#tr1 > td").eq(upItr + 1).removeClass("opacity00").find("b").text("upIndex");
+					$("#arrows > td > div").eq(upItr).removeClass("opacity00");
 					$("#pivotInit").addClass("blinking-yellow");
 					var l3 = $("#pivotInit").offset();
 					$("#liPivot").offset({"top": l3.top, "left": l3.left});
@@ -517,6 +543,15 @@ function partitionAnimation() {
 									$("#pivotVal").addClass("zIndex");
 									$("#pivotVal").removeClass("opacity00");
 								}});
+								
+								/* $("#tr1 > td").addClass("opacity00");
+								$("#arrows > td > div").addClass("opacity00"); */
+								
+								/* $("#tr1 > td").eq(downItr + 1).removeClass("opacity00").find("b").text("downIndex");
+								$("#arrows > td > div").eq(downItr).removeClass("opacity00"); */
+								
+								/* $("#tr1 > td").eq(upItr + 1).removeClass("opacity00").find("b").text("upIndex");
+								$("#arrows > td > div").eq(upItr).removeClass("opacity00"); */
 								
 								tl.to("#pivotVal", 1, {opacity: 1, top:0, left:0, onComplete: function() {
 									$("#pivotVal").removeClass("zIndex");
@@ -671,7 +706,7 @@ function downInc() {
 	$(".user-btn").remove();
 	$("#downInc").addClass("blinking-yellow");
 	$(".introjs-tooltiptext").append("<ul><li id='liDownInc' class='ct-code-b-yellow'><span id='flipDownInc'>down++</span></li></ul> "
-									 +" <span class='type-text'></span>");
+									 + " <span class='type-text'></span>");
 	
 	var l1 = $("#downInc").offset();
 	$("#liDownInc").offset({"top": l1.top, "left": l1.left});
@@ -1031,40 +1066,43 @@ function dynamicSteps1(isTrue) {
 	
 	<div class='col-xs-12 margin-top-20 padding0'>
 		<div class='col-xs-5'>
-			<pre class='box-border creampretab4' id='javaCode'>public class QuickSortDemo {
-	public static void main(String[] args) {
-		<span id='arrInit'>int[] arr = {<span contenteditable="true" maxlength="1" id='arrValue0'>7</span>, <span id='arrValue1' contenteditable="true" maxlength="1">2</span>, <span id='arrValue2' contenteditable="true" maxlength="1">9</span>, <span id='arrValue3' contenteditable="true" maxlength="1">3</span>, <span id='arrValue4' contenteditable="true" maxlength="1">1</span>, <span id='arrValue5' contenteditable="true" maxlength="1">8</span>};</span>
-		int n = arr.length;
-		QuickSortDemo quickSort = new QuickSortDemo();
-		<span id='callQuickSort'>quickSort.quicksorting(arr, 0, n - 1);</span>
-	}
+			<pre class='box-border creampretab4' id='javaCode'>#include &lt;stdio.h&gt;
+void main() {
+	<span id='arrInit'>int arr[] = {<span contenteditable="true" maxlength="1" id='arrValue0'>7</span>, <span id='arrValue1' contenteditable="true" maxlength="1">2</span>, <span id='arrValue2' contenteditable="true" maxlength="1">9</span>, <span id='arrValue3' contenteditable="true" maxlength="1">3</span>, <span id='arrValue4' contenteditable="true" maxlength="1">1</span>, <span id='arrValue5' contenteditable="true" maxlength="1">8</span>};</span>
+	int n = 6;
+	<span id='callQuickSort'>quicksorting(arr, 0, n - 1);</span>
+}
 
-	<span id='partition'>public int partition(int[] arr, int lb, int ub) {
-		int pivot, down = lb, up = ub, temp;
-		pivot = arr[lb];
-		while (down < up) {
-			while (arr[down] <= pivot && down < up) {
-				down++;
-			}
-			while (arr[up] > pivot) {
-				up--;
-			}
-			if (down < up) {
-				temp = arr[up];
-				arr[up] = arr[down];
-				arr[down] = temp;
-			}
+<span id='partition'>int partition(int arr[], int lb, int ub) {
+	int pivot, down = lb, up = ub, temp;
+	pivot = arr[lb];
+	while (down < up) {
+		while (arr[down] <= pivot && down < up) {
+			down++;
 		}
-		arr[lb] = arr[up];
-		arr[up] = pivot;
-		return up;
+		while (arr[up] > pivot) {
+			up--;
+		}
+		if (down < up) {
+			temp = arr[up];
+			arr[up] = arr[down];
+			arr[down] = temp;
+		}
+	}
+	arr[lb] = arr[up];
+	arr[up] = pivot;
+	return up;
+}</span>
+
+
+<span id="quickSortMethod">void quicksorting(int arr[], int low, int high) {
+	int j;
+	<span id="ifInQuickSort">if (low < high) {
+		<span id='callPartition'>j = partition(arr, low, high);</span>
+		<span id="recursiveQuickSort1">quicksorting(arr, low, j - 1);</span>
+		<span id="recursiveQuickSort2">quicksorting(arr, j + 1, high);</span>
 	}</span>
-	<div id="quickSortMethod">	public void quicksorting(int[] arr, int low, int high) {
-		int j;	<div id="ifInQuickSort">		if (low < high) {
-			<span id='callPartition'>j = partition(arr, low, high);</span>
-			<span id="recursiveQuickSort1">quicksorting(arr, low, j - 1);</span>
-			<span id="recursiveQuickSort2">quicksorting(arr, j + 1, high);</span>
-		}</div>	}</div>}</pre>
+}</span	></pre>
 		</div>
 		<div class='col-xs-7'>
 			<div id='animationDiv' class='box-border'>
