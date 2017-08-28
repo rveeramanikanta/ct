@@ -8,7 +8,30 @@ var circularQueueLinkedListReady = function() {
 			e.preventDefault();
 		}
 	});
+	
+	
+	lang = getURLParameter("lang");
+	lang = (lang == undefined) ? "c" : lang;
+	
+	if (lang == "cpp") {
+		$("#enqueueIfPrintf").text("cout << \"Queue is overflow.\\n\";");
+		$("#enqueueElsePrintf").text("cout << \"Successfully inserted.\\n\";");
+		$("#dequeueIfPrintf").text("cout << \"Queue is underflow.\\n\";");
+		$("#dequeueElsePrintf").text("cout << \"Deleted value = \" << temp -> next << \"\\n\";");
+	}
 }
+
+function getURLParameter(sParam) {
+	var sPageURL = window.location.search.substring(1);
+	var sURLVariables = sPageURL.split('&');
+	for (var i = 0; i < sURLVariables.length; i++) {
+		var sParameterName = sURLVariables[i].split('=');
+		if (sParameterName[0] == sParam) {
+			return sParameterName[1];
+		}
+	}
+}
+
 var insertedVal; 
 
 function initIntroJS() {
@@ -41,7 +64,7 @@ function initIntroJS() {
 			if ($("#enqueueText").is(":disabled")) {
 				doPlayPause();
 			}
-			
+			$("#btnsDiv [disabled]").removeAttr("disabled");
 			$(".introjs-helperLayer").one("transitionend", function() {
 				if (introjs._currentStep == 1) {
 					//doPlayPause();
@@ -228,6 +251,7 @@ function initIntroJS() {
 			
 		case "animationDiv":
 			$(".introjs-nextbutton").hide();
+			$("#btnsDiv .btn").attr("disabled", "disabled");
 			$(".introjs-helperLayer").one("transitionend", function() {
 				if (introjs._introItems[introjs._currentStep].tooltipClass == "hide") {
 					doPlayPause();

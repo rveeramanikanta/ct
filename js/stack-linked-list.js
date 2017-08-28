@@ -46,6 +46,7 @@ var stackLinkedListReady = function() {
 		case "btnsDiv":
 			$(".introjs-nextbutton").hide();
 			$(".background-color-yellow").removeClass("background-color-yellow");
+			$("#btnsDiv [disabled]").removeAttr("disabled");
 			$(".introjs-helperLayer").one("transitionend", function() {
 				if (introjs._currentStep == 1) {
 					var text = "Provide a number to be pushed.";
@@ -100,6 +101,7 @@ var stackLinkedListReady = function() {
 			
 		case "animationDiv":
 			$(".introjs-nextbutton").hide();
+			$("#btnsDiv .btn").attr("disabled", "disabled");
 			$(".introjs-helperLayer").one("transitionend", function() {
 				if (introjs._introItems[introjs._currentStep].tooltipClass == "hide") {
 					doPlayPause();
