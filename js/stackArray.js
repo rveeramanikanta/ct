@@ -1,3 +1,4 @@
+var pushedVal;
 var stackArrayReady = function() {
 	initIntroJS();
 	$("#pushText").on("keydown", function(e) {
@@ -18,7 +19,6 @@ var stackArrayReady = function() {
 		$("#popIfPrintf").text("cout << \"Stack is underflow.\\n\";");
 		$("#popElsePrintf").text("cout << \"Popped value = \" << x << \"\\n\";");
 	}
-	
 }
 
 function getURLParameter(sParam) {
@@ -65,8 +65,13 @@ function initIntroJS() {
 			break;
 			
 		case "btnsDiv":
+			$(".arrow").remove();
 			$(".introjs-nextbutton").hide();
 			$(".background-color-yellow").removeClass("background-color-yellow");
+			if ($("#pushText").is(":disabled")) {
+				doPlayPause();
+			}
+			$("#btnsDiv [disabled]").removeAttr("disabled");
 			$(".introjs-helperLayer").one("transitionend", function() {
 				if (introjs._currentStep == 1) {
 					var text = "Provide a number to be pushed.";
@@ -80,6 +85,16 @@ function initIntroJS() {
 			});
 			break;
 			
+		case "lastCall":
+			$(".introjs-nextbutton").hide();
+			$(".introjs-helperLayer").one("transitionend", function() {
+				console.log("lastcall");
+				setTimeout(function() {
+					doPlayPause();
+				}, 200);
+			});
+			break;
+			
 		case "pushFun":
 			$(".introjs-nextbutton").hide();
 			introjs.refresh();
@@ -88,59 +103,40 @@ function initIntroJS() {
 				typing(".introjs-tooltiptext", text, function() {
 					$(".introjs-tooltiptext").append("<ul style='font-family: monospace;'><li><span>int element</span></li></ul>");
 					travel("#pushParameter", $(".introjs-tooltiptext ul li:last-child span"), function () {
-						var pushedVal = $("#pushText").val();
+						pushedVal = $("#pushText").val();
 						$("#pushText").val("");
 						$(".introjs-tooltiptext ul li:last-child span").append(" = <span>" + pushedVal + "</span>");
 						$("#pushParameter").css("background-color", "");
 						$(".introjs-tooltiptext ul li *").removeAttr("id");
-						$(".introjs-tooltiptext ul").append("<li><span> <span id='tooltipTop'>top</span> == </span> <span id='tooltipMaxSizeMinus1'><span id='tooltipMaxSize'>STACK_MAX_SIZE</span> - 1</span></li>");
-						
-						travel("#pushIfCndtn", $(".introjs-tooltiptext ul li:last-child span"), function () {
-							flip("#tooltipMaxSize", 10, function() {
-								flip("#tooltipMaxSizeMinus1", 9, function() {
-									flip("#tooltipTop", topVal, function() {
-										var text = "";
-										if (parseInt($("#tooltipTop").text()) == parseInt($("#tooltipMaxSizeMinus1").text())) {
-											text = "Since it evaluates to <span class='ct-code-b-yellow'>true</span>, the control" 
-											+ " enters into <span class='ct-code-b-yellow'>if-block</span>";
-										} else {
-											text = "Since it evaluates to <span class='ct-code-b-red'>false</span>, the control " 
-											+ "enters into <span class='ct-code-b-yellow'>else-block</span>";
-										}
-										$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
-										typing($(".introjs-tooltiptext ul li:last-child div").last(), text, function() {
-											$("#pushIfCndtn").css("background-color", "");
-											if (parseInt($("#tooltipTop").text()) != parseInt($("#tooltipMaxSizeMinus1").text())) {
-												$(".introjs-tooltiptext ul li *").removeAttr("id");
-												$(".introjs-tooltiptext ul").append("<li><span> <span id='tooltipTop1'>top</span> = </span> <span id='tooltipTopPlus1'><span id='tooltipTop2'>top</span> + 1</span></li>");
-												travel("#topInc", $(".introjs-tooltiptext ul li:last-child span"), function () {
-													flip("#tooltipTop2", topVal, function() {
-														flip("#tooltipTopPlus1", topVal + 1, function() {
-															topVal++;
-															$("#topInc").css("background-color", "");
-															$(".introjs-tooltiptext ul li *").removeAttr("id");
-															$(".introjs-tooltiptext ul").append("<li><span> <span id='tooltipArr'>arr[<span id='tooltipTop'>top</span>]</span> = <span id='tooltipElmt'>element</span></span></li>");
-															
-															travel("#elementPush", $(".introjs-tooltiptext ul li:last-child span"), function () {
-																flip("#tooltipElmt", pushedVal, function() {
-																	flip("#tooltipTop", topVal, function() {
-																		$("#elementPush").css("background-color", "");
-																		getIntrojsStep("#animationDiv", "", "", "hide");
-																		$("#pushElsePrintf").addClass("background-color-yellow");
-																		$("#output").append("<div class='opacity00'>Successfully pushed.</div>");
-																		$(".introjs-nextbutton").removeClass("introjs-disabled").show();
-																	});
-																});
-															});
-														});
-													});
-												});
+						arrow("#pushIf", "#pushIf", function() {
+							$(".introjs-tooltiptext ul").append("<li><span> <span id='tooltipTop'>top</span> == </span> <span id='tooltipMaxSizeMinus1'><span id='tooltipMaxSize'>STACK_MAX_SIZE</span> - 1</span></li>");
+							travel("#pushIfCndtn", $(".introjs-tooltiptext ul li:last-child span"), function () {
+								flip("#tooltipMaxSize", 10, function() {
+									flip("#tooltipMaxSizeMinus1", 9, function() {
+										flip("#tooltipTop", topVal, function() {
+											var text = "";
+											if (parseInt($("#tooltipTop").text()) == parseInt($("#tooltipMaxSizeMinus1").text())) {
+												text = "Since it evaluates to <span class='ct-code-b-yellow'>true</span>, the control" 
+												+ " enters into <span class='ct-code-b-yellow'>if-block</span>";
 											} else {
-												$("#pushIfPrintf").addClass("background-color-yellow");
-												getIntrojsStep("#outputDiv", "", "", "hide");
-												$("#output").append("<div class='opacity00'>Stack is overflow.</div>")
-												$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+												text = "Since it evaluates to <span class='ct-code-b-red'>false</span>, the control " 
+												+ "enters into <span class='ct-code-b-yellow'>else-block</span>";
 											}
+											$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
+											typing($(".introjs-tooltiptext ul li:last-child div").last(), text, function() {
+												if (parseInt($("#tooltipTop").text()) != parseInt($("#tooltipMaxSizeMinus1").text())) {
+													$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='pushStep1()'>Next &#8594;</a>")
+												} else {
+													$("#pushIfCndtn").css("background-color", "");
+													$("#pushIfPrintf").addClass("background-color-yellow");
+													
+													arrow("#pushIf", "#pushIfPrintf", function() {
+														getIntrojsStep("#outputDiv", "", "", "hide");
+														$("#output").append("<div class='opacity00'>Stack is overflow.</div>")
+														$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+													});
+												}
+											});
 										});
 									});
 								});
@@ -157,59 +153,39 @@ function initIntroJS() {
 			$(".introjs-helperLayer").one("transitionend", function() {
 				var text = "By using this code we are popping the element from the <span class='ct-code-b-yellow'>stack</span>.";
 				typing(".introjs-tooltiptext", text, function() {
-					$(".introjs-tooltiptext").append("<ul style='font-family: monospace;'><li><span>int x;</span></li></ul>");
-					travel("#xDec", $(".introjs-tooltiptext ul li:last-child span"), function () {
-						$("#xDec").css("background-color", "");
-						$(".introjs-tooltiptext ul li *").removeAttr("id");
-						$(".introjs-tooltiptext ul").append("<li><span> <span id='tooltipTop'>top</span> < 0 </span></li>");
-						travel("#popIfCndtn", $(".introjs-tooltiptext ul li:last-child span"), function() {
-							$("#topInc").css("background-color", "");
-							flip("#tooltipTop", topVal, function() {
-								var text = "";
-								if (topVal < 0) {
-									text = "Evaluates to <span class='ct-code-b-yellow'>true</span>, the control" 
-									+ " enters into <span class='ct-code-b-yellow'>if-block</span>";
-								} else {
-									text = "Evaluates to <span class='ct-code-b-red'>false</span>, the control " 
-									+ "enters into <span class='ct-code-b-yellow'>else-block</span>";
-								}
-								$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
-								typing($(".introjs-tooltiptext ul li:last-child div").last(), text, function() {
-									$("#popIfCndtn").css("background-color", "");
-									if (parseInt(topVal) < 0) {
-										$("#popIfPrintf").addClass("background-color-yellow");
-										getIntrojsStep("#outputDiv", "", "", "hide");
-										$("#output").append("<div class='opacity00'>Stack is underflow.</div>")
-										$(".introjs-nextbutton").removeClass("introjs-disabled").show();
-										
-									} else {
-										$(".introjs-tooltiptext ul li *").removeAttr("id");
-										$(".introjs-tooltiptext ul").append("<li><span> x = <span id='tooltipArr'>arr[<span id='tooltipTop'>top</span>]</span> </span></li>");
-										travel("#xInit", $(".introjs-tooltiptext ul li:last-child span"), function() {
-											flip("#tooltipTop", topVal, function() {
-												flip("#tooltipArr", arr[topVal], function() {
-													$("#xInit").css("background-color", "");
-													$(".introjs-tooltiptext ul li *").removeAttr("id");
-													$(".introjs-tooltiptext ul").append("<li><span> top = <span id='tooltipTopDec'><span id='tooltipTop'>top</span> - 1</span></span></li>");
-													travel("#topDec", $(".introjs-tooltiptext ul li:last-child span"), function() {
-														flip("#tooltipTop", topVal, function() {
-															flip("#tooltipTopDec", topVal - 1, function() {
-																$("#topDec").css("background-color", "");
-																$("#topDec").css("background-color", "");
-																$(".introjs-tooltiptext ul li *").removeAttr("id");
-																topVal--;
-																$("#popFunReturn").css("background-color", "");
-																getIntrojsStep("#animationDiv", "", "", "hide");
-																$("#popElsePrintf").addClass("background-color-yellow");
-																$("#output").append("<div class='opacity00'>Popped value = " + arr.pop() + ".</div>");
-																$(".introjs-nextbutton").removeClass("introjs-disabled").show();
-															});
-														});
-													});
+					arrow("#xDec", "#xDec", function() {
+						$(".introjs-tooltiptext").append("<ul style='font-family: monospace;'><li><span>int x;</span></li></ul>");
+						travel("#xDec", $(".introjs-tooltiptext ul li:last-child span"), function () {
+							$("#xDec").css("background-color", "");
+							$(".introjs-tooltiptext ul li *").removeAttr("id");
+							arrow("#xDec", "#popIf", function() {
+								$(".introjs-tooltiptext ul").append("<li><span> <span id='tooltipTop'>top</span> < 0 </span></li>");
+								travel("#popIfCndtn", $(".introjs-tooltiptext ul li:last-child span"), function() {
+									$("#topInc").css("background-color", "");
+									flip("#tooltipTop", topVal, function() {
+										var text = "";
+										if (topVal < 0) {
+											text = "Evaluates to <span class='ct-code-b-yellow'>true</span>, the control" 
+												+ " enters into <span class='ct-code-b-yellow'>if-block</span>";
+										} else {
+											text = "Evaluates to <span class='ct-code-b-red'>false</span>, the control " 
+												+ "enters into <span class='ct-code-b-yellow'>else-block</span>";
+										}
+										$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
+										typing($(".introjs-tooltiptext ul li:last-child div").last(), text, function() {
+											if (parseInt(topVal) < 0) {
+												$("#popIfCndtn").css("background-color", "");
+												$("#popIfPrintf").addClass("background-color-yellow");
+												arrow("#popIf", "#popIfPrintf", function() {
+													getIntrojsStep("#outputDiv", "", "", "hide");
+													$("#output").append("<div class='opacity00'>Stack is underflow.</div>")
+													$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 												});
-											});
+											} else {
+												$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='popStep1()'>Next &#8594;</a>")
+											}
 										});
-									}
+									});
 								});
 							});
 						});
@@ -220,6 +196,7 @@ function initIntroJS() {
 			
 		case "animationDiv":
 			$(".introjs-nextbutton").hide();
+			$("#btnsDiv .btn").attr("disabled", "disabled");
 			$(".introjs-helperLayer").one("transitionend", function() {
 				if (introjs._introItems[introjs._currentStep].tooltipClass == "hide") {
 					doPlayPause();
@@ -233,7 +210,6 @@ function initIntroJS() {
 								introjs.nextStep();
 							}, 500);
 						});
-						
 					}, 1000);
 				}
 			});
@@ -241,14 +217,10 @@ function initIntroJS() {
 			
 		case "outputDiv":
 			$("#outputDiv").removeClass("opacity00");
-			doPlayPause();
 			$(".introjs-helperLayer").one("transitionend", function() {
 				$(".output-console-body").scrollTo($("#output > div:last-child()"), 500, function() {
 					$("#output > div:last-child()").removeClass("opacity00").hide().fadeIn(1000, function() {
-						getIntrojsStep("#btnsDiv", "", "left");
-						setTimeout(function() {
-							introjs.nextStep();
-						}, 500);
+						doPlayPause();
 					});
 				});
 			});
@@ -264,4 +236,98 @@ function initIntroJS() {
 	$('.introjs-prevbutton').hide();
 	$('.introjs-skipbutton').hide();
 	$('.introjs-bullets').hide();
+}
+
+
+function pushStep1() {
+	$(".user-btn").remove();
+	$("#pushIfCndtn").css("background-color", "");
+	$(".introjs-tooltiptext ul li *").removeAttr("id");
+	arrow("#pushIf", "#topInc", function() {
+		$(".introjs-tooltiptext ul").append("<li><span> <span id='tooltipTop1'>top</span> = </span> <span id='tooltipTopPlus1'><span id='tooltipTop2'>top</span> + 1</span></li>");
+		travel("#topInc", $(".introjs-tooltiptext ul li:last-child span"), function () {
+			flip("#tooltipTop2", topVal, function() {
+				flip("#tooltipTopPlus1", topVal + 1, function() {
+					topVal++;
+					$("#topInc").css("background-color", "");
+					$(".introjs-tooltiptext ul li *").removeAttr("id");
+					arrow("#topInc", "#elementPush", function() {
+						$(".introjs-tooltiptext ul").append("<li><span> <span id='tooltipArr'>arr[<span id='tooltipTop'>top</span>]</span> = <span id='tooltipElmt'>element</span></span></li>");
+						travel("#elementPush", $(".introjs-tooltiptext ul li:last-child span"), function () {
+							flip("#tooltipElmt", pushedVal, function() {
+								flip("#tooltipTop", topVal, function() {
+									$("#elementPush").css("background-color", "");
+									arrow("#elementPush", "#pushElsePrintf", function() {
+										getIntrojsStep("#animationDiv", "", "", "hide");
+										$("#pushElsePrintf").addClass("background-color-yellow");
+										$("#output").append("<div class='opacity00'>Successfully pushed.</div>");
+										$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		});
+	});
+}
+
+function popStep1() {
+	$(".user-btn").remove();
+	$("#popIfCndtn").css("background-color", "");
+	$(".introjs-tooltiptext ul li *").removeAttr("id");
+	arrow("#popIf", "#xInit", function() {
+		$(".introjs-tooltiptext ul").append("<li><span> x = <span id='tooltipArr'>arr[<span id='tooltipTop'>top</span>]</span> </span></li>");
+		travel("#xInit", $(".introjs-tooltiptext ul li:last-child span"), function() {
+			flip("#tooltipTop", topVal, function() {
+				flip("#tooltipArr", arr[topVal], function() {
+					$("#xInit").css("background-color", "");
+					$(".introjs-tooltiptext ul li *").removeAttr("id");
+					arrow("#xInit", "#topDec", function() {
+						$(".introjs-tooltiptext ul").append("<li><span> top = <span id='tooltipTopDec'><span id='tooltipTop'>top</span> - 1</span></span></li>");
+						travel("#topDec", $(".introjs-tooltiptext ul li:last-child span"), function() {
+							flip("#tooltipTop", topVal, function() {
+								flip("#tooltipTopDec", topVal - 1, function() {
+									$("#topDec").css("background-color", "");
+									$("#topDec").css("background-color", "");
+									$(".introjs-tooltiptext ul li *").removeAttr("id");
+									topVal--;
+									$("#popFunReturn").css("background-color", "");
+									arrow("#topDec", "#popElsePrintf", function() {
+										getIntrojsStep("#animationDiv", "", "", "hide");
+										$("#popElsePrintf").addClass("background-color-yellow");
+										$("#output").append("<div class='opacity00'>Popped value = " + arr.pop() + ".</div>");
+										$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		});
+	});
+}
+
+function arrow(fromId, toId, callBackFunction) {
+	$(".arrow").remove();
+	$('body').append("<i class='fa fa-arrow-right arrow faa-passing animated' style='position: relative; z-index: 10000000;'></i>");
+	var l = $(fromId).offset();
+	$('.arrow').offset({
+		'top': l.top,
+		'left': l.left - ($('.arrow').width() * 1.5)
+	});
+	
+	var l1 = $(fromId).offset();
+	var l2 = $(toId).offset();
+	  
+	var topLength = parseInt($(".arrow").css("top")) + (l2.top - l1.top);
+	var leftLength = parseInt($(".arrow").css("left")) + (l2.left - l1.left);
+	  
+	TweenMax.to(".arrow", 1, { top : topLength, left : leftLength, onComplete: function() {
+		if (typeof callBackFunction === "function") {
+			callBackFunction();
+		}
+	}});
 }

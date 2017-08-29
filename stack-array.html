@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Stack Array</title>
-<!-- css sheet for how the page is laid out -->
-
-<!-- <link rel="stylesheet" href="visualizationPageStyle.css"> -->
-
+<title>Stack using Arrays</title>
 <link rel="stylesheet" href="/css/bootstrap.css">
 <link rel="stylesheet" href="/css/jquery-ui.css">
 <link rel="stylesheet" href="/css/introjs.css">
 <link rel="stylesheet" href="/css/introjs-ct.css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
 
 <script type="text/javascript" src="/js/jquery-latest.js"></script>
 <script type="text/javascript" src="/js/intro.js"></script>
@@ -21,9 +18,6 @@
 <!-- <script type="text/javascript" src="js-min/stay.min.js"></script> -->
 <script type="text/javascript" src="js/stackArray.js"></script>
 
-
-
-<!-- Javascript for the actual visualization code -->
 <script type="text/javascript" src="js/an-li/custom-events.js"></script>
 <script type="text/javascript" src="js/an-li/undo-functions.js"></script>
 <script type="text/javascript" src="js/an-li/animated-object.js"></script>
@@ -38,7 +32,6 @@
 <script type="text/javascript" src="js/an-li/animation-main.js"></script>
 <script type="text/javascript" src="js/al-li/algorithm.js"></script>
 <script type="text/javascript" src="js/al-li/stack-array.js"></script>
-
 <!-- <script type="text/javascript" src="js-min/al-li/stack-array.min.js"></script> -->
 <style type="text/css">
 .ct-demo-heading {
@@ -125,6 +118,10 @@
 .padding-col0 {
 	padding: 0;
 }
+
+.user-btn {
+	background-color: green;
+}
 </style>
 
 <script type="text/javascript">
@@ -149,13 +146,16 @@ $(document).ready(function() {
 int arr[STACK_MAX_SIZE];
 int top = -1;
 					</pre>
+					<pre class='creampretab4' id='mainFun' style="margin-top: 10px;">#include &lt;stdio.h&gt;
+void main() {<span id='mainCalls'></span>
 
+}</pre>
 					<pre class='creampretab4 hide' id='pushFun'
 						style="margin-top: 10px;">
 void push(<span id='pushParameter'>int element</span>) {
-	if(<span id='pushIfCndtn'>top == STACK_MAX_SIZE - 1</span>) {
+	<span id='pushIf'>if(<span id='pushIfCndtn'>top == STACK_MAX_SIZE - 1</span>) {</span>
 		<span id='pushIfPrintf'>printf("Stack is overflow.");</span>
-	} else {
+	<span id='pushElse'>} else {</span>
 		<span id='topInc'>top = top + 1;</span>
 		<span id='elementPush'>arr[top] = element;</span>
 		<span id='pushElsePrintf'>printf("Successfully pushed.");</span>
@@ -167,9 +167,9 @@ void push(<span id='pushParameter'>int element</span>) {
 						style="margin-top: 10px;">
 void pop() {
 	<span id='xDec'>int x;</span>
-	if(<span id='popIfCndtn'>top < 0</span>) {
+	<span id='popIf'>if(<span id='popIfCndtn'>top < 0</span>) {</span>
 		<span id='popIfPrintf'>printf("Stack is underflow.");</span>
-	} else {
+	<span id='popElse'>} else {</span>
 		<span id='xInit'>x = arr[top];</span>
 		<span id='topDec'>top = top - 1;</span>
 		<span id='popElsePrintf'>printf("Popped value = %d.", x);</span>

@@ -171,43 +171,30 @@ StackArray.prototype.reset = function() {
 }
 
 StackArray.prototype.pushCallback = function(event) {
+	if($(".btn").is(":disabled")) {
+		return;
+	}
 	var pushedValue = this.pushField.value;
-	// Get text value
 	pushedValue = this.normalizeNumber(pushedValue, 4);
-	
-	console.log(this.top);
-	console.log(this.top < SIZE - 1 && pushedValue != "" && !isNaN(pushedValue));
-	
-	console.log(this.top == SIZE - 1)
-	
-	if (this.top < SIZE - 1 && pushedValue != "" && !isNaN(pushedValue)) {
+	if (pushedValue != "" && !isNaN(pushedValue)) {
 		var pushVal = this.pushField.value;
 		arr.push(pushVal);
-		//this.pushField.value = ""
 		this.implementAction(this.push.bind(this), pushVal);
-	} else if (this.top == SIZE - 1) {
-		$("#pushFun").removeClass("hide");
-		$("#popFun").addClass("hide");
-		getIntrojsStep("#pushFun", "", "right");
-		introjs.nextStep();
-	} else {
-		this.pushField.value = "";
 	}
 }
 
 StackArray.prototype.popCallback = function(event) {
-	if (this.top > -1) {
-		this.implementAction(this.pop.bind(this), "");
-	} else {
-		this.pushField.value = "";
-		$("#popFun").removeClass("hide");
-		$("#pushFun").addClass("hide");
-		getIntrojsStep("#popFun", "", "right");
-		introjs.nextStep();
+	if($(".btn").is(":disabled")) {
+		return;
 	}
+	this.pushField.value = "";
+	this.implementAction(this.pop.bind(this), "");
 }
 
 StackArray.prototype.clearCallback = function(event) {
+	if($(".btn").is(":disabled")) {
+		return;
+	}
 	this.implementAction(this.clearData.bind(this), "");
 }
 
@@ -225,110 +212,128 @@ StackArray.prototype.push = function(elemToPush) {
 	this.arrayData[this.top + 1] = elemToPush;
 	this.cmd("Hide", "#popFun");
 	this.cmd("Show", "#pushFun");
+	$("#mainCalls *").removeAttr("id");
+	$("#mainCalls").append("<div>\t<span id='lastCall'>push(" + elemToPush + ");</span></div>");
+	this.cmd("SetNextIntroStep", "#lastCall", "", "", "hide");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
+	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#pushFun", "", "right", "");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
-	this.cmd("Step");
 	
-	this.cmd("SetText", this.leftoverLabelID, "");
-
-	this.cmd("CreateLabel", labPushID, "Pushing Value: ", PUSH_LABEL_X, PUSH_LABEL_Y);
-	this.cmd("CreateLabel", labPushValID, elemToPush, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-	
-	this.cmd("SetHighlight", this.dummyID[10], 1);
-	this.cmd("Step");
-	this.top = this.top + 1;
-	this.cmd("SetText", this.topID, this.top);
-	
-	if (this.top < SIZE) {
-		this.cmd("DISCONNECT", this.dummyID[11], this.lineID[0]);
-		this.cmd("DISCONNECT", this.dummyID[11], this.dummyID[this.top - 1]);
-		this.cmd("Connect", this.dummyID[11], this.dummyID[this.top]);
-	} else {
-		this.cmd("DISCONNECT", this.dummyID[11], this.dummyID[this.top - 1]);
-		this.cmd("Connect", this.dummyID[11], this.lineID[1]);
+	if (this.top != SIZE - 1) {
+		this.cmd("Step");
+		this.cmd("SetText", this.leftoverLabelID, "");
+		this.cmd("CreateLabel", labPushID, "Pushing Value: ", PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd("CreateLabel", labPushValID, elemToPush, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		
+		this.cmd("SetHighlight", this.dummyID[10], 1);
+		this.cmd("Step");
+		this.top = this.top + 1;
+		this.cmd("SetText", this.topID, this.top);
+		
+		if (this.top < SIZE) {
+			this.cmd("DISCONNECT", this.dummyID[11], this.lineID[0]);
+			this.cmd("DISCONNECT", this.dummyID[11], this.dummyID[this.top - 1]);
+			this.cmd("Connect", this.dummyID[11], this.dummyID[this.top]);
+		} else {
+			this.cmd("DISCONNECT", this.dummyID[11], this.dummyID[this.top - 1]);
+			this.cmd("Connect", this.dummyID[11], this.lineID[1]);
+		}
+		this.cmd("SetHighlight", this.dummyID[10], 0);
+		this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF", TOP_POS_X + 15, TOP_POS_Y);
+		this.cmd("Step");
+		
+		var xpos = (this.top % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		var ypos = Math.floor(this.top / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+		
+		this.cmd("Move", this.highlight1ID, xpos + 1, ypos - ARRAY_ELEM_HEIGHT + 4);
+		this.cmd("Step");
+		
+		this.cmd("Move", labPushValID, xpos, ypos);
+		this.cmd("Step");
+		
+		this.cmd("Settext", this.arrayID[this.top], elemToPush);
+		this.cmd("Delete", labPushID);
+		this.cmd("Delete", labPushValID);
+		
+		this.cmd("Delete", this.highlight1ID);
+		this.cmd("Step");
+		this.cmd("SetNextIntroStep", "#outputDiv", "", "right", "hide");
+		this.cmd("RunNextIntroStep");
+		this.cmd("Step");
 	}
-	this.cmd("SetHighlight", this.dummyID[10], 0);
-	this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF", TOP_POS_X + 15, TOP_POS_Y);
-	this.cmd("Step");
 	
-	var xpos = (this.top % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-	var ypos = Math.floor(this.top / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 	
-	this.cmd("Move", this.highlight1ID, xpos + 1, ypos - ARRAY_ELEM_HEIGHT + 4);
-	this.cmd("Step");
-	
-	this.cmd("Move", labPushValID, xpos, ypos);
-	this.cmd("Step");
-	
-	this.cmd("Settext", this.arrayID[this.top], elemToPush);
-	this.cmd("Delete", labPushID);
-	this.cmd("Delete", labPushValID);
-	
-	this.cmd("Delete", this.highlight1ID);
-	this.cmd("Step");
-	
-	this.cmd("SetNextIntroStep", "#outputDiv", "", "right", "hide");
+	this.cmd("SetNextIntroStep", "#btnsDiv", "", "left");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
-	//topVal++;
-	
 	return this.commands;
 }
 
 StackArray.prototype.pop = function(ignored) {
 	this.commands = new Array();
-
 	var labPopID = this.nextIndex++;
 	var labPopValID = this.nextIndex++;
 	this.cmd("Hide", "#pushFun");
 	this.cmd("Show", "#popFun");
+	$("#mainCalls *").removeAttr("id");
+	$("#mainCalls").append("<div>\t<span id='lastCall'>pop();</span></div>");
+	this.cmd("SetNextIntroStep", "#lastCall", "", "", "hide");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#popFun", "", "right", "");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
-
-	this.cmd("SetText", this.leftoverLabelID, "");
-
-	this.cmd("CreateLabel", labPopID, "Popped Value: ", PUSH_LABEL_X, PUSH_LABEL_Y);
-
-	this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF", TOP_POS_X + 15, TOP_POS_Y);
-	this.cmd("Step");
-
-	var xpos = (this.top % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-	var ypos = Math.floor(this.top / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
-
-	this.cmd("Move", this.highlight1ID, xpos + 1, ypos - ARRAY_ELEM_HEIGHT + 4);
-
-	this.cmd("Step");
-
-	this.cmd("CreateLabel", labPopValID, this.arrayData[this.top], xpos, ypos);
-	this.cmd("Settext", this.arrayID[this.top], "");
-	this.cmd("Move", labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-	this.cmd("Step");
-	this.cmd("Delete", labPopValID)
-	this.cmd("Delete", labPopID);
-	this.cmd("Delete", this.highlight1ID);
 	
-	this.cmd("SetHighlight", this.dummyID[10], 1);
-	this.cmd("Step");
-	this.top = this.top - 1;
-	this.cmd("SetText", this.topID, this.top)
-	this.cmd("Step");
-	this.cmd("SetHighlight", this.dummyID[10], 0);
-	
-	
-	if (this.top == -1) {
-		this.cmd("Connect", this.dummyID[11], this.lineID[0]);
-	} else {
-		this.cmd("Connect", this.dummyID[11], this.dummyID[this.top]);
+	if (this.top >= 0) {
+		this.cmd("SetText", this.leftoverLabelID, "");
+		this.cmd("CreateLabel", labPopID, "Popped Value: ", PUSH_LABEL_X, PUSH_LABEL_Y);
+
+		this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF", TOP_POS_X + 15, TOP_POS_Y);
+		this.cmd("Step");
+
+		var xpos = (this.top % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		var ypos = Math.floor(this.top / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+
+		this.cmd("Move", this.highlight1ID, xpos + 1, ypos - ARRAY_ELEM_HEIGHT + 4);
+
+		this.cmd("Step");
+
+		this.cmd("CreateLabel", labPopValID, this.arrayData[this.top], xpos, ypos);
+		this.cmd("Settext", this.arrayID[this.top], "");
+		this.cmd("Move", labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd("Step");
+		this.cmd("Delete", labPopValID)
+		this.cmd("Delete", labPopID);
+		this.cmd("Delete", this.highlight1ID);
+		
+		this.cmd("SetHighlight", this.dummyID[10], 1);
+		this.cmd("Step");
+		this.top = this.top - 1;
+		this.cmd("SetText", this.topID, this.top)
+		this.cmd("Step");
+		this.cmd("SetHighlight", this.dummyID[10], 0);
+		
+		
+		if (this.top == -1) {
+			this.cmd("Connect", this.dummyID[11], this.lineID[0]);
+		} else {
+			this.cmd("Connect", this.dummyID[11], this.dummyID[this.top]);
+		}
+		
+		this.cmd("DISCONNECT", this.dummyID[11], this.lineID[1]);
+		this.cmd("DISCONNECT", this.dummyID[11], this.dummyID[this.top + 1]);
+		this.cmd("SetText", this.leftoverLabelID, "Popped Value: " 
+				+ this.arrayData[this.top + 1]);
+		this.cmd("SetNextIntroStep", "#outputDiv", "", "right", "hide");
+		this.cmd("RunNextIntroStep");
+		this.cmd("Step");
+		this.cmd("SetText", this.leftoverLabelID, "");
 	}
 	
-	this.cmd("DISCONNECT", this.dummyID[11], this.lineID[1]);
-	this.cmd("DISCONNECT", this.dummyID[11], this.dummyID[this.top + 1]);
-	this.cmd("SetText", this.leftoverLabelID, "Popped Value: " 
-			+ this.arrayData[this.top + 1]);
-	
-	this.cmd("SetNextIntroStep", "#outputDiv", "", "right", "hide");
+	this.cmd("SetNextIntroStep", "#btnsDiv", "", "left");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
 	return this.commands;

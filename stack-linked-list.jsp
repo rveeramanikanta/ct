@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Stack LinkedList</title>
-<!-- css sheet for how the page is laid out -->
-
-<!-- <link rel="stylesheet" href="visualizationPageStyle.css"> -->
-
+<title>Stack using LinkedList</title>
 <link rel="stylesheet" href="/css/bootstrap.css">
 <link rel="stylesheet" href="/css/jquery-ui.css">
 <link rel="stylesheet" href="/css/introjs.css">
 <link rel="stylesheet" href="/css/introjs-ct.css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
 
 <script type="text/javascript" src="/js/jquery-latest.js"></script>
 <script type="text/javascript" src="/js/bootstrap.js"></script>
@@ -21,8 +18,6 @@
 <script type="text/javascript" src="js-min/stllt.min.js"></script>
 <script type="text/javascript" src="js/stack-linked-list.js"></script>
 
-
-<!-- Javascript for the actual visualization code -->
 <script type="text/javascript" src="js/an-li/custom-events.js"> </script>
 <script type="text/javascript" src="js/an-li/undo-functions.js"> </script>
 <script type="text/javascript" src="js/an-li/animated-object.js"> </script>
@@ -148,13 +143,17 @@ struct stack {
 };
 
 typedef struct stack *stk;</pre>
+<pre class='creampretab4' id='mainFun' style="margin-top: 10px;">#include &lt;stdio.h&gt;
+void main() {<span id='mainCalls'></span>
+
+}</pre>
 
 					<pre class='creampretab4 hide' id='pushFun'
 						style="margin-top: 10px;">
 stk push(<span id='pushParameters'>int x, stk top</span>) {
 	<span id='decTemp'>stk temp;</span>
 	<span id='initTemp'>temp = (stk)malloc(sizeof(struct stack));</span>
-	if(<span id='pushIfCndtn'>temp == NULL</span>) {
+	<span id='pushIf'>if(<span id='pushIfCndtn'>temp == NULL</span>) {</span>
 		<span id='pushIfPrintf'>printf("Stack is overflow.");</span>
 	} else {
 		<span id='topInc'>temp -> data = x;</span>
@@ -166,7 +165,7 @@ stk push(<span id='pushParameters'>int x, stk top</span>) {
 <pre class='creampretab4 hide' id='popFun' style="margin-top: 10px;">
 stk pop(stk top) {
 	<span id='popTempDec'>stk temp;</span>
-	if(<span id='popIfCndtn'>temp == NULL</span>) {
+	<span id='popIf'>if(<span id='popIfCndtn'>temp == NULL</span>) {</span>
 		<span id='popIfPrintf'>printf("Stack is underflow.");</span>
 	} else {
 		<span id='popTempInit'>temp = top;</span>
