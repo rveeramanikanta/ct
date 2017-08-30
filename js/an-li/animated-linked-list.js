@@ -210,7 +210,7 @@ AnimatedLinkedList.prototype.draw = function(context) {
 	
 	if (this.highlighted) {
 		context.strokeStyle = "#ff0000";
-		context.fillStyle = "#ff0000";
+		context.fillStyle = "#f3f3bc";
 		
 		context.beginPath();
 		context.moveTo(startX - this.highlightDiff,startY- this.highlightDiff);

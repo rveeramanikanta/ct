@@ -144,7 +144,8 @@ struct stack {
 
 typedef struct stack *stk;</pre>
 <pre class='creampretab4' id='mainFun' style="margin-top: 10px;">#include &lt;stdio.h&gt;
-void main() {<span id='mainCalls'></span>
+void main() {
+	stk top = NULL;<span id='mainCalls'></span>
 
 }</pre>
 

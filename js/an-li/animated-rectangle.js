@@ -207,6 +207,8 @@ AnimatedRectangle.prototype.draw = function(context) {
 	}
 	context.strokeStyle = this.foregroundColor;
 	context.fillStyle = this.backgroundColor;
+	/*context.shadowBlur = 1;
+	context.shadowColor = "black";*/
 
 	context.beginPath();
 	context.moveTo(startX, startY);

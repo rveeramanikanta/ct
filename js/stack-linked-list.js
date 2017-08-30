@@ -195,14 +195,14 @@ function evalutePushCndtn() {
 function pushElseBlk() {
 	$(".user-btn").remove();
 	$("#pushIfCndtn").removeClass("background-color-yellow");
-	$("#topInc, #elementPush").addClass("background-color-yellow");
-	
 	arrow("#pushIf", "#topInc", function() {
+		$("#topInc").addClass("background-color-yellow");
 		$(".introjs-tooltiptext ul").append("<li></li>");
 		var text = "integer value <span class='ct-code-b-yellow'>x</span> is assigned to " 
 			+ "<span class='ct-code-b-yellow'>data</span> field of <span class='ct-code-b-yellow'>temp</span>.";
 		typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
 			arrow("#topInc", "#elementPush", function() {
+				$("#elementPush").addClass("background-color-yellow");
 				$(".introjs-tooltiptext ul").append("<li></li>");
 				var text = "Assign the <span class='ct-code-b-yellow'>top</span> to the " 
 					+ "<span class='ct-code-b-yellow'>next</span> field of <span class='ct-code-b-yellow'>temp</span>.";
@@ -226,20 +226,42 @@ function evalutePopCndtn() {
 	$("#popIfCndtn").addClass("background-color-yellow");
 	arrow("#popTempDec", "#popIf", function() {
 		$(".introjs-tooltiptext ul").append("<li></li>");
-		var text = "<span class='ct-code-b-yellow'>temp</span> is not equal to NULL, " 
-			+ "so condition evaluates to <span class='ct-code-b-red'>false</span>." 
-			+ "Control enters into the <span class='ct-code-b-yellow'>else-block</span>.";
+		var text;
+		if (stackArr.length == 0) {
+			text = "<span class='ct-code-b-yellow'>temp</span> is equal to NULL, " 
+				+ "so condition evaluates to <span class='ct-code-b-yellow'>true</span>." 
+				+ " So control enters into the <span class='ct-code-b-yellow'>if-block</span>.";
+		} else {
+			text = "<span class='ct-code-b-yellow'>temp</span> is not equal to NULL, " 
+				+ "so condition evaluates to <span class='ct-code-b-red'>false</span>." 
+				+ " So control enters into the <span class='ct-code-b-yellow'>else-block</span>.";
+		}
 		typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
-			$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='popElseBlk()'>Next &#8594;</a>");
+			if (stackArr.length == 0) {
+				$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='popIfBlk()'>Next &#8594;</a>");
+			} else {
+				$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='popElseBlk()'>Next &#8594;</a>");
+			}
 		});
 	});
 }
+
+function popIfBlk() {
+	$(".user-btn").remove();
+	$("#popIfCndtn").removeClass("background-color-yellow");
+	arrow("#popIf", "#popIfPrintf", function() {
+		$("#popIfPrintf").addClass("background-color-yellow");
+		$("#output").append("<div class='opacity00'>Stack is underflow.</div>");
+		getIntrojsStep("#outputDiv", "", "", "hide");
+		$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+	});
+}
+
 
 function popElseBlk() {
 	$(".user-btn").remove();
 	$("#popIfCndtn").removeClass("background-color-yellow");
 	//$("#popTempInit, #popTopDec, #freeTemp").addClass("background-color-yellow");
-	
 	arrow("#popIf", "#popTempInit", function() {
 		$("#popTempInit").addClass("background-color-yellow");
 		$(".introjs-tooltiptext ul").append("<li></li>");
