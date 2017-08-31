@@ -111,8 +111,8 @@ function initIntroJS() {
 						arrow("#pushIf", "#pushIf", function() {
 							$(".introjs-tooltiptext ul").append("<li><span> <span id='tooltipTop'>top</span> == </span> <span id='tooltipMaxSizeMinus1'><span id='tooltipMaxSize'>STACK_MAX_SIZE</span> - 1</span></li>");
 							travel("#pushIfCndtn", $(".introjs-tooltiptext ul li:last-child span"), function () {
-								flip("#tooltipMaxSize", 10, function() {
-									flip("#tooltipMaxSizeMinus1", 9, function() {
+								flip("#tooltipMaxSize", SIZE, function() {
+									flip("#tooltipMaxSizeMinus1", SIZE - 1, function() {
 										flip("#tooltipTop", topVal, function() {
 											var text = "";
 											if (parseInt($("#tooltipTop").text()) == parseInt($("#tooltipMaxSizeMinus1").text())) {

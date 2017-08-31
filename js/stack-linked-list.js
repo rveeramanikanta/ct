@@ -37,7 +37,12 @@ var stackLinkedListReady = function() {
 		switch (elementId) {
 		case "stackInit":
 			$(".introjs-nextbutton").hide();
-			var text = "Here we can declare a struct variable <span class='ct-code-b-yellow'>stack</span>.";
+			var text = "This is the declaration of a new <y>struct</y> type"
+							+ " <y>stack</y>.<br><br>"
+							+ "<ul><li><y>data</y> field in node is used to hold"
+							+ " <y>data</y> inside linked list.</li>"
+							+ "<li><y>next</y> field in node is used to keep"
+							+ " <y>address of next node</y>.</li></ul>";
 			typing(".introjs-tooltiptext", text, function() {
 				$(".introjs-nextbutton").show();
 			});
@@ -198,14 +203,14 @@ function pushElseBlk() {
 	arrow("#pushIf", "#topInc", function() {
 		$("#topInc").addClass("background-color-yellow");
 		$(".introjs-tooltiptext ul").append("<li></li>");
-		var text = "integer value <span class='ct-code-b-yellow'>x</span> is assigned to " 
-			+ "<span class='ct-code-b-yellow'>data</span> field of <span class='ct-code-b-yellow'>temp</span>.";
+		var text = "Here, integer value <y>x</y> is stored in the " 
+			+ "<y>data</y> field of <y>temp</y>.";
 		typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
 			arrow("#topInc", "#elementPush", function() {
 				$("#elementPush").addClass("background-color-yellow");
 				$(".introjs-tooltiptext ul").append("<li></li>");
-				var text = "Assign the <span class='ct-code-b-yellow'>top</span> to the " 
-					+ "<span class='ct-code-b-yellow'>next</span> field of <span class='ct-code-b-yellow'>temp</span>.";
+				var text = "Here, change the <y>top</y> to the " 
+					+ "<y>next</y> field of <y>temp</y>.";
 				typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
 					$("#pushElsePrintf").addClass("background-color-yellow");
 					$("#output").append("<div class='opacity00'>Successfully pushed.</div>");

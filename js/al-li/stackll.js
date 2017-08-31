@@ -55,8 +55,8 @@ var PUSH_ELEMENT_Y = 30;
 /*var FOREGROUND_COLOR = "#FFFF33";
 var BACKGROUND_COLOR = "#f6981d";*/
 
-var FOREGROUND_COLOR = "#FFFF99";
-var BACKGROUND_COLOR = "#228B22";
+/*var FOREGROUND_COLOR = "#FFFF99";
+var BACKGROUND_COLOR = "#228B22";*/
 var Init_Linked_List_Address = parseInt(new Date().getTime().toString().slice(-4));
 
 var SIZE = 32;
@@ -104,8 +104,8 @@ StackLL.prototype.enableUI = function(event) {
 	for (var i = 0; i < this.controls.length; i++) {
 		this.controls[i].disabled = false;
 	}
-
 }
+
 StackLL.prototype.disableUI = function(event) {
 	for (var i = 0; i < this.controls.length; i++) {
 		this.controls[i].disabled = true;
@@ -198,7 +198,6 @@ StackLL.prototype.push = function(elemToPush) {
 	var labPushValID = this.nextIndex++;
 	var labPushAddressID = this.nextIndex++;
 	this.arrayData[this.top] = elemToPush;
-	
 	this.cmd("Hide", "#popFun");
 	this.cmd("Show", "#pushFun");
 	$("#mainCalls *").removeAttr("id");
@@ -285,18 +284,13 @@ StackLL.prototype.pop = function(ignored) {
 	this.cmd("SetNextIntroStep", "#lastCall", "", "", "hide");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
+	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#popFun", "", "right", "");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
 	Init_Linked_List_Address = Init_Linked_List_Address - 8;
 	if (this.top != 0) {
-		/*this.cmd("SetText", this.leftoverLabelID, "");
-		this.cmd("CreateLabel", labPopID, "Popped Value: ", PUSH_LABEL_X, PUSH_LABEL_Y);
-		this.cmd("CreateLabel", labPopValID, this.arrayData[this.top - 1], LINKED_LIST_START_X, LINKED_LIST_START_Y);
-		this.cmd("Move", labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-		this.cmd("Step");*/
 		this.cmd("Disconnect", this.topID, this.linkedListNextField[this.top - 1]);
-		
 		if (this.top == 1) {
 			this.cmd("SetText", this.topID, "NULL");
 		} else {

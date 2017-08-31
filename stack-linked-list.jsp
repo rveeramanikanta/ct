@@ -116,11 +116,22 @@
 .user-btn {
 	background-color: green;
 }
+
+y, r {
+	font-family: monospace;
+	font-weight: bold;
+}
+
+y {
+	color: yellow;
+}
+
+r {
+	color: red;
+}
 </style>
 
-
 <script type="text/javascript">
-	
 $(document).ready(function() {
 	stackLinkedListReady();
 });

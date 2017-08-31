@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="/css/jquery-ui.css">
 <link rel="stylesheet" href="/css/introjs.css">
 <link rel="stylesheet" href="/css/introjs-ct.css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
 
 <script type="text/javascript" src="/js/jquery-latest.js"></script>
 <script type="text/javascript" src="/js/intro.js"></script>
@@ -160,11 +161,15 @@ $(document).ready(function() {
 int queue[QUEUE_MAX_SIZE];
 int front = -1, rear = -1;
 					</pre>
+					<pre class='creampretab4' id='mainFun' style="margin-top: 10px;">#include &lt;stdio.h&gt;
+void main() {<span id='mainCalls'></span>
+
+}</pre>
 
 					<pre class='creampretab4 hide' id='enqueueFun'
 						style="margin-top: 10px;">
 void enqueue(<span id='enqueueParameter'>int element</span>) {
-	if(<span id='enqueueFirstIfCndtn'>rear == QUEUE_MAX_SIZE - 1</span>) {
+	<span id='enqueueIf1'>if(<span id='enqueueFirstIfCndtn'>rear == QUEUE_MAX_SIZE - 1</span>) {</span>
 		<span id='enqueueIfPrintf'>printf("Queue is overflow.");</span>
 	} else {
 		<span id='enqueueRearInc'>rear = rear + 1;</span>
@@ -172,7 +177,7 @@ void enqueue(<span id='enqueueParameter'>int element</span>) {
 		<span id='enqueueElsePrintf'>printf("Successfully inserted.");</span>
 	}
 	
-	<span id='enqueueSecondIfBlk'>if(<span id='enqueueSecondIfCndtn'>front == - 1</span>) {
+	<span id='enqueueSecondIfBlk'><span id='enqueueIf2'>if(<span id='enqueueSecondIfCndtn'>front == - 1</span>) {</span>
 		<span id='enqueueFrontInc'>front = front + 1;</span>
 	}</span>
 }
@@ -181,11 +186,11 @@ void enqueue(<span id='enqueueParameter'>int element</span>) {
 					<pre class='creampretab4 hide' id='dequeueFun'
 						style="margin-top: 10px;">
 void dequeue() {
-	if(<span id='dequeuIfCndtn'>front == -1</span>) {
+	<span id='dequeueIf1'>if(<span id='dequeuIfCndtn'>front == -1</span>) {</span>
 		<span id='dequeueIfPrintf'>printf("Queue is underflow.");</span>
 	} else {
 		<span id='dequeueElsePrintf'>printf("Deleted value = %d.", queue[front]);</span>
-		<span id='dequeueElseIfElseBlk'>if (<span id='dequeuElseIfCndtn'>rear == front</span>) {
+		<span id='dequeueElseIfElseBlk'><span id='dequeueIf2'>if (<span id='dequeuElseIfCndtn'>rear == front</span>) {</span>
 			<span id='dequeuRearFrontInit'>rear = front = -1;</span>
 		} else {
 			<span id='dequeueFrontInc'>front = front + 1;</span>
