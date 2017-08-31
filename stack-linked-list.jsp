@@ -30,7 +30,7 @@
 <script type="text/javascript" src="js/an-li/object-manager.js"> </script>
 <script type="text/javascript" src="js/an-li/animation-main.js"> </script>
 <script type="text/javascript" src="js/al-li/algorithm.js"> </script>
-<script type="text/javascript" src="js/al-li/stackll.js"> </script> 
+<script type="text/javascript" src="js/al-li/stackll.js"> </script>
 
 <style type="text/css">
 .ct-demo-heading {
