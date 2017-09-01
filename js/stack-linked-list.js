@@ -40,9 +40,11 @@ var stackLinkedListReady = function() {
 			var text = "This is the declaration of a new <y>struct</y> type"
 							+ " <y>stack</y>.<br><br>"
 							+ "<ul><li><y>data</y> field in node is used to hold"
-							+ " <y>data</y> inside linked list.</li>"
-							+ "<li><y>next</y> field in node is used to keep"
-							+ " <y>address of next node</y>.</li></ul>";
+							+ " <y>data</y> inside the linked list.</li>"
+							+ "<li><y>next</y> field in node is used to keep the"
+							+ " <y>address of next node</y>.</li>" 
+							+ "<li>Here, we are declaring a variable <y>top</y> to the <y>struct</y> type and " 
+							+ "initializing it to <y>NULL</y>.</li></ul>";
 			typing(".introjs-tooltiptext", text, function() {
 				$(".introjs-nextbutton").show();
 			});
@@ -83,20 +85,21 @@ var stackLinkedListReady = function() {
 			$(".introjs-nextbutton").hide();
 			introjs.refresh();
 			$(".introjs-helperLayer").one("transitionend", function() {
-				var text = "By using this code we are pushing give element into the stack.";
+				var text = "By using this code we are <y>pushing</y> given element into the <y>stack</y>.";
 				typing(".introjs-tooltiptext", text, function() {
-					
 					arrow("#decTemp", "#decTemp", function() {
 						$(".introjs-tooltiptext").append("<ul><li></li></ul>");
 						$("#decTemp").addClass("background-color-yellow");
-						var text = "Declare a temporary struct variable <span class='ct-code-b-yellow'>temp</span>";
+						var text = "Create a new temporary <y>struct</y> variable <span class='ct-code-b-yellow'>temp</span>.";
 						typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
 							$("#initTemp").addClass("background-color-yellow");
 							arrow("#decTemp", "#initTemp", function() {
 								$(".introjs-tooltiptext ul").append("<li></li>");
-								var text = "Allocate dynamic memory for the declared struct variable <span class='ct-code-b-yellow'>temp</span>.";
+								var text = "Allocate the dynamic memory for these <y>struct</y> variable <y>temp</y>.";
 								typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
-									$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='evalutePushCndtn()'>Next &#8594;</a>");
+									getIntrojsStep("#animationDiv", "", "", "hide");
+									$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+									//$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='evalutePushCndtn()'>Next &#8594;</a>");
 								});
 							});
 						});
@@ -106,16 +109,25 @@ var stackLinkedListReady = function() {
 			});
 			break;
 			
+		case "pushBlk1":
+			$(".introjs-nextbutton").hide();
+			introjs.refresh();
+			$(".introjs-helperLayer").one("transitionend", function() {
+				$(".introjs-tooltiptext").append("<ul></ul>");
+				evalutePushCndtn();
+			});
+			break;
+			
 		case "popFun":
 			$(".introjs-nextbutton").hide();
 			introjs.refresh();
 			$(".introjs-helperLayer").one("transitionend", function() {
-				var text = "By using this code we are popping the element from the <span class='ct-code-b-yellow'>stack</span>.";
+				var text = "By using this code we are <y>popping</y> the element from the <y>stack</y>.";
 				typing(".introjs-tooltiptext", text, function() {
 					arrow("#popTempDec", "#popTempDec", function() {
 						$(".introjs-tooltiptext").append("<ul><li></li></ul>");
 						$("#popTempDec").addClass("background-color-yellow");
-						var text = "Declare a temporary struct variable <span class='ct-code-b-yellow'>temp</span>";
+						var text = "Here, we create a new temporary <y>struct</y> variable <y>temp</y>.";
 						typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
 							$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='evalutePopCndtn()'>Next &#8594;</a>");
 						});
@@ -133,7 +145,7 @@ var stackLinkedListReady = function() {
 				} else {
 					doPlayPause();
 					setTimeout(function() {
-						var text = "Successfully clear the <span class='ct-code-b-yellow'>stack</span>.";
+						var text = "Successfully clear the <y>stack</y>.";
 						typing(".introjs-tooltiptext", text, function() {
 							getIntrojsStep("#btnsDiv", "", "left");
 							setTimeout(function() {
@@ -186,20 +198,28 @@ function evalutePushCndtn() {
 	$("#pushIfCndtn").addClass("background-color-yellow");
 	arrow("#initTemp", "#pushIf", function() {
 		$(".introjs-tooltiptext ul").append("<li></li>");
-		var text = "System successfully allocate heap memory to stack variable <span class='ct-code-b-yellow'>temp</span>," 
-			+ " so <span class='ct-code-b-yellow'>temp</span> is not equal to" 
-			+ " <span class='ct-code-b-yellow'>NULL</span>, so control enters into " 
-			+ "<span class='ct-code-b-yellow'>else-block</span>.";
-		
+		var text = "System successfully allocate (release) the heap memory for <y>struct</y> variable <y>temp</y> " 
+			+ "<b style='font-family: monospace;'>i.e. " 
+			+ (Init_Linked_List_Address - 4) + "</b>";
 		typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
-			$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='pushElseBlk()'>Next &#8594;</a>");
+			$(".introjs-tooltiptext ul li:last-child").append("<br/><span id='tooltipCndtn' style='font-family: monospace; font-weight: bold;'>" 
+				+ "<span id='tooltipTemp'>temp</span> == NULL</span>");
+			travel("#pushIfCndtn", "#tooltipCndtn", function () {
+				flip("#tooltipTemp", (Init_Linked_List_Address - 4), function() {
+					$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
+					var text = "Evaluates to <r>false</r>, the control enters into the <y>else-block</y>.";
+					typing($(".introjs-tooltiptext ul li:last-child > div:last"), text, function() {
+						$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='pushElseBlk()'>Next &#8594;</a>");
+					});
+				});
+			});
 		});
 	});
 }
 
 function pushElseBlk() {
 	$(".user-btn").remove();
-	$("#pushIfCndtn").removeClass("background-color-yellow");
+	$("#pushIfCndtn").removeClass("background-color-yellow").removeAttr("style");
 	arrow("#pushIf", "#topInc", function() {
 		$("#topInc").addClass("background-color-yellow");
 		$(".introjs-tooltiptext ul").append("<li></li>");
@@ -212,11 +232,18 @@ function pushElseBlk() {
 				var text = "Here, change the <y>top</y> to the " 
 					+ "<y>next</y> field of <y>temp</y>.";
 				typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
-					$("#pushElsePrintf").addClass("background-color-yellow");
-					$("#output").append("<div class='opacity00'>Successfully pushed.</div>");
-					arrow("#elementPush", "#pushElsePrintf", function() {
-						getIntrojsStep("#animationDiv", "", "", "hide");
-						$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+					arrow("#elementPush", "#tempToTop", function() {
+						$("#tempToTop").addClass("background-color-yellow");
+						$(".introjs-tooltiptext ul").append("<li></li>");
+						var text = "Here, we change the <y>top</y> pointer point to temporary variable <y>temp</y>.";
+						typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
+							$("#pushElsePrintf").addClass("background-color-yellow");
+							$("#output").append("<div class='opacity00'>Successfully pushed.</div>");
+							arrow("#tempToTop", "#pushElsePrintf", function() {
+								getIntrojsStep("#animationDiv", "", "", "hide");
+								$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+							});
+						});
 					});
 				});
 			});
@@ -230,30 +257,33 @@ function evalutePopCndtn() {
 	$("#popTempDec").removeClass("background-color-yellow");
 	$("#popIfCndtn").addClass("background-color-yellow");
 	arrow("#popTempDec", "#popIf", function() {
-		$(".introjs-tooltiptext ul").append("<li></li>");
-		var text;
-		if (stackArr.length == 0) {
-			text = "<span class='ct-code-b-yellow'>temp</span> is equal to NULL, " 
-				+ "so condition evaluates to <span class='ct-code-b-yellow'>true</span>." 
-				+ " So control enters into the <span class='ct-code-b-yellow'>if-block</span>.";
-		} else {
-			text = "<span class='ct-code-b-yellow'>temp</span> is not equal to NULL, " 
-				+ "so condition evaluates to <span class='ct-code-b-red'>false</span>." 
-				+ " So control enters into the <span class='ct-code-b-yellow'>else-block</span>.";
-		}
-		typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
-			if (stackArr.length == 0) {
-				$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='popIfBlk()'>Next &#8594;</a>");
-			} else {
-				$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='popElseBlk()'>Next &#8594;</a>");
-			}
+		$(".introjs-tooltiptext ul").append("<li><span id='tooltipCndtn' style='font-family: monospace; font-weight: bold;'>" 
+				+ "<span id='tooltipTop'>top</span> == NULL</span></li>");
+		travel("#popIfCndtn", "#tooltipCndtn", function () {
+			flip("#tooltipTop", stackArr.length == 0 ? "NULL" : (Init_Linked_List_Address + 4), function() {
+				var text;
+				if (stackArr.length == 0) {
+					text = "Evaluates to <y>true</y>, the control enters into the <y>if-block</y>.";
+				} else {
+					text = "Evaluates to <r>false</r>, the control enters into the <y>else-block</y>.";
+				}
+				$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
+				typing($(".introjs-tooltiptext ul li:last-child div:last"), text, function() {
+					if (stackArr.length == 0) {
+						$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='popIfBlk()'>Next &#8594;</a>");
+					} else {
+						$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='popElseBlk()'>Next &#8594;</a>");
+					}
+				});
+			});
 		});
+		
 	});
 }
 
 function popIfBlk() {
 	$(".user-btn").remove();
-	$("#popIfCndtn").removeClass("background-color-yellow");
+	$("#popIfCndtn").removeClass("background-color-yellow").removeAttr("style");
 	arrow("#popIf", "#popIfPrintf", function() {
 		$("#popIfPrintf").addClass("background-color-yellow");
 		$("#output").append("<div class='opacity00'>Stack is underflow.</div>");
@@ -265,26 +295,23 @@ function popIfBlk() {
 
 function popElseBlk() {
 	$(".user-btn").remove();
-	$("#popIfCndtn").removeClass("background-color-yellow");
-	//$("#popTempInit, #popTopDec, #freeTemp").addClass("background-color-yellow");
+	$("#popIfCndtn").removeClass("background-color-yellow").removeAttr("style");
 	arrow("#popIf", "#popTempInit", function() {
 		$("#popTempInit").addClass("background-color-yellow");
 		$(".introjs-tooltiptext ul").append("<li></li>");
-		var text = "Assign <span class='ct-code-b-yellow'>top</span> to <span class='ct-code-b-yellow'>temp</span>.";
+		var text = "Here, we point this temporary node <y>temp</y> to the <y>top</y> of the <y>stack</y>.";
 		typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
 			arrow("#popTempInit", "#popTopDec", function() {
 				$("#popTopDec").addClass("background-color-yellow");
 				$(".introjs-tooltiptext ul").append("<li></li>");
-				var text = "Move <span class='ct-code-b-yellow'>top</span> to the next" 
-					+ " node. i.e. assign <span class='ct-code-b-yellow'>next</span> field of <span class='ct-code-b-yellow'>top</span>" 
-					+ " to <span class='ct-code-b-yellow'>top</span>.";
+				var text = "Now point the <y>top</y> pointer to the <y>next</y> of the current <y>top</y>.";
 				typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
 					arrow("#popTopDec", "#popElsePrintf", function() {
 						$("#popElsePrintf").addClass("background-color-yellow");
 						arrow("#popElsePrintf", "#freeTemp", function() {
 							$("#freeTemp").addClass("background-color-yellow");
 							$(".introjs-tooltiptext ul").append("<li></li>");
-							var text = "Deallocate the memory of <span class='ct-code-b-yellow'>temp</span>.";
+							var text = "Delete the temporary node using the <y>free()</y> function.";
 							typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
 								$("#popElsePrintf").addClass("background-color-yellow");
 								$("#output").append("<div class='opacity00'>Popped value = " + stackArr.pop() + ".</div>");
@@ -299,26 +326,4 @@ function popElseBlk() {
 			
 		});
 	});
-}
-
-function arrow(fromId, toId, callBackFunction) {
-	$(".arrow").remove();
-	$('body').append("<i class='fa fa-arrow-right arrow faa-passing animated' style='position: relative; z-index: 10000000;'></i>");
-	var l = $(fromId).offset();
-	$('.arrow').offset({
-		'top': l.top,
-		'left': l.left - ($('.arrow').width() * 1.5)
-	});
-	
-	var l1 = $(fromId).offset();
-	var l2 = $(toId).offset();
-	  
-	var topLength = parseInt($(".arrow").css("top")) + (l2.top - l1.top);
-	var leftLength = parseInt($(".arrow").css("left")) + (l2.left - l1.left);
-	  
-	TweenMax.to(".arrow", 1, { top : topLength, left : leftLength, onComplete: function() {
-		if (typeof callBackFunction === "function") {
-			callBackFunction();
-		}
-	}});
 }

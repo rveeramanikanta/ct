@@ -147,37 +147,38 @@ $(document).ready(function() {
 		<div id="mainContent" class='col-xs-12 margin-top-20 padding0'>
 			<div class='col-xs-3'>
 				<div class='col-xs-12 box-border'>
-					<pre class='creampretab4' id='stackInit' style="margin-top: 10px;">
+					<pre class='creampretab4' id='stackInit' style="margin-top: 10px;">#include &lt;stdio.h&gt;
+					
 struct stack {
 	int data;
 	struct stack *next;
 };
 
-typedef struct stack *stk;</pre>
-<pre class='creampretab4' id='mainFun' style="margin-top: 10px;">#include &lt;stdio.h&gt;
-void main() {
-	stk top = NULL;<span id='mainCalls'></span>
+typedef struct stack *stk;
+stk top = NULL;</pre>
+<pre class='creampretab4' id='mainFun' style="margin-top: 10px;">
+void main() {<span id='mainCalls'></span>
 
 }</pre>
 
 					<pre class='creampretab4 hide' id='pushFun'
 						style="margin-top: 10px;">
-stk push(<span id='pushParameters'>int x, stk top</span>) {
+stk push(<span id='pushParameters'>int x</span>) {
 	<span id='decTemp'>stk temp;</span>
 	<span id='initTemp'>temp = (stk)malloc(sizeof(struct stack));</span>
-	<span id='pushIf'>if(<span id='pushIfCndtn'>temp == NULL</span>) {</span>
+	<span id='pushBlk1'><span id='pushIf'>if(<span id='pushIfCndtn'>temp == NULL</span>) {</span>
 		<span id='pushIfPrintf'>printf("Stack is overflow.");</span>
 	} else {
 		<span id='topInc'>temp -> data = x;</span>
 		<span id='elementPush'>temp -> next = top;</span>
+		<span id='tempToTop'>top = temp;</span>
 		<span id='pushElsePrintf'>printf("Successfully pushed.");</span>
-	}
-	return temp;
+	}</span>
 }</pre>
 <pre class='creampretab4 hide' id='popFun' style="margin-top: 10px;">
-stk pop(stk top) {
+stk pop() {
 	<span id='popTempDec'>stk temp;</span>
-	<span id='popIf'>if(<span id='popIfCndtn'>temp == NULL</span>) {</span>
+	<span id='popIf'>if(<span id='popIfCndtn'>top == NULL</span>) {</span>
 		<span id='popIfPrintf'>printf("Stack is underflow.");</span>
 	} else {
 		<span id='popTempInit'>temp = top;</span>
@@ -185,7 +186,6 @@ stk pop(stk top) {
 		<span id='popElsePrintf'>printf("Popped value = %d.", temp);</span>
 		<span id='freeTemp'>free(temp);</span>
 	}
-	<span id='popFunReturn'>return top;</span>
 }
 					</pre>
 				</div>
@@ -202,7 +202,7 @@ stk pop(stk top) {
 				<div class='col-xs-12 padding0 box-border text-center' id='animationDiv'>
 					<div class='col-xs-12 padding0 margin-top-20 text-center'>
 						<div class='col-xs-offset-3 col-xs-6 padding0' id='btnsDiv'>
-							<div class='col-sm-4'>
+							<div class='col-sm-3 padding-col0'>
 								<div class='col-sm-12 padding-col0' id='pushDiv'>
 									<div class="input-group">
 										<input class="form-control input-sm" id="pushText"
@@ -214,7 +214,7 @@ stk pop(stk top) {
 								</div>
 							</div>
 							
-							<div class="col-sm-offset-1 col-sm-2" style='padding: 0;'>
+							<div class="col-sm-offset-1 col-sm-1 padding-col0" style='padding: 0;'>
 								<div class='col-sm-12' id='popDiv'>
 									<div class="input-group">
 										<span class="input-group-addon input-group-addon-border">
@@ -224,7 +224,17 @@ stk pop(stk top) {
 								</div>
 							</div>
 							
-							<div class="col-sm-offset-1 col-sm-2" style='padding: 0;'>
+							<div class="col-sm-offset-1 col-sm-1 padding-col0" style='padding: 0;'>
+								<div class='col-sm-12' id='displayStackDiv'>
+									<div class="input-group">
+										<span class="input-group-addon input-group-addon-border">
+											<span id="displayBtn" class="btn btn-sm btn-success">Display</span>
+										</span>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-sm-offset-2 col-sm-2 padding-col0" style='padding: 0;'>
 								<div class='col-sm-12' id='clearStackDiv'>
 									<div class="input-group">
 										<span class="input-group-addon input-group-addon-border">
