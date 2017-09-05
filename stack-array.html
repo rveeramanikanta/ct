@@ -154,12 +154,13 @@ $(document).ready(function() {
 		<div id="mainContent" class='col-xs-12 margin-top-20 padding0'>
 			<div class='col-xs-3'>
 				<div class='col-xs-12 box-border'>
-					<pre class='creampretab4' id='stackInit' style="margin-top: 10px;">#define STACK_MAX_SIZE 10
+					<pre class='creampretab4' id='stackInit' style="margin-top: 10px;">#include &lt;stdio.h&gt;
+#define STACK_MAX_SIZE 10
 						
 int arr[STACK_MAX_SIZE];
 int top = -1;
 					</pre>
-					<pre class='creampretab4' id='mainFun' style="margin-top: 10px;">#include &lt;stdio.h&gt;
+					<pre class='creampretab4' id='mainFun' style="margin-top: 10px;">
 void main() {<span id='mainCalls'></span>
 
 }</pre>
@@ -189,6 +190,18 @@ void pop() {
 	}
 }
 					</pre>
+					<pre class='creampretab4 hide' id='displayFun'>
+void display() {
+	<span id='displayIf'>if (<span id='displayIfCndtn'>top == -1</span>) {</span>
+		<span id='displayIfPrintf'>printf("Stack is empty.");</span>
+	} else {
+		<span id='displayElsePrintf'>printf("Elements are : ");</span>
+		int index;
+		<span id='displayForBlk'>for (index = top; index >= 0; index--) {
+			<span id='displayForPrintf'>printf("%d ", arr[index]);</span>
+		}</span>
+	}
+}</pre>
 				</div>
 
 				<div id="outputDiv" class='opacity00 col-xs-12 padding0 margin-top-20'>
@@ -203,7 +216,7 @@ void pop() {
 				<div class='col-xs-12 padding0 box-border text-center' id='animationDiv'>
 					<div class='col-xs-12 padding0 margin-top-20 text-center'>
 						<div class='col-xs-offset-3 col-xs-6 padding0' id='btnsDiv'>
-							<div class='col-sm-4'>
+							<div class='col-sm-3 padding-col0'>
 								<div class='col-sm-12 padding-col0' id='pushDiv'>
 									<div class="input-group">
 										<input class="form-control input-sm" id="pushText"
@@ -215,7 +228,7 @@ void pop() {
 								</div>
 							</div>
 							
-							<div class="col-sm-offset-1 col-sm-2" style='padding: 0;'>
+							<div class="col-sm-offset-1 col-sm-1 padding-col0">
 								<div class='col-sm-12' id='popDiv'>
 									<div class="input-group">
 										<span class="input-group-addon input-group-addon-border">
@@ -225,7 +238,17 @@ void pop() {
 								</div>
 							</div>
 							
-							<div class="col-sm-offset-1 col-sm-2" style='padding: 0;'>
+							<div class="col-sm-offset-1 col-sm-1 padding-col0">
+								<div class='col-sm-12' id='displayStackDiv'>
+									<div class="input-group">
+										<span class="input-group-addon input-group-addon-border">
+											<span id="displayBtn" class="btn btn-sm btn-success">Display</span>
+										</span>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-sm-offset-2 col-sm-2 padding-col0">
 								<div class='col-sm-12' id='clearStackDiv'>
 									<div class="input-group">
 										<span class="input-group-addon input-group-addon-border">

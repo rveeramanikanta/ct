@@ -99,7 +99,6 @@ var stackLinkedListReady = function() {
 								typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
 									getIntrojsStep("#animationDiv", "", "", "hide");
 									$(".introjs-nextbutton").removeClass("introjs-disabled").show();
-									//$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='evalutePushCndtn()'>Next &#8594;</a>");
 								});
 							});
 						});
@@ -136,6 +135,68 @@ var stackLinkedListReady = function() {
 			});
 			break;
 			
+		case "displayFun":
+			$(".introjs-nextbutton").hide();
+			$(".introjs-helperLayer").one("transitionend", function() {
+				var text = "By using this code we are <y>print</y> the elements in the <y>stack</y>.";
+				typing(".introjs-tooltiptext", text, function() {
+					arrow("#displayTopToTemp", "#displayTopToTemp", function() {
+						$("#displayTopToTemp").addClass("background-color-yellow");
+						$(".introjs-tooltiptext").append("<ul><li></li></ul>");
+						$("#popTempDec").addClass("background-color-yellow");
+						var top = stackArr.length == 0 ? "NULL" : (addArr[0]);
+						var text = "Here, we create a new temporary <y>struct</y> variable <y>temp</y> and pointing to <y>top</y>.<br/>" 
+							+ "i.e. <b style='font-family: monospace;'>temp</b> = <b style='font-family: monospace;'>" 
+							+ top + "</b>";
+						typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
+							if (stackArr.length == 0) {
+								$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='evaluateDisplayIfCndtn()'>Next &#8594;</a>");
+							} else {
+								getIntrojsStep("#animationDiv", "", "", "hide");
+								$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+							}
+							//$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='evalutePopCndtn()'>Next &#8594;</a>");
+						});
+					});
+				});
+			});
+			break;
+		
+		case "displayBlk1":
+			$(".introjs-nextbutton").hide();
+			introjs.refresh();
+			$(".introjs-helperLayer").one("transitionend", function() {
+				$(".introjs-tooltiptext").append("<ul></ul>");
+				evaluateDisplayIfCndtn();
+			});
+			break;
+			
+		case "displayBlk2":
+			$(".introjs-nextbutton").hide();
+			introjs.refresh();
+			$(".introjs-helperLayer").one("transitionend", function() {
+				var text = "This <y>while-loop</y> is repeated untill the <y>temp</y> value is not <y>NULL</y>.";
+				typing(".introjs-tooltiptext", text, function() {
+					$(".introjs-tooltiptext").append("<ul><li></li></ul>");
+					var text = "It prints the <y>info</y> value of each <y>member</y>.";
+					typing($(".introjs-tooltiptext ul li:last"), text, function() {
+						$(".introjs-tooltiptext ul").append("<li></li>");
+						var text = "Next traverse the <y>temp</y> to the <y>next node</y>.";
+						typing($(".introjs-tooltiptext ul li:last"), text, function() {
+							getIntrojsStep("#animationDiv", "", "", "hide");
+							$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+							var text = "";
+							for (var i = stackArr.length - 1; i >= 0; i--) {
+								text = text + stackArr[i] + " "; 
+							}
+							$("#output").append("<div class='opacity00' style='display:inline-block;'>" + text + "<br/></div>");
+						});
+					});
+					
+				});
+			});
+			break;
+			
 		case "animationDiv":
 			$(".introjs-nextbutton").hide();
 			$("#btnsDiv .btn").attr("disabled", "disabled");
@@ -163,6 +224,9 @@ var stackLinkedListReady = function() {
 			$(".introjs-helperLayer").one("transitionend", function() {
 				$(".output-console-body").scrollTo($("#output > div:last-child()"), 500, function() {
 					$("#output > div:last-child()").removeClass("opacity00").hide().fadeIn(1000, function() {
+						if($("#output > div:last-child() *").length == 1) {
+							$("#output").append("<br/>");
+						}
 						doPlayPause();
 					});
 				});
@@ -200,12 +264,12 @@ function evalutePushCndtn() {
 		$(".introjs-tooltiptext ul").append("<li></li>");
 		var text = "System successfully allocate (release) the heap memory for <y>struct</y> variable <y>temp</y> " 
 			+ "<b style='font-family: monospace;'>i.e. " 
-			+ (Init_Linked_List_Address - 4) + "</b>";
+			+ (addArr[0]) + "</b>";
 		typing($(".introjs-tooltiptext ul li:last-child"), text, function() {
 			$(".introjs-tooltiptext ul li:last-child").append("<br/><span id='tooltipCndtn' style='font-family: monospace; font-weight: bold;'>" 
 				+ "<span id='tooltipTemp'>temp</span> == NULL</span>");
 			travel("#pushIfCndtn", "#tooltipCndtn", function () {
-				flip("#tooltipTemp", (Init_Linked_List_Address - 4), function() {
+				flip("#tooltipTemp", (addArr[0]), function() {
 					$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
 					var text = "Evaluates to <r>false</r>, the control enters into the <y>else-block</y>.";
 					typing($(".introjs-tooltiptext ul li:last-child > div:last"), text, function() {
@@ -260,7 +324,7 @@ function evalutePopCndtn() {
 		$(".introjs-tooltiptext ul").append("<li><span id='tooltipCndtn' style='font-family: monospace; font-weight: bold;'>" 
 				+ "<span id='tooltipTop'>top</span> == NULL</span></li>");
 		travel("#popIfCndtn", "#tooltipCndtn", function () {
-			flip("#tooltipTop", stackArr.length == 0 ? "NULL" : (Init_Linked_List_Address + 4), function() {
+			flip("#tooltipTop", stackArr.length == 0 ? "NULL" : (addArr[0]), function() {
 				var text;
 				if (stackArr.length == 0) {
 					text = "Evaluates to <y>true</y>, the control enters into the <y>if-block</y>.";
@@ -295,6 +359,7 @@ function popIfBlk() {
 
 function popElseBlk() {
 	$(".user-btn").remove();
+	addArr.splice(0, 1);
 	$("#popIfCndtn").removeClass("background-color-yellow").removeAttr("style");
 	arrow("#popIf", "#popTempInit", function() {
 		$("#popTempInit").addClass("background-color-yellow");
@@ -327,3 +392,54 @@ function popElseBlk() {
 		});
 	});
 }
+
+function evaluateDisplayIfCndtn() {
+	$(".user-btn").remove();
+	$("#displayTopToTemp").removeClass("background-color-yellow");
+	arrow("#displayTopToTemp", "#displayIf", function() {
+		$(".introjs-tooltiptext ul").append("<li><span id='tooltipCndtn' style='font-weight: bold; font-family: monospace;'>" 
+				+ "<span id='tooltipTemp'>temp</span> == NULL</span></li>");
+		travel("#displayIfCndtn", "#tooltipCndtn", function() {
+			var temp = stackArr.length == 0 ? "NULL" : (addArr[0]);
+			flip("#tooltipTemp" , temp, function() {
+				var text;
+				if (stackArr.length == 0) {
+					text = "Evaluates to <y>true</y>, the control enters into the <y>if-block</y>.";
+				} else {
+					text = "Evaluates to <r>false</r>, the control enters into the <y>else-block</y>.";
+				}
+				$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
+				typing($(".introjs-tooltiptext ul li:last-child div:last"), text, function() {
+					if (stackArr.length == 0) {
+						$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='displayIfPart()'>Next &#8594;</a>");
+					} else {
+						$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='displayElsePart()'>Next &#8594;</a>");
+					}
+				});
+			});
+		});
+	});
+}
+
+function displayIfPart() {
+	$(".user-btn").remove();
+	$("#displayIfCndtn").removeAttr("style");
+	arrow("#displayIf", "#displayIfPrintf", function() {
+		$("#displayIfPrintf").addClass("background-color-yellow");
+		$("#output").append("<div class='opacity00'>Stack is empty.</div>");
+		getIntrojsStep("#outputDiv", "", "", "hide");
+		$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+	});
+}
+
+function displayElsePart() {
+	$(".user-btn").remove();
+	$("#displayIfCndtn").removeAttr("style");
+	arrow("#displayIf", "#displayElsePrintf", function() {
+		$("#displayElsePrintf").addClass("background-color-yellow");
+		$("#output").append("<div class='opacity00' style='display: inline-block;'>Elements are : </div>");
+		getIntrojsStep("#outputDiv", "", "", "hide");
+		$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+	});
+}
+

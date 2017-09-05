@@ -9,7 +9,7 @@ var LINKED_LIST_NEXT_HEIGHT = 30;
 var LINKED_LIST_INSERT_X = 250;
 var LINKED_LIST_INSERT_Y = 50;
 
-var LINKED_LIST_ELEMS_PER_LINE = 5;
+var LINKED_LIST_ELEMS_PER_LINE = 2;
 var LINKED_LIST_ELEM_SPACING = 150;
 var LINKED_LIST_LINE_SPACING = 150;
 
@@ -27,6 +27,7 @@ var PUSH_ELEMENT_X = 120;
 var PUSH_ELEMENT_Y = 30;
 
 var Init_Linked_List_Address = parseInt(new Date().getTime().toString().slice(-4));
+var addArr = [];
 var SIZE = 32;
 var stackArr = [];
 
@@ -62,6 +63,10 @@ StackLL.prototype.addControls = function() {
 	this.popButton = document.getElementById("popBtn");
 	this.popButton.onclick = this.popCallback.bind(this);
 	this.controls.push(this.popButton);
+	
+	this.displayButton = document.getElementById("displayBtn");
+	this.displayButton.onclick = this.displayCallback.bind(this);
+	this.controls.push(this.displayButton);
 
 	this.clearButton = document.getElementById("clearBtn");
 	this.clearButton.onclick = this.clearCallback.bind(this);
@@ -95,8 +100,8 @@ StackLL.prototype.setup = function() {
 	this.topLabelID = this.nextIndex++;
 	this.addID = this.nextIndex++;
 	this.tempLabelID = this.nextIndex++;
-	//this.topValID = this.nextIndex++;
-
+	this.highlightID = this.nextIndex++;
+	
 	this.arrayData = new Array(SIZE);
 	this.top = 0;
 	this.leftoverLabelID = this.nextIndex++;
@@ -123,8 +128,6 @@ StackLL.prototype.resetLinkedListPositions = function() {
 		this.cmd("Move", this.linkedListNextField[i], nextX + LINKED_LIST_ELEM_WIDTH - 20, nextY);
 		this.cmd("Move", this.linkedListAddID[i], nextX + 10, nextY + 25);
 	}
-	/*this.cmd("Move", this.tempLabelID, (((0) % LINKED_LIST_ELEM_SPACING + LINKED_LIST_START_X) + 5),
-			(Math.floor((0) / LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_LINE_SPACING + LINKED_LIST_START_Y) - 25);*/
 }
 
 StackLL.prototype.reset = function() {
@@ -141,6 +144,8 @@ StackLL.prototype.pushCallback = function(event) {
 	var pushedValue = this.pushField.value;
 	pushedValue = this.normalizeNumber(pushedValue, 4);
 	if (this.pushField.value != "" && !isNaN(pushedValue)) {
+		$("#pushFun").removeClass("hide");
+		$("#popFun, #displayFun").addClass("hide");
 		var pushVal = this.pushField.value;
 		stackArr.push(pushVal);
 		this.pushField.value = "";
@@ -149,13 +154,27 @@ StackLL.prototype.pushCallback = function(event) {
 }
 
 StackLL.prototype.popCallback = function(event) {
+	this.pushField.value = "";
 	if($(".btn").is(":disabled")) {
 		return;
 	}
+	$("#popFun").removeClass("hide");
+	$("#pushFun, #displayFun").addClass("hide");
 	this.implementAction(this.pop.bind(this), "");
 }
 
+StackLL.prototype.displayCallback = function(event) {
+	this.pushField.value = "";
+	if($(".btn").is(":disabled")) {
+		return;
+	}
+	$("#displayFun").removeClass("hide");
+	$("#pushFun, #popFun").addClass("hide");
+	this.implementAction(this.display.bind(this), "");
+}
+
 StackLL.prototype.clearCallback = function(event) {
+	this.pushField.value = "";
 	if($(".btn").is(":disabled")) {
 		return;
 	}
@@ -169,8 +188,6 @@ StackLL.prototype.push = function(elemToPush) {
 	var labPushValID = this.nextIndex++;
 	var labPushAddressID = this.nextIndex++;
 	this.arrayData[this.top] = elemToPush;
-	this.cmd("Hide", "#popFun");
-	this.cmd("Show", "#pushFun");
 	$("#mainCalls *").removeAttr("id");
 	$("#mainCalls").append("<div>\t<span id='lastCall'>push(" + elemToPush + ");</span></div>");
 	this.cmd("SetNextIntroStep", "#lastCall", "", "", "hide");
@@ -191,8 +208,8 @@ StackLL.prototype.push = function(elemToPush) {
 	
 	this.cmd("SetBackgroundColor", this.linkedListDataField[this.top], "#89f289");
 	this.cmd("SetBackgroundColor", this.linkedListNextField[this.top], "#f3f3bc");
-	this.cmd("CreateLabel", this.linkedListAddID[this.top], Init_Linked_List_Address, LINKED_LIST_INSERT_X + 10, LINKED_LIST_INSERT_Y + 25);
-	
+	addArr.splice(0, 0, Init_Linked_List_Address);
+	this.cmd("CreateLabel", this.linkedListAddID[this.top], addArr[0], LINKED_LIST_INSERT_X + 10, LINKED_LIST_INSERT_Y + 25);
 	this.cmd("Step");
 	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#pushBlk1", "", "right");
@@ -233,11 +250,11 @@ StackLL.prototype.push = function(elemToPush) {
 	
 	this.cmd("SetText", this.topID, "");
 	this.cmd("Delete", this.tempLabelID);
-	this.cmd("CreateLabel", this.addID, Init_Linked_List_Address, nextX, nextY);
+	this.cmd("CreateLabel", this.addID, addArr[0], nextX, nextY);
 	this.cmd("Move", this.addID, TOP_POS_X, TOP_POS_Y);
 	this.cmd("Step");
 	this.cmd("Step");
-	this.cmd("SetText", this.topID, Init_Linked_List_Address);
+	this.cmd("SetText", this.topID, addArr[0]);
 	this.cmd("Delete", this.addID);
 	this.cmd("SetNextIntroStep", "#outputDiv", "", "right", "hide");
 	this.cmd("RunNextIntroStep");
@@ -245,18 +262,14 @@ StackLL.prototype.push = function(elemToPush) {
 	this.cmd("SetNextIntroStep", "#btnsDiv", "", "left");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
-	Init_Linked_List_Address = Init_Linked_List_Address + 4;
+	Init_Linked_List_Address = Init_Linked_List_Address + (Math.floor(Math.random() * 11) + 10);
 	return this.commands;
 }
 
 StackLL.prototype.pop = function(ignored) {
 	this.commands = new Array();
-
 	var labPopID = this.nextIndex++;
 	var labPopValID = this.nextIndex++;
-	
-	this.cmd("Hide", "#pushFun");
-	this.cmd("Show", "#popFun");
 	$("#mainCalls *").removeAttr("id");
 	$("#mainCalls").append("<div>\t<span id='lastCall'>pop();</span></div>");
 	this.cmd("SetNextIntroStep", "#lastCall", "", "", "hide");
@@ -280,10 +293,10 @@ StackLL.prototype.pop = function(ignored) {
 			var nextX = (1) % LINKED_LIST_ELEMS_PER_LINE * LINKED_LIST_ELEM_SPACING + LINKED_LIST_START_X + 10;
 			var nextY = Math.floor((0) / LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_LINE_SPACING + LINKED_LIST_START_Y + 25;
 			this.cmd("SetText", this.topID, "");
-			this.cmd("CreateLabel", this.addID, Init_Linked_List_Address, nextX, nextY);
+			this.cmd("CreateLabel", this.addID, addArr[1], nextX, nextY);
 			this.cmd("Move", this.addID, TOP_POS_X, TOP_POS_Y);
 			this.cmd("Step");
-			this.cmd("SetText", this.topID, Init_Linked_List_Address);
+			this.cmd("SetText", this.topID, addArr[1]);
 			this.cmd("Step");
 			this.cmd("Delete", this.addID);
 		}
@@ -317,6 +330,68 @@ StackLL.prototype.pop = function(ignored) {
 		this.cmd("SetForegroundColor", this.topID, "#880000");
 	}
 	
+	this.cmd("SetNextIntroStep", "#btnsDiv", "", "left");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
+	return this.commands;
+}
+
+StackLL.prototype.display = function() {
+	this.commands = new Array();
+	$("#mainCalls *").removeAttr("id");
+	$("#mainCalls").append("<div>\t<span id='lastCall'>display();</span></div>");
+	this.cmd("SetNextIntroStep", "#lastCall", "", "", "hide");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
+	this.cmd("Step");
+	this.cmd("SetNextIntroStep", "#displayFun", "", "right", "");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
+	
+	if (this.top != 0) {
+		var tempXPos = ((0) % LINKED_LIST_ELEM_SPACING + LINKED_LIST_START_X) + 5;
+		var tempYPos = (Math.floor((0) / LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_LINE_SPACING + LINKED_LIST_START_Y) - 25;
+		this.cmd("CreateLabel", this.tempLabelID, "temp", tempXPos, tempYPos);
+		this.cmd("Step");
+		this.cmd("SetNextIntroStep", "#displayBlk1", "", "right");
+		this.cmd("RunNextIntroStep");
+		this.cmd("Step");
+		this.cmd("SetNextIntroStep", "#displayBlk2", "", "right");
+		this.cmd("RunNextIntroStep");
+		this.cmd("Step");
+		var nextX;
+		var nextY;
+		for (var i = this.top - 1; i >= 0; i--) {
+			nextX = (this.top - 1 - i) % LINKED_LIST_ELEMS_PER_LINE
+					* LINKED_LIST_ELEM_SPACING + LINKED_LIST_START_X;
+			nextY = Math.floor((this.top - 1 - i) / LINKED_LIST_ELEMS_PER_LINE)
+					* LINKED_LIST_LINE_SPACING + LINKED_LIST_START_Y;
+			this.cmd("Step");
+			this.cmd("CreateHighlightCircle", this.highlightID, "#0000FF", nextX + 10, nextY + 25);
+			this.cmd("Step");
+			this.cmd("SetHighlight", this.linkedListAddID[i], 1);
+			this.cmd("Step");
+			if (i != 0) {
+				nextX = (this.top - 1 - i + 1) % LINKED_LIST_ELEMS_PER_LINE
+						* LINKED_LIST_ELEM_SPACING + LINKED_LIST_START_X;
+				nextY = Math.floor((this.top - 1 - i + 1) / LINKED_LIST_ELEMS_PER_LINE)
+						* LINKED_LIST_LINE_SPACING + LINKED_LIST_START_Y;
+				
+				this.cmd("Move", this.tempLabelID, nextX, nextY - 25);
+				this.cmd("Step");
+			}
+			this.cmd("Delete", this.highlightID);
+			this.cmd("SetHighlight", this.linkedListAddID[i], 0);
+		}
+		this.cmd("CreateHighlightCircle", this.highlightID, "#0000FF", nextX + 50, nextY);
+		this.cmd("Step");
+		this.cmd("Delete", this.highlightID);
+		this.cmd("Step");
+		this.cmd("Delete", this.tempLabelID);
+		this.cmd("SetNextIntroStep", "#outputDiv", "", "", "hide");
+		this.cmd("RunNextIntroStep");
+	}
+	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#btnsDiv", "", "left");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
@@ -385,14 +460,15 @@ function arrow(fromId, toId, callBackFunction) {
 		'top': l.top,
 		'left': l.left - ($('.arrow').width() * 1.5)
 	});
-	
 	var l1 = $(fromId).offset();
 	var l2 = $(toId).offset();
-	  
 	var topLength = parseInt($(".arrow").css("top")) + (l2.top - l1.top);
 	var leftLength = parseInt($(".arrow").css("left")) + (l2.left - l1.left);
-	  
-	TweenMax.to(".arrow", 1, { top : topLength, left : leftLength, onComplete: function() {
+	var time = 0;
+	if (fromId !== toId) {
+		time = 1;
+	}
+	TweenMax.to(".arrow", time, { top : topLength, left : leftLength, onComplete: function() {
 		if (typeof callBackFunction === "function") {
 			callBackFunction();
 		}

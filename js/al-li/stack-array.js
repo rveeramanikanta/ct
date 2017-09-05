@@ -80,6 +80,10 @@ StackArray.prototype.addControls = function() {
 	this.popButton = document.getElementById("popBtn");
 	this.popButton.onclick = this.popCallback.bind(this);
 	this.controls.push(this.popButton);
+	
+	this.displayButton = document.getElementById("displayBtn");
+	this.displayButton.onclick = this.displayCallback.bind(this);
+	this.controls.push(this.displayButton);
 
 	this.clearButton = document.getElementById("clearBtn");
 	this.clearButton.onclick = this.clearCallback.bind(this);
@@ -177,6 +181,8 @@ StackArray.prototype.pushCallback = function(event) {
 	var pushedValue = this.pushField.value;
 	pushedValue = this.normalizeNumber(pushedValue, 4);
 	if (pushedValue != "" && !isNaN(pushedValue)) {
+		$("#pushFun").removeClass("hide");
+		$("#popFun, #displayFun").addClass("hide");
 		var pushVal = this.pushField.value;
 		arr.push(pushVal);
 		this.implementAction(this.push.bind(this), pushVal);
@@ -188,13 +194,26 @@ StackArray.prototype.popCallback = function(event) {
 		return;
 	}
 	this.pushField.value = "";
+	$("#popFun").removeClass("hide");
+	$("#pushFun, #displayFun").addClass("hide");
 	this.implementAction(this.pop.bind(this), "");
+}
+
+StackArray.prototype.displayCallback = function(event) {
+	if($(".btn").is(":disabled")) {
+		return;
+	}
+	this.pushField.value = "";
+	$("#displayFun").removeClass("hide");
+	$("#pushFun, #popFun").addClass("hide");
+	this.implementAction(this.display.bind(this), "");
 }
 
 StackArray.prototype.clearCallback = function(event) {
 	if($(".btn").is(":disabled")) {
 		return;
 	}
+	this.pushField.value = "";
 	this.implementAction(this.clearData.bind(this), "");
 }
 
@@ -206,12 +225,9 @@ StackArray.prototype.clearData = function(ignored) {
 
 StackArray.prototype.push = function(elemToPush) {
 	this.commands = new Array();
-
 	var labPushID = this.nextIndex++;
 	var labPushValID = this.nextIndex++;
 	this.arrayData[this.top + 1] = elemToPush;
-	this.cmd("Hide", "#popFun");
-	this.cmd("Show", "#pushFun");
 	$("#mainCalls *").removeAttr("id");
 	$("#mainCalls").append("<div>\t<span id='lastCall'>push(" + elemToPush + ");</span></div>");
 	this.cmd("SetNextIntroStep", "#lastCall", "", "", "hide");
@@ -276,8 +292,6 @@ StackArray.prototype.pop = function(ignored) {
 	this.commands = new Array();
 	var labPopID = this.nextIndex++;
 	var labPopValID = this.nextIndex++;
-	this.cmd("Hide", "#pushFun");
-	this.cmd("Show", "#popFun");
 	$("#mainCalls *").removeAttr("id");
 	$("#mainCalls").append("<div>\t<span id='lastCall'>pop();</span></div>");
 	this.cmd("SetNextIntroStep", "#lastCall", "", "", "hide");
@@ -286,21 +300,15 @@ StackArray.prototype.pop = function(ignored) {
 	this.cmd("SetNextIntroStep", "#popFun", "", "right", "");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
-	
 	if (this.top >= 0) {
 		this.cmd("SetText", this.leftoverLabelID, "");
 		this.cmd("CreateLabel", labPopID, "Popped Value: ", PUSH_LABEL_X, PUSH_LABEL_Y);
-
 		this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF", TOP_POS_X + 15, TOP_POS_Y);
 		this.cmd("Step");
-
 		var xpos = (this.top % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		var ypos = Math.floor(this.top / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
-
 		this.cmd("Move", this.highlight1ID, xpos + 1, ypos - ARRAY_ELEM_HEIGHT + 4);
-
 		this.cmd("Step");
-
 		this.cmd("CreateLabel", labPopValID, this.arrayData[this.top], xpos, ypos);
 		this.cmd("Settext", this.arrayID[this.top], "");
 		this.cmd("Move", labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
@@ -308,21 +316,17 @@ StackArray.prototype.pop = function(ignored) {
 		this.cmd("Delete", labPopValID)
 		this.cmd("Delete", labPopID);
 		this.cmd("Delete", this.highlight1ID);
-		
 		this.cmd("SetHighlight", this.dummyID[10], 1);
 		this.cmd("Step");
 		this.top = this.top - 1;
 		this.cmd("SetText", this.topID, this.top)
 		this.cmd("Step");
 		this.cmd("SetHighlight", this.dummyID[10], 0);
-		
-		
 		if (this.top == -1) {
 			this.cmd("Connect", this.dummyID[11], this.lineID[0]);
 		} else {
 			this.cmd("Connect", this.dummyID[11], this.dummyID[this.top]);
 		}
-		
 		this.cmd("DISCONNECT", this.dummyID[11], this.lineID[1]);
 		this.cmd("DISCONNECT", this.dummyID[11], this.dummyID[this.top + 1]);
 		this.cmd("SetText", this.leftoverLabelID, "Popped Value: " 
@@ -339,17 +343,56 @@ StackArray.prototype.pop = function(ignored) {
 	return this.commands;
 }
 
+StackArray.prototype.display = function() {
+	this.commands = new Array();
+	$("#mainCalls *").removeAttr("id");
+	$("#mainCalls").append("<div>\t<span id='lastCall'>display();</span></div>");
+	this.cmd("SetNextIntroStep", "#lastCall", "", "", "hide");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
+	this.cmd("SetNextIntroStep", "#displayFun", "", "right", "");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
+	if (this.top != -1) {
+		this.cmd("Step");
+		this.cmd("SetNextIntroStep", "#displayForBlk", "", "right");
+		this.cmd("RunNextIntroStep");
+		this.cmd("Step");
+		var xpos = (this.top % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		var ypos = Math.floor(this.top / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y - ARRAY_ELEM_HEIGHT;
+		for (var i = this.top; i > 0; i--) {
+			//this.cmd("SetHighlight", this.arrayLabelID[i], 1);
+			this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF", xpos, ypos);
+			xpos = xpos - ARRAY_ELEM_WIDTH;
+			this.cmd("Move", this.highlight1ID, xpos, ypos);
+			this.cmd("Step");
+			this.cmd("Step");
+			this.cmd("Delete", this.highlight1ID);
+			//this.cmd("SetHighlight", this.arrayLabelID[i], 0);
+		}
+		//this.cmd("SetHighlight", this.arrayLabelID[0], 1);
+		//this.cmd("Step");
+		//this.cmd("SetHighlight", this.arrayLabelID[0], 0);
+		//this.cmd("Move", this.highlight1ID, xpos + 1, ypos - ARRAY_ELEM_HEIGHT + 4);
+		this.cmd("SetNextIntroStep", "#outputDiv", "", "", "hide");
+		this.cmd("RunNextIntroStep");
+		this.cmd("Step");
+	}
+	this.cmd("Step");
+	this.cmd("SetNextIntroStep", "#btnsDiv", "", "left");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
+	return this.commands;
+}
+
 StackArray.prototype.clearAll = function() {
 	arr = [];
 	topVal = -1;
-	
 	this.commands = new Array();
-	
 	this.cmd("SetNextIntroStep", "#animationDiv", "", "left");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
 	this.cmd("Step");
-	
 	for (var i = 0; i <= this.top; i++) {
 		this.cmd("SetText", this.arrayID[i], "");
 		this.cmd("disconnect", this.dummyID[11], this.dummyID[i]);

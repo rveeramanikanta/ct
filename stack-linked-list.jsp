@@ -188,6 +188,20 @@ stk pop() {
 	}
 }
 					</pre>
+					<pre class='creampretab4 hide' id='displayFun' style="margin-top: 10px;">
+void display() {
+	<span id='displayTopToTemp'>stk temp = top;</span>
+	<span id='displayBlk1'><span id='displayIf'>if(<span id='displayIfCndtn'>temp == NULL</span>) {</span>
+		<span id='displayIfPrintf'>printf("Stack is empty.");</span> 
+	} else {
+		<span id='displayElsePrintf'>printf("Elements are : ");</span>
+		<span id='displayBlk2'><span id='displayWhile'>while(<span id='displayWhileCndtn'>temp != NULL</span>) {</span>
+			<span id='displayWhilePrintf'>printf("%d ", temp -&gt; info);</span>
+			<span id='displayTempNext'>temp = temp -&gt; next;</span>
+		}</span>
+	}</span>
+}
+</pre>
 				</div>
 				
 				<div id="outputDiv" class='opacity00 col-xs-12 padding0 margin-top-20'>
@@ -214,7 +228,7 @@ stk pop() {
 								</div>
 							</div>
 							
-							<div class="col-sm-offset-1 col-sm-1 padding-col0" style='padding: 0;'>
+							<div class="col-sm-offset-1 col-sm-1 padding-col0">
 								<div class='col-sm-12' id='popDiv'>
 									<div class="input-group">
 										<span class="input-group-addon input-group-addon-border">
@@ -224,7 +238,7 @@ stk pop() {
 								</div>
 							</div>
 							
-							<div class="col-sm-offset-1 col-sm-1 padding-col0" style='padding: 0;'>
+							<div class="col-sm-offset-1 col-sm-1 padding-col0">
 								<div class='col-sm-12' id='displayStackDiv'>
 									<div class="input-group">
 										<span class="input-group-addon input-group-addon-border">
@@ -234,7 +248,7 @@ stk pop() {
 								</div>
 							</div>
 							
-							<div class="col-sm-offset-2 col-sm-2 padding-col0" style='padding: 0;'>
+							<div class="col-sm-offset-2 col-sm-2 padding-col0">
 								<div class='col-sm-12' id='clearStackDiv'>
 									<div class="input-group">
 										<span class="input-group-addon input-group-addon-border">
