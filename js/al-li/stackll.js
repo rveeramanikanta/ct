@@ -87,9 +87,7 @@ StackLL.prototype.disableUI = function(event) {
 
 StackLL.prototype.setup = function() {
 	this.linkedListDataField = new Array(SIZE);
-	this.linkedListDataField = new Array(SIZE);
 	this.linkedListNextField = new Array(SIZE);
-	
 	this.linkedListAddID = new Array(SIZE);
 	for (var i = 0; i < SIZE; i++) {
 		this.linkedListDataField[i] = this.nextIndex++;
@@ -198,14 +196,11 @@ StackLL.prototype.push = function(elemToPush) {
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
 	this.cmd("SetText", this.leftoverLabelID, "");
-	
 	this.cmd("CreateLabel", this.tempLabelID, "temp", LINKED_LIST_INSERT_X + 10, LINKED_LIST_INSERT_Y - 25);
 	this.cmd("CreateRectangle", this.linkedListDataField[this.top], "", LINKED_LIST_ELEM_WIDTH,
 			LINKED_LIST_ELEM_HEIGHT, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
-	
 	this.cmd("CreateRectangle", this.linkedListNextField[this.top], "", LINKED_LIST_NEXT_WIDTH,
 			LINKED_LIST_NEXT_HEIGHT, LINKED_LIST_INSERT_X + LINKED_LIST_ELEM_WIDTH - 20, LINKED_LIST_INSERT_Y);
-	
 	this.cmd("SetBackgroundColor", this.linkedListDataField[this.top], "#89f289");
 	this.cmd("SetBackgroundColor", this.linkedListNextField[this.top], "#f3f3bc");
 	addArr.splice(0, 0, Init_Linked_List_Address);

@@ -111,7 +111,6 @@ QueueLL.prototype.disableUI = function(event) {
 }
 
 QueueLL.prototype.setup = function() {
-
 	this.linkedListElemID = new Array(SIZE);
 	this.linkedListAddID = new Array(SIZE);
 	for (var i = 0; i < SIZE; i++) {
@@ -182,14 +181,12 @@ QueueLL.prototype.clearCallback = function(event) {
 
 QueueLL.prototype.enqueue = function(elemToPush) {
 	this.commands = new Array();
-
 	this.arrayData[this.top] = elemToPush;
 	this.cmd("Hide", "#dequeueFun");
 	this.cmd("Show", "#enqueueFun");
 	this.cmd("SetNextIntroStep", "#enqueueFun", "", "right", "");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
-
 	this.cmd("SetText", this.leftoverLabelID, "");
 	for (var i = this.top; i > 0; i--) {
 		this.arrayData[i] = this.arrayData[i - 1];
@@ -233,10 +230,6 @@ QueueLL.prototype.enqueue = function(elemToPush) {
 		this.cmd("SetNull", this.tailID, 0);
 		this.cmd("connect", this.headID, this.linkedListElemID[this.top]);
 		this.cmd("Step");
-		/*this.cmd("Step");
-		this.cmd("SetNextIntroStep", "#queueElsePrintfBlk", "", "right", "");
-		this.cmd("RunNextIntroStep");*/
-		//this.cmd("connect", this.tailID, this.linkedListElemID[this.top]);
 	} else {
 		this.cmd("SetNull", this.linkedListElemID[1], 0);
 		this.cmd("Connect", this.linkedListElemID[1], this.linkedListElemID[0]);
@@ -251,7 +244,6 @@ QueueLL.prototype.enqueue = function(elemToPush) {
 	this.cmd("Step");
 	this.cmd("Connect", this.tailID, this.linkedListElemID[0]);
 	this.cmd("Step");
-	/*rearVal = this.top;*/
 	this.top = this.top + 1;
 	this.resetLinkedListPositions();
 	this.cmd("Delete", labPushID);

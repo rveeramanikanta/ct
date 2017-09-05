@@ -1,33 +1,9 @@
-﻿// Copyright 2011 David Galles, University of San Francisco. All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without modification, are
-// permitted provided that the following conditions are met:
-//
-// 1. Redistributions of source code must retain the above copyright notice, this list of
-// conditions and the following disclaimer.
-//
-// 2. Redistributions in binary form must reproduce the above copyright notice, this list
-// of conditions and the following disclaimer in the documentation and/or other materials
-// provided with the distribution.
-//
-// THIS SOFTWARE IS PROVIDED BY <COPYRIGHT HOLDER> ``AS IS'' AND ANY EXPRESS OR IMPLIED
-// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-// FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> OR
-// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-// ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-// NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-// ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// The views and conclusions contained in the software and documentation are those of the
-// authors and should not be interpreted as representing official policies, either expressed
-// or implied, of the University of San Francisco
-
-var LINKED_LIST_START_X = 100;
+﻿var LINKED_LIST_START_X = 100;
 var LINKED_LIST_START_Y = 200;
 var LINKED_LIST_ELEM_WIDTH = 70;
 var LINKED_LIST_ELEM_HEIGHT = 30;
+var LINKED_LIST_NEXT_WIDTH = 40;
+var LINKED_LIST_NEXT_HEIGHT = 30;
 
 var LINKED_LIST_INSERT_X = 250;
 var LINKED_LIST_INSERT_Y = 50;
@@ -41,7 +17,7 @@ var TOP_POS_Y = 100;
 var TOP_LABEL_X = 130;
 var TOP_LABEL_Y = 100;
 
-var TOP_ELEM_WIDTH = 30;
+var TOP_ELEM_WIDTH = 50;
 var TOP_ELEM_HEIGHT = 30;
 
 var TAIL_POS_X = 180;
@@ -52,12 +28,13 @@ var PUSH_LABEL_Y = 30;
 var PUSH_ELEMENT_X = 120;
 var PUSH_ELEMENT_Y = 30;
 
+var Init_Linked_List_Address = parseInt(new Date().getTime().toString().slice(-4));
+var addArr = [];
 var rearVal = 0;
 var frontVal = 0;
-var arr = [];
+var queue = [];
 
 var SIZE = 32;
-var Init_Linked_List_Address = 1203;
 
 function QueueLL(am, w, h) {
 	this.init(am, w, h);
@@ -92,6 +69,10 @@ QueueLL.prototype.addControls = function() {
 	this.dequeueButton = document.getElementById("dequeueBtn");
 	this.dequeueButton.onclick = this.dequeueCallback.bind(this);
 	this.controls.push(this.dequeueButton);
+	
+	this.displayButton = document.getElementById("displayBtn");
+	this.displayButton.onclick = this.displayCallback.bind(this);
+	this.controls.push(this.displayButton);
 
 	this.clearButton = document.getElementById("clearBtn");
 	this.clearButton.onclick = this.clearCallback.bind(this);
@@ -111,40 +92,33 @@ QueueLL.prototype.disableUI = function(event) {
 }
 
 QueueLL.prototype.setup = function() {
-
-	this.linkedListElemID = new Array(SIZE);
+	this.linkedListDataField = new Array(SIZE);
+	this.linkedListNextField = new Array(SIZE);
 	this.linkedListAddID = new Array(SIZE);
 	for (var i = 0; i < SIZE; i++) {
-		this.linkedListElemID[i] = this.nextIndex++;
+		this.linkedListDataField[i] = this.nextIndex++;
+		this.linkedListNextField[i] = this.nextIndex++;
 		this.linkedListAddID[i] = this.nextIndex++;
 	}
 	this.headID = this.nextIndex++;
 	this.headLabelID = this.nextIndex++;
-
 	this.tailID = this.nextIndex++;
 	this.tailLabelID = this.nextIndex++;
-
+	this.tempLabelID = this.nextIndex++;
 	this.arrayData = new Array(SIZE);
 	this.top = 0;
 	this.leftoverLabelID = this.nextIndex++;
-
 	this.cmd("CreateLabel", this.headLabelID, "front", TOP_LABEL_X, TOP_LABEL_Y);
-	this.cmd("CreateRectangle", this.headID, "", TOP_ELEM_WIDTH,
+	this.cmd("CreateRectangle", this.headID, "NULL", TOP_ELEM_WIDTH,
 			TOP_ELEM_HEIGHT, TOP_POS_X, TOP_POS_Y);
-	this.cmd("SetNull", this.headID, 1);
-
 	this.cmd("CreateLabel", this.tailLabelID, "rear", TAIL_LABEL_X,
 			this.tail_label_y);
-	this.cmd("CreateRectangle", this.tailID, "", TOP_ELEM_WIDTH,
+	this.cmd("CreateRectangle", this.tailID, "NULL", TOP_ELEM_WIDTH,
 			TOP_ELEM_HEIGHT, TAIL_POS_X, this.tail_pos_y);
-	this.cmd("SetNull", this.tailID, 1);
-
 	this.cmd("CreateLabel", this.leftoverLabelID, "", 5, PUSH_LABEL_Y, 0);
-
 	this.animationManager.StartNewAnimation(this.commands);
 	this.animationManager.skipForward();
 	this.animationManager.clearHistory();
-
 }
 
 QueueLL.prototype.resetLinkedListPositions = function() {
@@ -153,7 +127,8 @@ QueueLL.prototype.resetLinkedListPositions = function() {
 				* LINKED_LIST_ELEM_SPACING + LINKED_LIST_START_X;
 		var nextY = Math.floor((this.top - 1 - i) / LINKED_LIST_ELEMS_PER_LINE)
 				* LINKED_LIST_LINE_SPACING + LINKED_LIST_START_Y;
-		this.cmd("Move", this.linkedListElemID[i], nextX, nextY);
+		this.cmd("Move", this.linkedListDataField[i], nextX, nextY);
+		this.cmd("Move", this.linkedListNextField[i], nextX + LINKED_LIST_ELEM_WIDTH - 20, nextY);
 		this.cmd("Move", this.linkedListAddID[i], nextX + 10, nextY + 25);
 	}
 }
@@ -167,13 +142,23 @@ QueueLL.prototype.reset = function() {
 QueueLL.prototype.enqueueCallback = function(event) {
 	if (this.top < SIZE && this.enqueueField.value != "") {
 		var pushVal = this.enqueueField.value;
-		arr.push(pushVal);
+		queue.push(pushVal);
+		$("#enqueueFun").removeClass("hide");
+		$("#dequeueFun, #displayFun").addClass("hide");
 		this.implementAction(this.enqueue.bind(this), pushVal);
 	}
 }
 
 QueueLL.prototype.dequeueCallback = function(event) {
+	$("#dequeueFun").removeClass("hide");
+	$("#enqueueFun, #displayFun").addClass("hide");
 	this.implementAction(this.dequeue.bind(this), "");
+}
+
+QueueLL.prototype.displayCallback = function(event) {
+	$("#displayFun").removeClass("hide");
+	$("#enqueueFun, #dequeueFun").addClass("hide");
+	this.implementAction(this.display.bind(this), "");
 }
 
 QueueLL.prototype.clearCallback = function(event) {
@@ -182,47 +167,56 @@ QueueLL.prototype.clearCallback = function(event) {
 
 QueueLL.prototype.enqueue = function(elemToPush) {
 	this.commands = new Array();
-
 	this.arrayData[this.top] = elemToPush;
-	this.cmd("Hide", "#dequeueFun");
-	this.cmd("Show", "#enqueueFun");
+	$("#mainCalls *").removeAttr("id");
+	$("#mainCalls").append("<div>\t<span id='lastCall'>enqueue(" + elemToPush + ");</span></div>");
+	this.cmd("SetNextIntroStep", "#lastCall", "", "", "hide");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
+	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#enqueueFun", "", "right", "");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
-
 	this.cmd("SetText", this.leftoverLabelID, "");
 	for (var i = this.top; i > 0; i--) {
 		this.arrayData[i] = this.arrayData[i - 1];
-		this.linkedListElemID[i] = this.linkedListElemID[i - 1];
+		this.linkedListDataField[i] = this.linkedListDataField[i - 1];
+		this.linkedListNextField[i] = this.linkedListNextField[i - 1];
 		this.linkedListAddID[i] = this.linkedListAddID[i - 1];
 	}
 	this.arrayData[0] = elemToPush;
-	this.linkedListElemID[0] = this.nextIndex++;
+	this.linkedListDataField[0] = this.nextIndex++;
+	this.linkedListNextField[0] = this.nextIndex++;
 	this.linkedListAddID[0] = this.nextIndex++;
-
 	var labPushID = this.nextIndex++;
 	var labPushValID = this.nextIndex++;
-	this.cmd("CreateLinkedList", this.linkedListElemID[0], "",
-			LINKED_LIST_ELEM_WIDTH, LINKED_LIST_ELEM_HEIGHT,
-			LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y, 0.25, 0, 1, 1);
 	
-	this.cmd("CreateLabel", this.linkedListAddID[0], Init_Linked_List_Address, LINKED_LIST_INSERT_X + 10, LINKED_LIST_INSERT_Y + 25);
-	Init_Linked_List_Address = Init_Linked_List_Address + 10;
-
-	this.cmd("SetNull", this.linkedListElemID[0], 1);
+	this.cmd("CreateLabel", this.tempLabelID, "temp", LINKED_LIST_INSERT_X + 10, LINKED_LIST_INSERT_Y - 25);
+	addArr.splice(0, 0, Init_Linked_List_Address);
+	this.cmd("CreateLabel", this.linkedListAddID[this.top], addArr[0], LINKED_LIST_INSERT_X + 10, LINKED_LIST_INSERT_Y + 25);
+	this.cmd("CreateRectangle", this.linkedListDataField[0], "", 
+			LINKED_LIST_ELEM_WIDTH, LINKED_LIST_ELEM_HEIGHT, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
+	this.cmd("CreateRectangle", this.linkedListNextField[0], "", 
+			LINKED_LIST_NEXT_WIDTH, LINKED_LIST_NEXT_HEIGHT, LINKED_LIST_INSERT_X + LINKED_LIST_ELEM_WIDTH - 20, LINKED_LIST_INSERT_Y);
+	this.cmd("SetBackgroundColor", this.linkedListDataField[this.top], "#89f289");
+	this.cmd("SetBackgroundColor", this.linkedListNextField[this.top], "#f3f3bc");
+	this.cmd("Step");
+	this.cmd("Step");
+	this.cmd("SetNextIntroStep", "#enqueueBlk1", "", "right", "");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
 	this.cmd("CreateLabel", labPushID, "Enqueuing Value: ", PUSH_LABEL_X,
 			PUSH_LABEL_Y);
 	this.cmd("CreateLabel", labPushValID, elemToPush, PUSH_ELEMENT_X,
 			PUSH_ELEMENT_Y);
-
 	this.cmd("Step");
-
 	this.cmd("Move", labPushValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
-
 	this.cmd("Step");
-	this.cmd("SetText", this.linkedListElemID[0], elemToPush);
+	this.cmd("SetText", this.linkedListDataField[0], elemToPush);
+	this.cmd("SetText", this.linkedListNextField[0], "NULL");
+	this.cmd("Delete", labPushID);
 	this.cmd("Delete", labPushValID);
-	this.cmd("Step");
+	
 	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#enqueueElseIfElseBlk", "", "right", "");
 	this.cmd("RunNextIntroStep");
@@ -231,17 +225,13 @@ QueueLL.prototype.enqueue = function(elemToPush) {
 	if (this.top == 0) {
 		this.cmd("SetNull", this.headID, 0);
 		this.cmd("SetNull", this.tailID, 0);
-		this.cmd("connect", this.headID, this.linkedListElemID[this.top]);
+		this.cmd("connect", this.headID, this.linkedListDataField[this.top]);
 		this.cmd("Step");
-		/*this.cmd("Step");
-		this.cmd("SetNextIntroStep", "#queueElsePrintfBlk", "", "right", "");
-		this.cmd("RunNextIntroStep");*/
-		//this.cmd("connect", this.tailID, this.linkedListElemID[this.top]);
 	} else {
-		this.cmd("SetNull", this.linkedListElemID[1], 0);
-		this.cmd("Connect", this.linkedListElemID[1], this.linkedListElemID[0]);
+		this.cmd("SetNull", this.linkedListDataField[1], 0);
+		this.cmd("Connect", this.linkedListDataField[1], this.linkedListDataField[0]);
 		this.cmd("Step");
-		this.cmd("Disconnect", this.tailID, this.linkedListElemID[1]);
+		this.cmd("Disconnect", this.tailID, this.linkedListDataField[1]);
 	}
 	
 	this.cmd("Step");
@@ -249,12 +239,10 @@ QueueLL.prototype.enqueue = function(elemToPush) {
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
 	this.cmd("Step");
-	this.cmd("Connect", this.tailID, this.linkedListElemID[0]);
+	this.cmd("Connect", this.tailID, this.linkedListDataField[0]);
 	this.cmd("Step");
-	/*rearVal = this.top;*/
 	this.top = this.top + 1;
 	this.resetLinkedListPositions();
-	this.cmd("Delete", labPushID);
 	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#outputDiv", "", "right", "hide");
 	this.cmd("Step");
@@ -262,24 +250,25 @@ QueueLL.prototype.enqueue = function(elemToPush) {
 	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#btnsDiv", "", "left");
 	this.cmd("RunNextIntroStep");
+	Init_Linked_List_Address = Init_Linked_List_Address + (Math.floor(Math.random() * 11) + 10);
 	return this.commands;
 }
 
 QueueLL.prototype.dequeue = function(ignored) {
 	this.commands = new Array();
-	
-	this.cmd("Hide", "#enqueueFun");
-	this.cmd("Show", "#dequeueFun");
+	$("#mainCalls *").removeAttr("id");
+	$("#mainCalls").append("<div>\t<span id='lastCall'>dequeue();</span></div>");
+	this.cmd("SetNextIntroStep", "#lastCall", "", "", "hide");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
+	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#dequeueFun", "", "right", "");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
-
 	if (this.top > 0) {
 		var labPopID = this.nextIndex++;
 		var labPopValID = this.nextIndex++;
-	
 		this.cmd("SetText", this.leftoverLabelID, "");
-	
 		this.cmd("CreateLabel", labPopID, "Dequeued Value: ", PUSH_LABEL_X,
 				PUSH_LABEL_Y);
 		this.cmd("CreateLabel", labPopValID, this.arrayData[this.top - 1],
@@ -287,15 +276,15 @@ QueueLL.prototype.dequeue = function(ignored) {
 	
 		this.cmd("Move", labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 		this.cmd("Step");
-		this.cmd("Disconnect", this.headID, this.linkedListElemID[this.top - 1]);
+		this.cmd("Disconnect", this.headID, this.linkedListDataField[this.top - 1]);
 	
 		if (this.top == 1) {
 			this.cmd("SetNull", this.headID, 1);
 			this.cmd("SetNull", this.tailID, 1);
 			this.cmd("Disconnect", this.tailID,
-							this.linkedListElemID[this.top - 1]);
+							this.linkedListDataField[this.top - 1]);
 		} else {
-			this.cmd("Connect", this.headID, this.linkedListElemID[this.top - 2]);
+			this.cmd("Connect", this.headID, this.linkedListDataField[this.top - 2]);
 		}
 		this.cmd("Step");
 		
@@ -304,7 +293,7 @@ QueueLL.prototype.dequeue = function(ignored) {
 		this.cmd("RunNextIntroStep");
 		this.cmd("Step");
 		this.cmd("Step");
-		this.cmd("Delete", this.linkedListElemID[this.top - 1]);
+		this.cmd("Delete", this.linkedListDataField[this.top - 1]);
 		this.cmd("Delete", this.linkedListAddID[this.top - 1]);
 		this.top = this.top - 1;
 		this.resetLinkedListPositions();
@@ -331,6 +320,20 @@ QueueLL.prototype.dequeue = function(ignored) {
 	return this.commands;
 }
 
+QueueLL.prototype.display = function() {
+	this.commands = new Array();
+	$("#mainCalls *").removeAttr("id");
+	$("#mainCalls").append("<div>\t<span id='lastCall'>display();</span></div>");
+	this.cmd("SetNextIntroStep", "#lastCall", "", "", "hide");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
+	this.cmd("Step");
+	this.cmd("SetNextIntroStep", "#displayFun", "", "right", "");
+	this.cmd("RunNextIntroStep");
+	
+	
+	return this.commands;
+}
 QueueLL.prototype.clearAll = function() {
 	this.commands = new Array();
 	arr = [];
@@ -341,7 +344,7 @@ QueueLL.prototype.clearAll = function() {
 	this.cmd("Step");
 	this.cmd("Step");
 	for (var i = 0; i < this.top; i++) {
-		this.cmd("Delete", this.linkedListElemID[i]);
+		this.cmd("Delete", this.linkedListDataField[i]);
 		this.cmd("Delete", this.linkedListAddID[i]);
 	}
 	this.top = 0;
@@ -379,5 +382,28 @@ function flip(selector, val, callBackFunction) {
 				callBackFunction();
 			}
 		}});
+	}});
+}
+
+function arrow(fromId, toId, callBackFunction) {
+	$(".arrow").remove();
+	$('body').append("<i class='fa fa-arrow-right arrow faa-passing animated' style='position: relative; z-index: 10000000;'></i>");
+	var l = $(fromId).offset();
+	$('.arrow').offset({
+		'top': l.top,
+		'left': l.left - ($('.arrow').width() * 1.5)
+	});
+	var l1 = $(fromId).offset();
+	var l2 = $(toId).offset();
+	var topLength = parseInt($(".arrow").css("top")) + (l2.top - l1.top);
+	var leftLength = parseInt($(".arrow").css("left")) + (l2.left - l1.left);
+	var time = 0;
+	if (fromId !== toId) {
+		time = 1;
+	}
+	TweenMax.to(".arrow", time, { top : topLength, left : leftLength, onComplete: function() {
+		if (typeof callBackFunction === "function") {
+			callBackFunction();
+		}
 	}});
 }

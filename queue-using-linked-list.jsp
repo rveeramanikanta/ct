@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="/css/jquery-ui.css">
 <link rel="stylesheet" href="/css/introjs.css">
 <link rel="stylesheet" href="/css/introjs-ct.css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
 
 <script type="text/javascript" src="/js/jquery-latest.js"></script>
 <script type="text/javascript" src="/js/intro.js"></script>
@@ -35,7 +36,7 @@
 <script type="text/javascript" src="js/an-li/object-manager.js"></script>
 <script type="text/javascript" src="js/an-li/animation-main.js"></script>
 <script type="text/javascript" src="js/al-li/algorithm.js"></script>
-<script type="text/javascript" src="js/al-li/circular-queue-linked-list.js"></script>
+<script type="text/javascript" src="js/al-li/QueueLL.js"></script>
 <style type="text/css">
 .padding0 {
 	padding: 0;
@@ -130,9 +131,9 @@ r {
 	background-color: green;
 }
 
-.introjs-tooltiptext > ul > li {
+/* .introjs-tooltiptext > ul > li {
 	font-family: monospace;
-}
+} */
 </style>
 
 <script type="text/javascript">
@@ -151,7 +152,9 @@ $(document).ready(function() {
 		<div id="mainContent" class='col-xs-12 margin-top-20 padding0'>
 			<div class='col-xs-3'>
 				<div class='col-xs-12 box-border'>
-					<pre class='creampretab4' id='queueInit' style="margin-top: 10px;">struct queue {
+					<pre class='creampretab4' id='queueInit' style="margin-top: 10px;">#include &lt;stdio.h&gt;
+
+struct queue {
 	int info;
 	struct queue *next;
 };
@@ -159,26 +162,30 @@ $(document).ready(function() {
 typedef struct queue *Q;
 Q front = NULL, rear = NULL;
 </pre>
+<pre class='creampretab4' id='mainFun' style="margin-top: 10px;">
+void main() {<span id='mainCalls'></span>
+
+}</pre>
 
 					<pre class='creampretab4 hide' id='enqueueFun'
 						style="margin-top: 10px;">
 void enqueue(<span id='enqueueParameter'>int element</span>) {
 	<span id='enqueueTempDef'>Q temp = NULL;</span>
 	<span id='initTemp'>temp = (Q)malloc(sizeof(struct queue));</span>
-	if(<span id='enqueueFirstIfCndtn'>temp == NULL</span>) {
+	<span id='enqueueBlk1'><span id='enqueueIf'>if(<span id='enqueueFirstIfCndtn'>temp == NULL</span>) {</span>
 		<span id='enqueueIfPrintf'>printf("Queue is overflow.");</span>
 	} else {
 		<span id='tempInfoInit'>temp -> info = element;</span>
 		<span id='tempNextInit'>temp -> next = NULL;</span>
 		
-		<span id='enqueueElseIfElseBlk'>if(<span id='enqueueSecondIfCndtn'>front == NULL</span>) {
+		<span id='enqueueElseIfElseBlk'><span id='enqueueElseIf'>if(<span id='enqueueSecondIfCndtn'>front == NULL</span>) {</span>
 			<span id='enqueueFrontInit'>front = temp;</span>
 		} else {
 			<span id='enqueueRearNextInit'>rear -> next = temp;</span>
 		}</span>
 		<span id='queueElsePrintfBlk'><span id='enqueueRearInit'>rear = temp;</span>
 		<span id='enqueueElsePrintf'>printf("Successfully inserted.");</span></span>
-	}
+	}</span>
 }
 					</pre>
 
@@ -213,9 +220,9 @@ void dequeue() {
 			<div class='col-xs-9'>
 				<div class='col-xs-12 padding0 box-border text-center' id='animationDiv'>
 					<div class='col-xs-12 padding0 margin-top-20 text-center'>
-						<div class='col-xs-offset-3 col-xs-6 padding0' id='btnsDiv'>
-							<div class='col-sm-4'>
-								<div class='col-sm-12 padding-col0' id='pushDiv'>
+						<div class='col-xs-offset-2 col-xs-8 padding0' id='btnsDiv'>
+							<div class='col-sm-3'>
+								<div class='col-sm-12 padding-col0' id='enqueueDiv'>
 									<div class="input-group">
 										<input class="form-control input-sm" id="enqueueText"
 											name="enqueue" type="text" /> <span
@@ -226,8 +233,8 @@ void dequeue() {
 								</div>
 							</div>
 							
-							<div class="col-sm-offset-1 col-sm-2" style='padding: 0;'>
-								<div class='col-sm-12' id='popDiv'>
+							<div class="col-sm-offset-1 col-sm-2 padding-col0">
+								<div class='col-sm-12' id='dequeueDiv'>
 									<div class="input-group">
 										<span class="input-group-addon input-group-addon-border">
 											<span id="dequeueBtn" class="btn btn-sm btn-success">dequeue</span>
@@ -236,8 +243,18 @@ void dequeue() {
 								</div>
 							</div>
 							
-							<div class="col-sm-offset-1 col-sm-2" style='padding: 0;'>
-								<div class='col-sm-12' id='clearStackDiv'>
+							<div class="col-sm-offset-1 col-sm-2 padding-col0">
+								<div class='col-sm-12' id='displayDiv'>
+									<div class="input-group">
+										<span class="input-group-addon input-group-addon-border">
+											<span id="displayBtn" class="btn btn-sm btn-success">display</span>
+										</span>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-sm-offset-1 col-sm-2 padding-col0">
+								<div class='col-sm-12' id='clearQueueDiv'>
 									<div class="input-group">
 										<span class="input-group-addon input-group-addon-border">
 											<span id="clearBtn" class="btn btn-sm btn-success">Clear Queue</span>

@@ -360,20 +360,23 @@ StackArray.prototype.display = function() {
 		this.cmd("Step");
 		var xpos = (this.top % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		var ypos = Math.floor(this.top / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y - ARRAY_ELEM_HEIGHT;
-		for (var i = this.top; i > 0; i--) {
-			//this.cmd("SetHighlight", this.arrayLabelID[i], 1);
+		
+		if (this.top == 0) {
 			this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF", xpos, ypos);
-			xpos = xpos - ARRAY_ELEM_WIDTH;
-			this.cmd("Move", this.highlight1ID, xpos, ypos);
 			this.cmd("Step");
 			this.cmd("Step");
 			this.cmd("Delete", this.highlight1ID);
-			//this.cmd("SetHighlight", this.arrayLabelID[i], 0);
+		} else {
+			for (var i = this.top; i > 0; i--) {
+				this.cmd("CreateHighlightCircle", this.highlight1ID, "#0000FF", xpos, ypos);
+				xpos = xpos - ARRAY_ELEM_WIDTH;
+				this.cmd("Move", this.highlight1ID, xpos, ypos);
+				this.cmd("Step");
+				this.cmd("Step");
+				this.cmd("Delete", this.highlight1ID);
+			}
 		}
-		//this.cmd("SetHighlight", this.arrayLabelID[0], 1);
-		//this.cmd("Step");
-		//this.cmd("SetHighlight", this.arrayLabelID[0], 0);
-		//this.cmd("Move", this.highlight1ID, xpos + 1, ypos - ARRAY_ELEM_HEIGHT + 4);
+		
 		this.cmd("SetNextIntroStep", "#outputDiv", "", "", "hide");
 		this.cmd("RunNextIntroStep");
 		this.cmd("Step");

@@ -74,7 +74,6 @@ var stackLinkedListReady = function() {
 		case "lastCall":
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
-				console.log("lastcall");
 				setTimeout(function() {
 					doPlayPause();
 				}, 200);

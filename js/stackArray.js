@@ -295,7 +295,6 @@ function initIntroJS() {
 	$('.introjs-bullets').hide();
 }
 
-
 function pushStep1() {
 	$(".user-btn").remove();
 	$("#pushIfCndtn").css("background-color", "");

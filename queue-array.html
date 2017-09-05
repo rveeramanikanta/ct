@@ -199,6 +199,18 @@ void dequeue() {
 	}
 }
 					</pre>
+					<pre class='creampretab4 hide' id='displayFun'>
+void display() {
+	<span id='displayIf'>if (<span id='displayIfCndtn'>rear == -1</span>) {</span>
+		<span id='displayIfPrintf'>printf("Queue is empty.");</span>
+	} else {
+		<span id='displayElsePrintf'>printf("Elements are : ");</span>
+		int index;
+		<span id='displayForBlk'>for (index = front; index <= rear; index++) {
+			<span id='displayForPrintf'>printf("%d ", queue[index]);</span>
+		}</span>
+	}
+}</pre>
 				</div>
 
 				<div id="outputDiv" class='opacity00 col-xs-12 padding0 margin-top-20'>
@@ -212,9 +224,9 @@ void dequeue() {
 			<div class='col-xs-9'>
 				<div class='col-xs-12 padding0 box-border text-center' id='animationDiv'>
 					<div class='col-xs-12 padding0 margin-top-20 text-center'>
-						<div class='col-xs-offset-3 col-xs-6 padding0' id='btnsDiv'>
-							<div class='col-sm-4'>
-								<div class='col-sm-12 padding-col0' id='pushDiv'>
+						<div class='col-xs-offset-2 col-xs-8 padding0' id='btnsDiv'>
+							<div class='col-sm-3'>
+								<div class='col-sm-12 padding-col0' id='enqueueDiv'>
 									<div class="input-group">
 										<input class="form-control input-sm" id="enqueueText"
 											name="enqueue" type="text" /> <span
@@ -225,8 +237,8 @@ void dequeue() {
 								</div>
 							</div>
 							
-							<div class="col-sm-offset-1 col-sm-2" style='padding: 0;'>
-								<div class='col-sm-12' id='popDiv'>
+							<div class="col-sm-offset-1 col-sm-2 padding-col0">
+								<div class='col-sm-12' id='dequeueDiv'>
 									<div class="input-group">
 										<span class="input-group-addon input-group-addon-border">
 											<span id="dequeueBtn" class="btn btn-sm btn-success">dequeue</span>
@@ -235,8 +247,18 @@ void dequeue() {
 								</div>
 							</div>
 							
-							<div class="col-sm-offset-1 col-sm-2" style='padding: 0;'>
-								<div class='col-sm-12' id='clearStackDiv'>
+							<div class="col-sm-offset-1 col-sm-2 padding-col0">
+								<div class='col-sm-12' id='displayDiv'>
+									<div class="input-group">
+										<span class="input-group-addon input-group-addon-border">
+											<span id="displayBtn" class="btn btn-sm btn-success">Display</span>
+										</span>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-sm-offset-1 col-sm-2 padding-col0">
+								<div class='col-sm-12' id='clearQueueDiv'>
 									<div class="input-group">
 										<span class="input-group-addon input-group-addon-border">
 											<span id="clearBtn" class="btn btn-sm btn-success">Clear Queue</span>
