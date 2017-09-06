@@ -9,7 +9,7 @@ var LINKED_LIST_NEXT_HEIGHT = 30;
 var LINKED_LIST_INSERT_X = 250;
 var LINKED_LIST_INSERT_Y = 50;
 
-var LINKED_LIST_ELEMS_PER_LINE = 2;
+var LINKED_LIST_ELEMS_PER_LINE = 5;
 var LINKED_LIST_ELEM_SPACING = 150;
 var LINKED_LIST_LINE_SPACING = 150;
 
@@ -172,7 +172,6 @@ StackLL.prototype.displayCallback = function(event) {
 }
 
 StackLL.prototype.clearCallback = function(event) {
-	this.pushField.value = "";
 	if($(".btn").is(":disabled")) {
 		return;
 	}

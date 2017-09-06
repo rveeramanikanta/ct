@@ -193,11 +193,11 @@ void enqueue(<span id='enqueueParameter'>int element</span>) {
 						style="margin-top: 10px;">
 void dequeue() {
 	<span id='dequeueTempDef'>Q temp = NULL;</span>
-	if(<span id='dequeuIfCndtn'>front == NULL</span>) {
+	<span id='dequeueIf'>if(<span id='dequeuIfCndtn'>front == NULL</span>) {</span>
 		<span id='dequeueIfPrintf'>printf("Queue is underflow.");</span>
 	} else {
 		<span id='dequeueTempInit'>temp = front;</span>
-		<span id='dequeueElseIfElseBlk'>if (<span id='dequeuElseIfCndtn'>front == rear</span>) {
+		<span id='dequeueElseIfElseBlk'><span id='dequeueElseIf'>if (<span id='dequeuElseIfCndtn'>front == rear</span>) {</span>
 			<span id='dequeuRearFrontInit'>front = rear = NULL;</span>
 		} else {
 			<span id='dequeueFrontInit'>front = front -> next;</span>

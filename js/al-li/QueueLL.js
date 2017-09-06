@@ -8,9 +8,9 @@ var LINKED_LIST_NEXT_HEIGHT = 30;
 var LINKED_LIST_INSERT_X = 250;
 var LINKED_LIST_INSERT_Y = 50;
 
-var LINKED_LIST_ELEMS_PER_LINE = 8;
-var LINKED_LIST_ELEM_SPACING = 100;
-var LINKED_LIST_LINE_SPACING = 100;
+var LINKED_LIST_ELEMS_PER_LINE = 2;
+var LINKED_LIST_ELEM_SPACING = 150;
+var LINKED_LIST_LINE_SPACING = 150;
 
 var TOP_POS_X = 180;
 var TOP_POS_Y = 100;
@@ -104,7 +104,8 @@ QueueLL.prototype.setup = function() {
 	this.headLabelID = this.nextIndex++;
 	this.tailID = this.nextIndex++;
 	this.tailLabelID = this.nextIndex++;
-	this.tempLabelID = this.nextIndex++;
+	//this.tempLabelID = this.nextIndex++;
+	this.addID = this.nextIndex++;
 	this.arrayData = new Array(SIZE);
 	this.top = 0;
 	this.leftoverLabelID = this.nextIndex++;
@@ -140,6 +141,9 @@ QueueLL.prototype.reset = function() {
 }
 
 QueueLL.prototype.enqueueCallback = function(event) {
+	if($(".btn").is(":disabled")) {
+		return;
+	}
 	if (this.top < SIZE && this.enqueueField.value != "") {
 		var pushVal = this.enqueueField.value;
 		queue.push(pushVal);
@@ -150,18 +154,27 @@ QueueLL.prototype.enqueueCallback = function(event) {
 }
 
 QueueLL.prototype.dequeueCallback = function(event) {
+	if($(".btn").is(":disabled")) {
+		return;
+	}
 	$("#dequeueFun").removeClass("hide");
 	$("#enqueueFun, #displayFun").addClass("hide");
 	this.implementAction(this.dequeue.bind(this), "");
 }
 
 QueueLL.prototype.displayCallback = function(event) {
+	if($(".btn").is(":disabled")) {
+		return;
+	}
 	$("#displayFun").removeClass("hide");
 	$("#enqueueFun, #dequeueFun").addClass("hide");
 	this.implementAction(this.display.bind(this), "");
 }
 
 QueueLL.prototype.clearCallback = function(event) {
+	if($(".btn").is(":disabled")) {
+		return;
+	}
 	this.implementAction(this.clearAll.bind(this), "");
 }
 
@@ -190,17 +203,17 @@ QueueLL.prototype.enqueue = function(elemToPush) {
 	this.linkedListAddID[0] = this.nextIndex++;
 	var labPushID = this.nextIndex++;
 	var labPushValID = this.nextIndex++;
+	this.tempLabelID = this.nextIndex++;
 	
 	this.cmd("CreateLabel", this.tempLabelID, "temp", LINKED_LIST_INSERT_X + 10, LINKED_LIST_INSERT_Y - 25);
 	addArr.splice(0, 0, Init_Linked_List_Address);
-	this.cmd("CreateLabel", this.linkedListAddID[this.top], addArr[0], LINKED_LIST_INSERT_X + 10, LINKED_LIST_INSERT_Y + 25);
+	this.cmd("CreateLabel", this.linkedListAddID[0], addArr[0], LINKED_LIST_INSERT_X + 10, LINKED_LIST_INSERT_Y + 25);
 	this.cmd("CreateRectangle", this.linkedListDataField[0], "", 
 			LINKED_LIST_ELEM_WIDTH, LINKED_LIST_ELEM_HEIGHT, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
 	this.cmd("CreateRectangle", this.linkedListNextField[0], "", 
 			LINKED_LIST_NEXT_WIDTH, LINKED_LIST_NEXT_HEIGHT, LINKED_LIST_INSERT_X + LINKED_LIST_ELEM_WIDTH - 20, LINKED_LIST_INSERT_Y);
-	this.cmd("SetBackgroundColor", this.linkedListDataField[this.top], "#89f289");
-	this.cmd("SetBackgroundColor", this.linkedListNextField[this.top], "#f3f3bc");
-	this.cmd("Step");
+	this.cmd("SetBackgroundColor", this.linkedListDataField[0], "#89f289");
+	this.cmd("SetBackgroundColor", this.linkedListNextField[0], "#f3f3bc");
 	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#enqueueBlk1", "", "right", "");
 	this.cmd("RunNextIntroStep");
@@ -221,29 +234,48 @@ QueueLL.prototype.enqueue = function(elemToPush) {
 	this.cmd("SetNextIntroStep", "#enqueueElseIfElseBlk", "", "right", "");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
-
+	
 	if (this.top == 0) {
-		this.cmd("SetNull", this.headID, 0);
-		this.cmd("SetNull", this.tailID, 0);
 		this.cmd("connect", this.headID, this.linkedListDataField[this.top]);
 		this.cmd("Step");
-	} else {
-		this.cmd("SetNull", this.linkedListDataField[1], 0);
-		this.cmd("Connect", this.linkedListDataField[1], this.linkedListDataField[0]);
+		this.cmd("CreateLabel", this.addID, addArr[0], LINKED_LIST_INSERT_X + 10, LINKED_LIST_INSERT_Y + 25);
+		this.cmd("Move", this.addID, TOP_POS_X, TOP_POS_Y);
+		this.cmd("SetText", this.headID, "");
 		this.cmd("Step");
-		this.cmd("Disconnect", this.tailID, this.linkedListDataField[1]);
+		this.cmd("Step");
+		this.cmd("SetText", this.headID, addArr[0]);
+		this.cmd("Delete", this.addID);
+	} else {
+		this.cmd("SetText", this.linkedListNextField[1], "");
+		this.cmd("Connect", this.linkedListNextField[1], this.linkedListDataField[0]);
+		this.cmd("Step");
+		//this.cmd("Disconnect", this.tailID, this.linkedListDataField[1]);
 	}
+	
 	
 	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#queueElsePrintfBlk", "", "right", "");
 	this.cmd("RunNextIntroStep");
 	this.cmd("Step");
 	this.cmd("Step");
+	this.cmd("Disconnect", this.tailID, this.linkedListDataField[1]);
 	this.cmd("Connect", this.tailID, this.linkedListDataField[0]);
 	this.cmd("Step");
 	this.top = this.top + 1;
+	var nextX = (this.top - 1) % LINKED_LIST_ELEMS_PER_LINE * LINKED_LIST_ELEM_SPACING + LINKED_LIST_START_X;
+	var nextY = Math.floor((this.top - 1) / LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_LINE_SPACING + LINKED_LIST_START_Y;
+	this.cmd("Move", this.tempLabelID, nextX, nextY - 25);
 	this.resetLinkedListPositions();
 	this.cmd("Step");
+	this.cmd("CreateLabel", this.addID, addArr[0], nextX, nextY + 25);
+	this.cmd("Move", this.addID, TAIL_POS_X, this.tail_pos_y);
+	this.cmd("SetText", this.tailID, "");
+	this.cmd("Step");
+	this.cmd("Step");
+	this.cmd("SetText", this.tailID, addArr[0]);
+	this.cmd("Delete", this.addID);
+	
+	this.cmd("Delete", this.tempLabelID);
 	this.cmd("SetNextIntroStep", "#outputDiv", "", "right", "hide");
 	this.cmd("Step");
 	this.cmd("RunNextIntroStep");
@@ -268,6 +300,28 @@ QueueLL.prototype.dequeue = function(ignored) {
 	if (this.top > 0) {
 		var labPopID = this.nextIndex++;
 		var labPopValID = this.nextIndex++;
+		this.tempLabelID = this.nextIndex++;
+		var nextX = (0) % LINKED_LIST_ELEMS_PER_LINE * LINKED_LIST_ELEM_SPACING + LINKED_LIST_START_X;
+		var nextY = Math.floor((0) / LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_LINE_SPACING + LINKED_LIST_START_Y;
+		this.cmd("CreateLabel", this.tempLabelID, "temp", nextX, nextY - 25);
+		this.cmd("Step");
+		this.cmd("SetNextIntroStep", "#dequeueElseIfElseBlk", "", "right", "");
+		this.cmd("RunNextIntroStep");
+		this.cmd("Step");
+		this.cmd("Disconnect", this.headID, this.linkedListDataField[this.top - 1]);
+		if (this.top == 1) {
+			/*this.cmd("SetNull", this.headID, 1);
+			this.cmd("SetNull", this.tailID, 1);*/
+			this.cmd("Disconnect", this.tailID,
+							this.linkedListDataField[this.top - 1]);
+		} else {
+			this.cmd("Connect", this.headID, this.linkedListDataField[this.top - 2]);
+		}
+		this.cmd("Step");
+		this.cmd("SetNextIntroStep", "#dequeueElsePrintfBlk", "", "right", "");
+		this.cmd("RunNextIntroStep");
+		this.cmd("Step");
+		this.cmd("Step");
 		this.cmd("SetText", this.leftoverLabelID, "");
 		this.cmd("CreateLabel", labPopID, "Dequeued Value: ", PUSH_LABEL_X,
 				PUSH_LABEL_Y);
@@ -276,24 +330,10 @@ QueueLL.prototype.dequeue = function(ignored) {
 	
 		this.cmd("Move", labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 		this.cmd("Step");
-		this.cmd("Disconnect", this.headID, this.linkedListDataField[this.top - 1]);
-	
-		if (this.top == 1) {
-			this.cmd("SetNull", this.headID, 1);
-			this.cmd("SetNull", this.tailID, 1);
-			this.cmd("Disconnect", this.tailID,
-							this.linkedListDataField[this.top - 1]);
-		} else {
-			this.cmd("Connect", this.headID, this.linkedListDataField[this.top - 2]);
-		}
 		this.cmd("Step");
-		
-		this.cmd("Step");
-		this.cmd("SetNextIntroStep", "#dequeueElsePrintfBlk", "", "right", "");
-		this.cmd("RunNextIntroStep");
-		this.cmd("Step");
-		this.cmd("Step");
+		this.cmd("Delete", this.tempLabelID);
 		this.cmd("Delete", this.linkedListDataField[this.top - 1]);
+		this.cmd("Delete", this.linkedListNextField[this.top - 1]);
 		this.cmd("Delete", this.linkedListAddID[this.top - 1]);
 		this.top = this.top - 1;
 		this.resetLinkedListPositions();
@@ -304,13 +344,36 @@ QueueLL.prototype.dequeue = function(ignored) {
 				+ this.arrayData[this.top]);
 		this.cmd("Step");
 		this.cmd("Step");
+		
+		if (this.top == 0) {
+			this.cmd("SetText", this.headID, "NULL");
+			this.cmd("SetText", this.tailID, "NULL");
+		} else {
+			var nextX = (0) % LINKED_LIST_ELEMS_PER_LINE * LINKED_LIST_ELEM_SPACING + LINKED_LIST_START_X;
+			var nextY = Math.floor((0) / LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_LINE_SPACING + LINKED_LIST_START_Y;
+			this.cmd("CreateLabel", this.addID, addArr[0], nextX, nextY + 25);
+			this.cmd("Move", this.addID, TOP_POS_X, TOP_POS_Y);
+			this.cmd("SetText", this.headID, "");
+			this.cmd("Step");
+			this.cmd("SetText", this.headID, addArr[0]);
+			this.cmd("Step");
+			this.cmd("Delete", this.addID);
+			this.cmd("Step");
+			this.cmd("CreateLabel", this.addID, addArr[0], nextX, nextY + 25);
+			this.cmd("Move", this.addID, TAIL_POS_X, this.tail_pos_y);
+			this.cmd("SetText", this.tailID, "");
+			this.cmd("Step");
+			this.cmd("SetText", this.tailID, addArr[0]);
+			this.cmd("Step");
+			this.cmd("Delete", this.addID);
+			this.cmd("Step");
+		}
 		this.cmd("SetNextIntroStep", "#outputDiv", "", "right", "hide");
 		this.cmd("Step");
 		this.cmd("RunNextIntroStep");
 		this.cmd("Step");
 		this.cmd("SetNextIntroStep", "#btnsDiv", "", "left");
 		this.cmd("RunNextIntroStep");
-		
 	} else {
 		this.cmd("Step");
 		this.cmd("SetNextIntroStep", "#btnsDiv", "", "left");
