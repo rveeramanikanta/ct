@@ -8,7 +8,7 @@ var LINKED_LIST_NEXT_HEIGHT = 30;
 var LINKED_LIST_INSERT_X = 250;
 var LINKED_LIST_INSERT_Y = 50;
 
-var LINKED_LIST_ELEMS_PER_LINE = 2;
+var LINKED_LIST_ELEMS_PER_LINE = 5;
 var LINKED_LIST_ELEM_SPACING = 150;
 var LINKED_LIST_LINE_SPACING = 150;
 
@@ -137,7 +137,6 @@ QueueLL.prototype.resetLinkedListPositions = function() {
 QueueLL.prototype.reset = function() {
 	this.top = 0;
 	this.nextIndex = this.initialIndex;
-
 }
 
 QueueLL.prototype.enqueueCallback = function(event) {
@@ -310,8 +309,8 @@ QueueLL.prototype.dequeue = function(ignored) {
 		this.cmd("Step");
 		this.cmd("Disconnect", this.headID, this.linkedListDataField[this.top - 1]);
 		if (this.top == 1) {
-			/*this.cmd("SetNull", this.headID, 1);
-			this.cmd("SetNull", this.tailID, 1);*/
+			this.cmd("SetText", this.headID, "NULL");
+			this.cmd("SetText", this.tailID, "NULL");
 			this.cmd("Disconnect", this.tailID,
 							this.linkedListDataField[this.top - 1]);
 		} else {
@@ -345,29 +344,21 @@ QueueLL.prototype.dequeue = function(ignored) {
 		this.cmd("Step");
 		this.cmd("Step");
 		
-		if (this.top == 0) {
-			this.cmd("SetText", this.headID, "NULL");
-			this.cmd("SetText", this.tailID, "NULL");
-		} else {
+		if (this.top != 0) {
+			console.log(addArr);
 			var nextX = (0) % LINKED_LIST_ELEMS_PER_LINE * LINKED_LIST_ELEM_SPACING + LINKED_LIST_START_X;
 			var nextY = Math.floor((0) / LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_LINE_SPACING + LINKED_LIST_START_Y;
-			this.cmd("CreateLabel", this.addID, addArr[0], nextX, nextY + 25);
+			this.cmd("CreateLabel", this.addID, addArr[addArr.length - 2], nextX, nextY + 25);
 			this.cmd("Move", this.addID, TOP_POS_X, TOP_POS_Y);
 			this.cmd("SetText", this.headID, "");
 			this.cmd("Step");
-			this.cmd("SetText", this.headID, addArr[0]);
+			this.cmd("SetText", this.headID, addArr[addArr.length - 2]);
 			this.cmd("Step");
 			this.cmd("Delete", this.addID);
 			this.cmd("Step");
-			this.cmd("CreateLabel", this.addID, addArr[0], nextX, nextY + 25);
-			this.cmd("Move", this.addID, TAIL_POS_X, this.tail_pos_y);
-			this.cmd("SetText", this.tailID, "");
-			this.cmd("Step");
-			this.cmd("SetText", this.tailID, addArr[0]);
-			this.cmd("Step");
-			this.cmd("Delete", this.addID);
 			this.cmd("Step");
 		}
+		
 		this.cmd("SetNextIntroStep", "#outputDiv", "", "right", "hide");
 		this.cmd("Step");
 		this.cmd("RunNextIntroStep");
@@ -380,6 +371,7 @@ QueueLL.prototype.dequeue = function(ignored) {
 		this.cmd("RunNextIntroStep");
 	}
 
+	console.log(this.commands);
 	return this.commands;
 }
 
@@ -393,8 +385,47 @@ QueueLL.prototype.display = function() {
 	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#displayFun", "", "right", "");
 	this.cmd("RunNextIntroStep");
-	
-	
+	if (this.top > 0) {
+		this.tempLabelID = this.nextIndex++;
+		this.highlightID = this.nextIndex++;
+		this.cmd("Step");
+		var tempXPos = ((0) % LINKED_LIST_ELEM_SPACING + LINKED_LIST_START_X) + 5;
+		var tempYPos = (Math.floor((0) / LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_LINE_SPACING + LINKED_LIST_START_Y);
+		this.cmd("CreateLabel", this.tempLabelID, "temp", tempXPos, tempYPos - 25);
+		this.cmd("Step");
+		this.cmd("Step");
+		this.cmd("SetNextIntroStep", "#outputDiv", "", "", "hide");
+		this.cmd("RunNextIntroStep");
+		this.cmd("Step");
+		this.cmd("SetNextIntroStep", "#displayBlk2", "", "right");
+		this.cmd("RunNextIntroStep");
+		this.cmd("Step");
+		if (this.top == 1) {
+			this.cmd("CreateHighlightCircle", this.highlightID, "#0000FF", tempXPos, tempYPos + 25);
+			this.cmd("Step");
+			this.cmd("Delete", this.highlightID);
+		}
+		for (var i = 2; i <= this.top; i++) {
+			this.cmd("CreateHighlightCircle", this.highlightID, "#0000FF", tempXPos, tempYPos + 25);
+			tempXPos = (i - 1) % LINKED_LIST_ELEMS_PER_LINE * LINKED_LIST_ELEM_SPACING + LINKED_LIST_START_X;
+			tempYPos = Math.floor((i - 1) / LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_LINE_SPACING + LINKED_LIST_START_Y;
+			this.cmd("Step");
+			this.cmd("Move", this.tempLabelID, tempXPos, tempYPos - 25 );
+			this.cmd("Step");
+			this.cmd("Delete", this.highlightID);
+		}
+		this.cmd("CreateHighlightCircle", this.highlightID, "#0000FF", tempXPos + 50, tempYPos);
+		this.cmd("Step");
+		this.cmd("Delete", this.highlightID);
+		this.cmd("Step");
+		this.cmd("Delete", this.tempLabelID);
+		this.cmd("SetNextIntroStep", "#outputDiv", "", "", "hide");
+		this.cmd("RunNextIntroStep");
+	}
+	this.cmd("Step");
+	this.cmd("SetNextIntroStep", "#btnsDiv", "", "left");
+	this.cmd("RunNextIntroStep");
+	this.cmd("Step");
 	return this.commands;
 }
 QueueLL.prototype.clearAll = function() {

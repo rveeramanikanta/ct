@@ -93,7 +93,6 @@ function initIntroJS() {
 								arrow("#enqueueTempDef", "#initTemp", function() {
 									getIntrojsStep("#animationDiv", "", "", "hide");
 									$(".introjs-nextbutton").removeClass("introjs-disabled").show();
-									//$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='enqueueStep1()'>Next &#8594;</a>")
 								});
 							});
 						});
@@ -216,53 +215,6 @@ function initIntroJS() {
 						});
 					});
 				});
-				
-				/*$(".introjs-tooltiptext").append("<ul></ul>");
-				$(".introjs-tooltiptext ul").append("<li><span id='tooltipCndtn'><span id='tooltipFront'>front</span> == " 
-						+ "<span id='tooltipRear'>rear</span></span></li>");
-				travel("#dequeuElseIfCndtn", $(".introjs-tooltiptext ul li:last-child span"), function () {
-					flip("#tooltipRear", rearVal, function() {
-						flip("#tooltipFront", frontVal, function() {
-							var text = "";
-							if (frontVal == rearVal) {
-								text = "Since it evaluates to <y>true</y>, the control enters into <y>if-block</y>."
-							} else {
-								text = "Since it evaluates to <r>false</r>, the control enters into <y>else-block</y>."
-							}
-							$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
-							typing($(".introjs-tooltiptext ul li:last-child div").last(), text, function() {
-								$(".background-color-yellow").removeAttr("style").removeClass("background-color-yellow");
-								if (frontVal == rearVal) {
-									frontVal = rearVal = 0;
-									$("#dequeuRearFrontInit").addClass("background-color-yellow");
-									$(".introjs-tooltiptext ul").append("<li><span>front = rear = -1</span></li>");
-									travel("#dequeuRearFrontInit", $(".introjs-tooltiptext ul li:last-child span"), function () {
-										var text = "Change the <y>front</y> and <y>rear</y> positions into <y>-1</y>.";
-										$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
-										typing($(".introjs-tooltiptext ul li:last-child div").last(), text, function() {
-											getIntrojsStep("#animationDiv", "", "", "hide");
-											$(".introjs-nextbutton").removeClass("introjs-disabled").show();
-										});
-									});
-								} else {
-									$("#dequeueFrontInc").addClass("background-color-yellow");
-									$(".introjs-tooltiptext ul li *").removeAttr("id");
-									$(".introjs-tooltiptext ul").append("<li><span> <span id='tooltipFront1'>front</span> = </span> <span id='tooltipFrontPlus1'><span id='tooltipFront2'>front</span> + 1</span></li>");
-									travel("#dequeueFrontInc", $(".introjs-tooltiptext ul li:last-child span"), function () {
-										flip("#tooltipFront2", frontVal, function() {
-											flip("#tooltipFrontPlus1", frontVal + 1, function() {
-												frontVal++;
-												getIntrojsStep("#animationDiv", "", "", "hide");
-												$(".introjs-nextbutton").removeClass("introjs-disabled").show();
-											});
-										});
-									});
-								}
-							});
-						});
-					});
-				});*/
-				
 			});
 			break;
 			
@@ -272,7 +224,6 @@ function initIntroJS() {
 			$(".introjs-helperLayer").one("transitionend", function() {
 				$(".background-color-yellow").removeClass("background-color-yellow");
 				$("#dequeueElsePrintf, #dequeueRemoveTemp").addClass("background-color-yellow");
-				//frontVal--;
 				var text = "Finally remove the <y>temp</y>.";
 				typing(".introjs-tooltiptext", text, function() {
 					rearVal--;
@@ -280,6 +231,64 @@ function initIntroJS() {
 					getIntrojsStep("#animationDiv", "", "", "hide");
 					$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 					addArr.pop();
+				});
+			});
+			break;
+			
+		case "displayFun":
+			$(".introjs-nextbutton").hide();
+			$(".introjs-helperLayer").one("transitionend", function() {
+				var text = "By using this code we are <y>print</y> the elements in the <y>Queue</y>.";
+				typing(".introjs-tooltiptext", text, function() {
+					arrow("#displayIf", "#displayIf", function() {
+						$(".introjs-tooltiptext").append("<ul><li><span style='font-family: monospace; font-weight: bold;'> <span id='tooltipFront'>front</span> == NULL </span></li></ul>");
+						travel("#displayIfCndtn", $(".introjs-tooltiptext ul li:last-child span"), function() {
+							flip("#tooltipFront", queue.length == 0 ? "NULL" : addArr[addArr.length - 1], function() {
+								var text;
+								if (queue.length == 0) {
+									text = "Evaluates to <y>true</y>, the control enters into the <y>if-block</y>.";
+								} else {
+									text = "Evaluates to <r>false</r>, the control enters into the <y>else-block</y>.";
+								}
+								$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
+								typing($(".introjs-tooltiptext ul li:last-child div:last"), text, function() {
+									if (queue.length == 0) {
+										$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='displayIfPart()'>Next &#8594;</a>");
+									} else {
+										$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='displayElsePart()'>Next &#8594;</a>");
+									}
+								});
+							});
+						});
+					});
+				});
+			});
+			break;
+			
+		case "displayBlk2":
+			$(".introjs-nextbutton").hide();
+			introjs.refresh();
+			$(".background-color-yellow").removeClass("background-color-yellow");
+			$(".introjs-helperLayer").one("transitionend", function() {
+				arrow("#displayElsePrintf", "#displayWhile", function() {
+					var text = "This <y>while-loop</y> is repeated untill the <y>temp</y> value is not <y>NULL</y>.";
+					typing(".introjs-tooltiptext", text, function() {
+						$(".introjs-tooltiptext").append("<ul><li></li></ul>");
+						var text = "It prints the <y>info</y> value of each <y>member</y>.";
+						typing($(".introjs-tooltiptext ul li:last"), text, function() {
+							$(".introjs-tooltiptext ul").append("<li></li>");
+							var text = "Next traverse the <y>temp</y> to the <y>next node</y>.";
+							typing($(".introjs-tooltiptext ul li:last"), text, function() {
+								getIntrojsStep("#animationDiv", "", "", "hide");
+								$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+								var text = "";
+								for (var i = 0; i < queue.length; i++) {
+									text = text + queue[i] + " "; 
+								}
+								$("#output").append("<div class='opacity00' style='display:inline-block;'>" + text + "<br/></div>");
+							});
+						});
+					});
 				});
 			});
 			break;
@@ -430,67 +439,6 @@ function dequeueStep1() {
 					}
 				});
 			});
-			
-			/*flip("#tooltipFront", frontVal == 0 ? "NULL" : frontVal, function() {
-				var text = "";
-				if (frontVal == 0) {
-					text = "Since it evaluates to <y>true</y>, the control enters into <y>if-block</y>."
-				} else {
-					text = "Since it evaluates to <r>false</r>."
-				}
-				$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
-				typing($(".introjs-tooltiptext ul li:last-child div").last(), text, function() {
-					$("#dequeuIfCndtn").removeClass("background-color-yellow").removeAttr("style");
-					if (frontVal == 0) {
-						frontVal++;
-						$("#dequeueIfPrintf").addClass("background-color-yellow");
-						$("#output").append("<div class='opacity00'>Queue is underflow.</div>");
-						getIntrojsStep("#outputDiv", "", "", "hide");
-						$(".introjs-nextbutton").removeClass("introjs-disabled").show();
-					} else {
-						$("#dequeueTempInit").addClass("background-color-yellow");
-						$(".introjs-tooltiptext ul").append("<li></li>");
-						var text = "Assing <y>temp</y> to <y>front</y>.";
-						typing($(".introjs-tooltiptext ul li:last"), text, function() {
-							$("#dequeueTempInit").removeClass("background-color-yellow");
-							$("#dequeuElseIfCndtn").addClass("background-color-yellow");
-							$(".introjs-tooltiptext ul li *").removeAttr("id");
-							$(".introjs-tooltiptext ul").append("<li><span id='tooltipCndtn'><span id='tooltipFront'>front</span> == " 
-									+ "<span id='tooltipRear'>Rear</span></span></li>");
-							travel("#dequeuElseIfCndtn", $(".introjs-tooltiptext ul li:last-child span"), function () {
-								flip("#tooltipRear", rearVal == 0 ? "NULL" : rearVal, function() {
-									flip("#tooltipFront", frontVal == 0 ? "NULL" : frontVal, function() {
-										if (frontVal == rearVal) {
-											text = "Since it evaluates to <y>true</y>, the control enters into <y>if-block</y>."
-										} else {
-											text = "Since it evaluates to <r>false</r>."
-										}
-										
-										$(".introjs-tooltiptext ul li:last-child").append("<div></div>");
-										typing($(".introjs-tooltiptext ul li:last-child div").last(), text, function() {
-											$("#dequeuElseIfCndtn").removeClass("background-color-yellow").removeAttr("style");
-											$(".introjs-tooltiptext ul").append("<li></li>");
-											if (frontVal == rearVal) {
-												$("#dequeuRearFrontInit").addClass("background-color-yellow");
-												var text = "Reset <y>front</y> and <y>rear</y> position to <y>NULL</y>.";
-												frontVal = rearVal = 0;
-											} else {
-												$("#dequeueFrontInit").addClass("background-color-yellow");
-												var text = "Assign <y>front</y> to <y>front -> next</y>.";
-											}
-											typing($(".introjs-tooltiptext ul li:last"), text, function() {
-												getIntrojsStep("#animationDiv", "", "", "hide");
-												$(".introjs-nextbutton").removeClass("introjs-disabled").show();
-											});
-										});
-										
-									});
-								});
-							});
-						});
-					}
-				});
-			});*/
 		});
 	});
 }
@@ -526,7 +474,7 @@ function dequeueElseIfBlk() {
 	arrow("#dequeueElseIf", "#dequeuRearFrontInit", function() {
 		$("#dequeuRearFrontInit").addClass("background-color-yellow");
 		$(".introjs-tooltiptext ul").append("<li></li>");
-		var text = "Here, we point this temporary node <y>temp</y> to the <y>front</y> of the <y>queue</y>.";
+		var text = "Here, we initialize the <y>front</y> and <y>rear</y> into <y>NULL</y>.";
 		typing($(".introjs-tooltiptext ul li:last"), text, function() {
 			getIntrojsStep("#animationDiv", "", "", "hide");
 			$(".introjs-nextbutton").removeClass("introjs-disabled").show();
@@ -544,6 +492,36 @@ function dequeueElseIfElseBlk() {
 		typing($(".introjs-tooltiptext ul li:last"), text, function() {
 			getIntrojsStep("#animationDiv", "", "", "hide");
 			$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+		});
+	});
+}
+
+function displayIfPart() {
+	$(".user-btn").remove();
+	$("#displayIfCndtn").removeAttr("style");
+	arrow("#displayIf", "#displayIfPrintf", function() {
+		$("#displayIfPrintf").addClass("background-color-yellow");
+		$("#output").append("<div class='opacity00'>Queue is empty.</div>");
+		getIntrojsStep("#outputDiv", "", "", "hide");
+		$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+	});
+}
+
+function displayElsePart() {
+	$(".user-btn").remove();
+	$("#displayIfCndtn").removeAttr("style");
+	arrow("#displayIf", "#displayFrontToTemp", function() {
+		$("#displayFrontToTemp").addClass("background-color-yellow");
+		$(".introjs-tooltiptext ul").append("<li></li>");
+		var text = "Here, we create a new temporary node <y>temp</y> and pointing to the <y>front</y> of the <y>queue</y>.";
+		typing($(".introjs-tooltiptext ul li:last"), text, function() {
+			arrow("#displayFrontToTemp", "#displayElsePrintf", function() {
+				$("#displayElsePrintf").addClass("background-color-yellow");
+				$("#output").append("<div class='opacity00' style='display: inline-block;'>Elements are : </div>");
+				getIntrojsStep("#animationDiv", "", "", "hide");
+				$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+			});
+			
 		});
 	});
 }

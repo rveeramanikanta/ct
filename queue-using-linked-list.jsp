@@ -19,7 +19,7 @@
 <script type="text/javascript" src="/js/typewriting.min.js"></script>
 <script type="text/javascript" src="/js/gs/TweenMax.min.js"></script>
 <script type="text/javascript" src="/js/jquery.scrollTo.js"></script>
-<!-- <script type="text/javascript" src="js-min/qull.min.js"></script> -->
+<script type="text/javascript" src="js-min/qull.min.js"></script>
 <script type="text/javascript" src="js/queue-using-linked-list.js"></script>
 
 <!-- Javascript for the actual visualization code -->
@@ -207,6 +207,20 @@ void dequeue() {
 	}
 }
 					</pre>
+					<pre class='creampretab4 hide' id='displayFun' style="margin-top: 10px;">
+void display() {
+	<span id='displayBlk1'><span id='displayIf'>if(<span id='displayIfCndtn'>front == NULL</span>) {</span>
+		<span id='displayIfPrintf'>printf("Queue is empty.");</span> 
+	} else {
+		<span id='displayFrontToTemp'>Q temp = front;</span>
+		<span id='displayElsePrintf'>printf("Elements are : ");</span>
+		<span id='displayBlk2'><span id='displayWhile'>while(<span id='displayWhileCndtn'>temp -> next != NULL</span>) {</span>
+			<span id='displayWhilePrintf'>printf("%d ", temp -&gt; info);</span>
+			<span id='displayTempNext'>temp = temp -&gt; next;</span>
+		}</span>
+	}</span>
+}
+</pre>
 				</div>
 
 				<div id="outputDiv" class='opacity00 col-xs-12 padding0 margin-top-20'>
