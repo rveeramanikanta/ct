@@ -684,6 +684,7 @@ function AnimationManager(objectManager) {
 					undoBlock = undoBlock.concat(removedEdges);
 				}
 				var obj = this.animatedObjects.getObject(objectID);
+				console.log(obj);
 				if (obj != null) {
 					undoBlock.push(obj.createUndoDelete());
 					this.animatedObjects.removeObject(objectID);

@@ -21,7 +21,6 @@
 <title>quick-sort</title>
 
 <style type="text/css">
-
 .margin-top-20 {
 	margin-top: 20px;
 }
@@ -29,7 +28,7 @@
 .box-border {
 	border: 1px solid gray;
 	border-radius: 8px;
-	height: 620px; 
+	height: 620px;
 }
 
 .padding0 {
@@ -37,10 +36,10 @@
 }
 
 .creampretab4 {
-	font-size:11px;
+	font-size: 11px;
 	tab-size: 2;
 	-moz-tab-size: 2;
-	background-color:lavender !important;
+	background-color: lavender !important;
 }
 
 [contenteditable=true] {
@@ -98,10 +97,10 @@ table {
 }
 
 .blinking-yellow {
-	animation-name: blink-border-background-yellow ;
-	animation-duration: 1s ;
+	animation-name: blink-border-background-yellow;
+	animation-duration: 1s;
 	animation-iteration-count: infinite;
-	animation-direction: alternate ;
+	animation-direction: alternate;
 }
 
 @keyframes blink-border-background-yellow { 
@@ -110,7 +109,6 @@ table {
 		background: yellow;
 	}
 }
-
 .stack-div {
 	border: 1px solid gray;
 	height: 200px;
@@ -120,24 +118,25 @@ table {
 
 .stack-border {
 	background-color: #eee8aa;
-    border: 1px solid gray;
-    border-radius: 8px;
-    height: 25px;
-    line-height: 25px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 7px;
-    padding: 0;
-    text-align: center;
-    width: 96%;
+	border: 1px solid gray;
+	border-radius: 8px;
+	height: 25px;
+	line-height: 25px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 7px;
+	padding: 0;
+	text-align: center;
+	width: 96%;
 }
 
 .blinking-green {
-	animation-name: blink-border-background-green ;
-	animation-duration: 1s ;
+	animation-name: blink-border-background-green;
+	animation-duration: 1s;
 	animation-iteration-count: infinite;
-	animation-direction: alternate ;
+	animation-direction: alternate;
 }
+
 
 @keyframes blink-border-background-green { 
 	50% {
@@ -145,16 +144,15 @@ table {
 		background: #32cd32;
 	}
 }
-
 .introjs-tooltiptext span {
 	display: inline-block;
-} 
+}
 
 .blinking-white {
-	animation-name: blink-border-background-white ;
-	animation-duration: 1s ;
+	animation-name: blink-border-background-white;
+	animation-duration: 1s;
 	animation-iteration-count: infinite;
-	animation-direction: alternate ;
+	animation-direction: alternate;
 }
 
 @keyframes blink-border-background-white { 
@@ -163,13 +161,12 @@ table {
 		background: white;
 	}
 }
-
 .zIndex {
 	z-index: 10000000;
 }
 
 .bold, .bold2 {
-    font-size: 12px;
+	font-size: 12px;
 }
 
 .introjs-tooltip {
@@ -189,7 +186,7 @@ r {
 	color: red;
 }
 
-#stackDiv > div {
+#stackDiv>div {
 	position: relative;
 }
 </style>
@@ -265,7 +262,7 @@ function introGuide() {
 			element : "#quickSortMethod",
 			intro : "",
 			position: "right"
-		}, {
+		}/* , {
 			element : "#ifInQuickSort",
 			intro : "",
 			position: "right"
@@ -290,7 +287,7 @@ function introGuide() {
 			element : "#recursiveQuickSort1",
 			intro : "",
 			position: "right",
-		}, /* {
+		},  *//* {
 			element : "#stackDiv",
 			intro : "",
 			position: "left",
@@ -337,7 +334,7 @@ function introGuide() {
 		case "arrInit":
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
-				var text = "New array has created. now you can change the values.";
+				var text = "New array was created. Now you can change the values.";
 				typing(".introjs-tooltiptext", text, function() {
 					charAtEnd("arrValue3");
 					$(".introjs-nextbutton").show();
@@ -359,7 +356,7 @@ function introGuide() {
 					$('#arrInit').effect( "transfer", { to: $("#tr3"), className: "ui-effects-transfer" }, 1000, function() {
 						$("#arrTable").removeClass("opacity00");
 						$("#tr1 > td").addClass("opacity00");
-						$("#arrows div").addClass("opacity00");
+						$("#arrows td i").addClass("opacity00");
 						
 						pivotVal = parseInt($("#arrVal0").text());
 						setTimeout(function() {
@@ -373,7 +370,7 @@ function introGuide() {
 						typing(".introjs-tooltiptext", text, function() {
 							$("#varInit").addClass("blinking-yellow");
 							$("#tr1 > td").addClass("opacity00").removeAttr("style");
-							$("#arrows > td > div").addClass("opacity00").removeAttr("style");
+							$("#arrows > td > i").addClass("opacity00").removeAttr("style");
 							$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='partitionAnimation()'>Next &#8594;</a>");
 						});
 					});
@@ -410,7 +407,8 @@ function introGuide() {
 				$("#stackDiv").addClass("stack-quick-animation");
 				var text = "This is the sorting method. here parameter int[] arr initialized to given array, variables low = 0, high = " + upItr + ".";
 				typing(".introjs-tooltiptext", text, function() {
-					$(".introjs-nextbutton").show();
+					introjs.insertOption(introjs._currentStep + 1, getStep("#ifInQuickSort", "", "right"));
+					$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 				});
 			});
 			break;
@@ -419,10 +417,40 @@ function introGuide() {
 			$(".introjs-nextbutton").hide();
 			introjs.refresh();
 			$(".introjs-helperLayer").one("transitionend", function() {
-				var text = "Here we are checking low &lt; high i.e 0 &lt; "+upItr+" evaluates true. so control enters in to the condition.";
-				typing(".introjs-tooltiptext", text, function() {
-					$(".introjs-nextbutton").show();
+				$(".introjs-tooltiptext").append("<span id='tooltipCndtn' style='font-family: monospace; font-weight: bold;'>" 
+					+ "<span id='tooltipLow'>low</span> <= <span id='tooltipHigh'>high</span></span>");
+				var l1 = $("#quickSortingIfCndtn").offset();
+				$("#tooltipCndtn").offset({
+					"top" : l1.top,
+					"left" : l1.left
 				});
+				$("#quickSortingIfCndtn").addClass("blinking-yellow");
+				tl.to("#tooltipCndtn", 1, {opacity:1, delay:1, top: 0, left: 0, onComplete: function() {
+					flipEffect("#tooltipHigh", upItr, function() {
+						flipEffect("#tooltipLow", 0, function() {
+							var text;
+							if (downItr < upItr) {
+								text = "Evaluates to <y>true</y>.";
+							} else {
+								text = "Evaluates to <r>false</r>.";
+							}
+							$(".introjs-tooltiptext").append("<div></div>");
+							typing($(".introjs-tooltiptext > div:last"), text, function() {
+								$("#quickSortingIfCndtn").removeClass("blinking-yellow");
+								if (downItr < upItr) {
+									introjs.insertOption(introjs._currentStep + 1, getStep("#callPartition", "", "right"));
+								}
+								$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+							});
+						});
+					});
+					
+					
+				}});
+				
+				/* var text = "Here we are checking low &lt; high i.e 0 &lt; "+upItr+" evaluates true. so control enters in to the condition.";
+				typing(".introjs-tooltiptext", text, function() {
+				}); */
 			});
 			break;
 			
@@ -430,10 +458,14 @@ function introGuide() {
 			introjs.refresh();
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
+				introjs.insertOption(introjs._currentStep + 1, getStep("#stackDiv", "", "right", "hide"));
+				introjs.insertOption(introjs._currentStep + 2, getStep("#partition", "", "right"));
+				introjs.insertOption(introjs._currentStep + 3, getStep("#animationDiv", "", "left"));
+				introjs.insertOption(introjs._currentStep + 4, getStep("#recursiveQuickSort1", "", "right"));
 				$("#stackDiv").addClass("stack-partition-animation");
 				var text = "Here we are calling partition method. now parameteres low = 0, high = " + upItr + ".";
 				typing(".introjs-tooltiptext", text, function() {
-					$(".introjs-nextbutton").show();
+					$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 				});
 			});
 			break;
@@ -451,11 +483,25 @@ function introGuide() {
 		case "recursiveQuickSort1":
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
-				var text = "Now again we are calling quicksorting method. Here we are passing low = 0, j-1 = " + upItr + ".";
+				introjs.insertOption(introjs._currentStep + 1, getStep("#stackDiv", "", "right", "hide"));
+				introjs.insertOption(introjs._currentStep + 2, getStep("#quickSortMethod", "", "right"));
+				introjs.insertOption(introjs._currentStep + 3, getStep("#recursiveQuickSort2", "", "right"));
+				var text = "Now again we are calling quicksorting method. Here we are passing low = 0, j - 1 = " + upItr + ".";
 				typing(".introjs-tooltiptext", text, function() {
-					dynamicSteps1(false);
-					console.log("dynamicSteps1 called");
-					$(".introjs-nextbutton").show();
+					$(".introjs-nextbutton").removeClass("introjs-disabled").show();
+				});
+			});
+			break;
+			
+		case "recursiveQuickSort2":
+			$(".introjs-nextbutton").hide();
+			$(".introjs-helperLayer").one("transitionend", function() {
+				introjs.insertOption(introjs._currentStep + 1, getStep("#stackDiv", "", "right", "hide"));
+				introjs.insertOption(introjs._currentStep + 2, getStep("#quickSortMethod", "", "right"));
+				//introjs.insertOption(introjs._currentStep + 3, getStep("#restart", "", "right"));
+				var text = "Now again we are calling quicksorting method. Here we are passing j + 1 = " + (downItr + 1) + ", high = " + upItr + ".";
+				typing(".introjs-tooltiptext", text, function() {
+					$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 				});
 			});
 			break;
@@ -515,9 +561,9 @@ function partitionAnimation() {
 	tl.to("#liDown", 1, {opacity:1, delay:1, top: 0, left: 0, onComplete: function() {
 		$("#downInit").removeClass("blinking-yellow");
 		flipEffect("#flipLb", downItr, function() {
-			$("#tr1 > td").eq(downItr + 1).removeClass("opacity00").find("b").text("downIndex");
-			$("#arrows > td > div").eq(downItr).removeClass("opacity00");
 			
+			$("#tr1 > td").eq(downItr + 1).removeClass("opacity00").empty().html("<b class='bold'>downIndex</b>");
+			$("#arrows > td").eq(downItr + 1).removeClass("opacity00").empty().html("<i class='fa fa-arrow-up down-arrow'></i>");;
 			var l2 = $("#UpInit").offset();
 			$("#liUp").offset({"top": l1.top, "left": l1.left});
 			$("#upInit").addClass("blinking-yellow");
@@ -526,8 +572,8 @@ function partitionAnimation() {
 			tl.to("#liUp", 1, {opacity:1, top: 0, left: 0, onComplete: function() { 
 				$("#upInit").removeClass("blinking-yellow");
 				flipEffect("#flipUb", upItr, function() {
-					$("#tr1 > td").eq(upItr + 1).removeClass("opacity00").find("b").text("upIndex");
-					$("#arrows > td > div").eq(upItr).removeClass("opacity00");
+					$("#tr1 > td").eq(upItr + 1).removeClass("opacity00").empty().html("<b class='bold'>upIndex</b>");
+					$("#arrows > td").eq(upItr + 1).removeClass("opacity00").empty().html("<i class='fa fa-arrow-up up-arrow'></i>");
 					$("#pivotInit").addClass("blinking-yellow");
 					var l3 = $("#pivotInit").offset();
 					$("#liPivot").offset({"top": l3.top, "left": l3.left});
@@ -570,8 +616,8 @@ function partitionAnimation() {
 var stackCount = 0;
 
 function stackFunction() {
-	$("#stack" + stackCount).text("quicksorting(arr, 0, "+upItr+")");
-	
+	$("#stackDiv").append("<div class='stack-border opacity001'>quicksorting(arr, " + downItr + ", " + upItr + ")</div>");
+	setStackPositionToBottom();
 	tl.to("#stackDiv",1, {opacity: 1, onComplete:function() {
 		$("#stackDiv").removeClass("opacity00");
 	}});
@@ -585,8 +631,15 @@ function stackFunction() {
 	}});
 }
 
+function setStackPositionToBottom() {
+	var setTop = $("#stackDiv").height() - $("#stackDiv > div").height();
+	if (setTop > 0) {
+		$("#stackDiv > div").css({"top" : setTop});
+	}
+}
+
 function stackPartitionFunction() {
-	$("#stack" + stackCount).text("partition(arr, 0, "+upItr+")");
+	$("#stack" + stackCount).text("partition(arr, 0, " + upItr + ")");
 	
 	tl.to("#stackDiv",1, {opacity: 1, onComplete:function() {
 		$("#stackDiv").removeClass("opacity00");
@@ -631,14 +684,14 @@ function whileAnimation() {
 		flipEffect("#flipDown", downItr, function() {
 			flipEffect("#flipUp", upItr, function() {
 				if(downItr < upItr) {
-					var text = "Evaluates to true. Now control enters into the while loop.";
+					var text = "Evaluates to <y>true</y>. Now control enters into the <y>while-loop</y>.";
 					typing("#evaluateTyping", text, function() {
 						$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='downWhileAnimation()'>Next &#8594;</a>");
 					});
 				} else {
 					$("#arrow" + downItr).addClass("ct-code-b-red");
 					$("#mainWhile").removeClass("blinking-yellow");
-					var text = "Evaluates to false. Now control go to next statement";
+					var text = "Evaluates to <r>false</r>. Now control go to next statement";
 					typing("#evaluateTyping", text, function() {
 						$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='pivotSwapAnimation()'>Next &#8594;</a>");
 					});
@@ -681,13 +734,13 @@ function downWhileAnimation() {
 								$("#tr3 td").eq(downItr+1).removeClass("blinking-green");
 								$("#while1Cndtn2").removeClass("blinking-yellow");
 								if(parseInt($("#arrVal" + downItr).text()) <= parseInt($("#pivotVal").text()) && downItr < upItr) {
-									var text = "condition Evaluates to true. now control enters into the while loop.";
+									var text = "condition Evaluates to <y>true</y>. now control enters into the <y>while-loop</y>.";
 									typing("#evaluateTyping2", text, function() {
 										$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='downInc()'>Next &#8594;</a>");
 									});
 								} else {
 									$("#arrow" + downItr).addClass("ct-code-b-red");
-									var text = "condition Evaluates to false. now control not enters into while loop and goes next statement.";
+									var text = "condition Evaluates to <y>false</y>. now control not enters into while loop and goes next statement.";
 									typing("#evaluateTyping2", text, function() {
 										$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='upWhileAnimation()'>Next &#8594;</a>");
 									});
@@ -712,7 +765,54 @@ function downInc() {
 	$("#liDownInc").offset({"top": l1.top, "left": l1.left});
 	tl.to("#liDownInc", 1, {opacity: 1, top: 0 , left: 0, onComplete: function() {
 		flipEffect("#flipDownInc", (downItr+1), function() {
-			var l2 = $("#upDown" + downItr).offset();
+			$("#tr1 td:eq(" + (downItr + 2) + ")").removeClass('opacity00').prepend("<b class='bold down'>downIndex</b>");
+			$("#arrows td:eq(" + (downItr + 2) + ")").removeClass('opacity00').prepend("<i class='fa fa-arrow-up arrow'></i>");
+			
+			if ($("#tr1 td:eq(" + (downItr + 2) + ")").find("b").length == 2) {
+				$("<br/>").insertAfter($("#tr1 td:eq(" + (downItr + 2) + ")").find("b:eq(0)"));
+			} else {
+				$("#tr1 td:eq(" + (downItr + 2) + ")").find("br").remove();
+			}
+			var l = $("#tr1 td:eq(" + (downItr + 1) + ") *:contains('downIndex')").addClass("opacity00").offset();
+			$(".down").offset({
+				"top" : l.top,
+				"left" : l.left
+			});
+			var l = $("#arrows td:eq(" + (downItr + 1) + ") i:eq(0)").addClass("opacity00").offset();
+			$(".arrow").offset({
+				"top" : l.top,
+				"left" : l.left
+			});
+			TweenMax.to($(".down"), 1, {top : 0, left : 0, onComplete:function() {
+				$(".down").removeClass("down");
+				$("#tr1 td:eq(" + (downItr + 1) + ")").find("br").remove();
+				$("#tr1 td:eq(" + (downItr + 1) + ") *:contains('downIndex')").remove()
+			}});
+			
+			
+			TweenMax.to($(".arrow"), 1, {top : 0, left : 0, onComplete:function() {
+				$(".arrow").removeClass("arrow");
+				$("#arrows td:eq(" + (downItr + 1) + ") i:eq(0)").remove();
+				var text = "Now <y>down</y> has increased, control goes to while condition again.";
+				typing(".type-text", text, function() {
+					downItr++;
+					$("#downInc").removeClass("blinking-yellow");
+					$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='downWhileAnimation()'>Next &#8594;</a>");
+				});
+			}});
+			/* TweenMax.to("#arrow" + (downItr + 1), 1, {opacity:1, top: 0, left:0, onComplete: function() {
+				$("#upDown" + (downItr+1)).removeClass("opacity00");
+				$("#arrow" + (downItr+1)).removeClass("opacity00");
+				var text = "Now down has increased, control goes to while condition again.";
+				typing(".type-text", text, function() {
+					downItr++;
+					$("#downInc").removeClass("blinking-yellow");
+					$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='downWhileAnimation()'>Next &#8594;</a>");
+				});
+			}}); */
+			
+			
+			/* var l2 = $("#upDown" + downItr).offset();
 			var l3 = $("#arrow" + downItr).offset();
 			
 			$("#upDown" + (downItr+1)).offset({"top" : l2.top, "left": l2.left});
@@ -726,8 +826,8 @@ function downInc() {
 				$("#upDown" + (downItr+1)).append(" <b class='bold2 up-down'>upIndex</b>");
 			}
 			
-			TweenMax.to("#upDown" + (downItr+1), 1, {opacity:1, top: 0, left:0});
-			TweenMax.to("#arrow" + (downItr+1), 1, {opacity:1, top: 0, left:0, onComplete: function() {
+			TweenMax.to($("#upDown" + (downItr + 1) + " *:contains('upIndex')"), 1, {opacity:1, top: 0, left:0});
+			TweenMax.to("#arrow" + (downItr + 1), 1, {opacity:1, top: 0, left:0, onComplete: function() {
 				$("#upDown" + (downItr+1)).removeClass("opacity00");
 				$("#arrow" + (downItr+1)).removeClass("opacity00");
 				var text = "Now down has increased, control goes to while condition again.";
@@ -736,7 +836,7 @@ function downInc() {
 					$("#downInc").removeClass("blinking-yellow");
 					$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='downWhileAnimation()'>Next &#8594;</a>");
 				});
-			}});
+			}}); */
 		});
 	}});
 }
@@ -762,7 +862,7 @@ function upWhileAnimation() {
 					$("#while2").removeClass("blinking-yellow");
 					
 					if(parseInt($("#arrVal" + upItr).text()) > parseInt($("#pivotVal").text())) {
-						var text = "condition Evaluates to true. now control enters into the while loop.";
+						var text = "condition Evaluates to <y>true</y>. Now control enters into the <y>while-loop</y>.";
 						typing("#evaluateTyping2", text, function() {
 							$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='upDec()'>Next &#8594;</a>");
 						});
@@ -787,8 +887,46 @@ function upDec() {
 	var l1 = $("#upDec").offset();
 	$("#liUpDec").offset({"top": l1.top, "left": l1.left});
 	tl.to("#liUpDec", 1, {opacity: 1, top: 0 , left: 0, onComplete: function() {
-		flipEffect("#flipUpDec", (upItr-1), function() {
-			var l2 = $("#upDown" + upItr).offset();
+		flipEffect("#flipUpDec", (upItr - 1), function() {
+			$("#tr1 td:eq(" + (upItr) + ")").removeClass('opacity00').prepend("<b class='bold up'>upIndex</b>");
+			$("#arrows td:eq(" + (upItr) + ")").removeClass('opacity00').prepend("<i class='fa fa-arrow-up arrow'></i>");
+			
+			if ($("#tr1 td:eq(" + (upItr) + ")").find("b").length == 2) {
+				$("<br/>").insertAfter($("#tr1 td:eq(" + (upItr) + ")").find("b:eq(0)"));
+			} else {
+				$("#tr1 td:eq(" + (upItr) + ")").find("br").remove();
+			}
+			
+			
+			var l = $("#tr1 td:eq(" + (upItr + 1) + ") *:contains('upIndex')").addClass("opacity00").offset();
+			$(".up").offset({
+				"top" : l.top,
+				"left" : l.left
+			});
+			var l = $("#arrows td:eq(" + (upItr + 1) + ") i:eq(0)").addClass("opacity00").offset();
+			$(".arrow").offset({
+				"top" : l.top,
+				"left" : l.left
+			});
+			TweenMax.to($(".up"), 1, {top : 0, left : 0, onComplete:function() {
+				$(".up").removeClass("up");
+				$("#tr1 td:eq(" + (upItr + 1) + ")").find("br").remove();
+				$("#tr1 td:eq(" + (upItr + 1) + ") *:contains('upIndex')").remove()
+			}});
+			
+			TweenMax.to($(".arrow"), 1, {top : 0, left : 0, onComplete:function() {
+				$(".arrow").removeClass("arrow");
+				$("#arrows td:eq(" + (upItr + 1) + ") i:eq(0)").remove();
+				var text = "Now up has decreased, control goes to while condition again.";
+				typing(".type-text", text, function() {
+					upItr--;
+					$("#upDec").removeClass("blinking-yellow");
+					$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='upWhileAnimation()'>Next &#8594;</a>");
+				});
+			}});
+			
+			
+			/* var l2 = $("#upDown" + upItr).offset();
 			var l3 = $("#arrow" + upItr).offset();
 			$("#upDown"+(upItr-1)+" .bold").text("upIndex");
 			$("#upDown" + (upItr-1)).offset({"top" : l2.top, "left": l2.left});
@@ -809,7 +947,7 @@ function upDec() {
 					$("#upDec").removeClass("blinking-yellow");
 					$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='upWhileAnimation()'>Next &#8594;</a>");
 				});
-			}});
+			}}); */
 		});	
 	}});
 }
@@ -829,13 +967,13 @@ function swapAnimation() {
 		flipEffect("#downInIf", downItr, function() {
 			flipEffect("#upInIf", upItr, function() {
 				if(downItr < upItr) {
-					var text = "Condition evaluates to true. now control enters into the if condition.";
+					var text = "Condition evaluates to <y>true</y>. Now control enters into the <y>if</y> condition.";
 					typing(".type-text", text, function() {
 						$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='swapping()'>Next &#8594;</a>");
 					});
 				} else {
 					$("#ifCndtn").removeClass("blinking-yellow");
-					var text = "condition Evaluates to false. now control goes to main while loop.";
+					var text = "condition evaluates to <r>false</r>. Now control goes to main <y>while-loop</y>.";
 					typing(".type-text", text, function() {
 						$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='whileAnimation()'>Next &#8594;</a>");
 					});
@@ -945,7 +1083,7 @@ function pivotSwapAnimation() {
 								
 								TweenMax.to("#arrVal"+ upItr, 1, {opacity: 1, top: downTop, left: downLeft});
 								TweenMax.to("#arrVal" + lb, 1, {opacity: 1, top: upTop, left: upLeft, onComplete: function() {
-									setTimeout(function() {
+									setTimeout(function() {	
 										$('#tr3 td span').eq(lb).remove();
 										$('#tr3 td').eq(lb + 1).append('<span></span>');
 										$('#tr3 td span').eq(lb).attr('id', 'arrVal'+ lb).text(upAfterSwap);
@@ -961,7 +1099,7 @@ function pivotSwapAnimation() {
 											$("#callPartition").addClass("blinking-white");
 											$("#callPartition").addClass("zIndex");
 											flipEffect("#flipReturnUp", upItr, function() {
-												var text = "partition method returned "+upItr+". Now j = "+upItr+"";
+												var text = "partition method returned " + upItr + ". Now j = "+upItr+"";
 												typing(".type-text", text, function() {
 													$("#callPartition").removeClass("blinking-white");
 													$("#callPartition").removeClass("zIndex");
@@ -1053,7 +1191,22 @@ function dynamicSteps1(isTrue) {
 }
 
 
-
+function getStep(element, intro, position, tooltipClass) {
+	var step = {};
+	if (typeof element != 'undefined') {
+		step['element'] = element;
+	}
+	if (typeof intro != 'undefined') {
+		step['intro'] = intro;
+	}
+	if (typeof position != 'undefined') {
+		step['position'] = position;
+	}
+	if (typeof tooltipClass != 'undefined') {
+		step['tooltipClass'] = tooltipClass;
+	}
+	return step;
+}
 </script>
 
 </head>
@@ -1063,12 +1216,18 @@ function dynamicSteps1(isTrue) {
 		<h1 class="label ct-demo-heading text-center">Quick Sort in
 			Action</h1>
 	</div>
-	
+
 	<div class='col-xs-12 margin-top-20 padding0'>
 		<div class='col-xs-5'>
 			<pre class='box-border creampretab4' id='javaCode'>#include &lt;stdio.h&gt;
 void main() {
-	<span id='arrInit'>int arr[] = {<span contenteditable="true" maxlength="1" id='arrValue0'>7</span>, <span id='arrValue1' contenteditable="true" maxlength="1">2</span>, <span id='arrValue2' contenteditable="true" maxlength="1">9</span>, <span id='arrValue3' contenteditable="true" maxlength="1">3</span>, <span id='arrValue4' contenteditable="true" maxlength="1">1</span>, <span id='arrValue5' contenteditable="true" maxlength="1">8</span>};</span>
+	<span id='arrInit'>int arr[] = {<span contenteditable="true"
+					maxlength="1" id='arrValue0'>7</span>, <span id='arrValue1'
+					contenteditable="true" maxlength="1">2</span>, <span id='arrValue2'
+					contenteditable="true" maxlength="1">9</span>, <span id='arrValue3'
+					contenteditable="true" maxlength="1">3</span>, <span id='arrValue4'
+					contenteditable="true" maxlength="1">1</span>, <span id='arrValue5'
+					contenteditable="true" maxlength="1">8</span>};</span>
 	int n = 6;
 	<span id='callQuickSort'>quicksorting(arr, 0, n - 1);</span>
 }
@@ -1097,94 +1256,84 @@ void main() {
 
 <span id="quickSortMethod">void quicksorting(int arr[], int low, int high) {
 	int j;
-	<span id="ifInQuickSort">if (low < high) {
+	<span id="ifInQuickSort">if (<span id='quickSortingIfCndtn'>low < high</span>) {
 		<span id='callPartition'>j = partition(arr, low, high);</span>
 		<span id="recursiveQuickSort1">quicksorting(arr, low, j - 1);</span>
 		<span id="recursiveQuickSort2">quicksorting(arr, j + 1, high);</span>
 	}</span>
-}</span	></pre>
+}</span>
+			</pre>
 		</div>
 		<div class='col-xs-7'>
 			<div id='animationDiv' class='box-border'>
-			<div class="col-xs-12 margin-top-20 opacity00" id="animatePivot">
-				 Pivot Value : <span id="pivotVal" class="opacity00">7</span>
-			</div>
-
-			<div class="col-xs-12 margin-top-20">
-				<table align="center" class="text-center opacity00" id="arrTable">
-					<tbody>
-						<tr id="tr1">
-							<td></td>
-							<td id='upDown0' class=""><b class="bold">downIndex</b></td>
-							<td id='upDown1' class="opacity00"><b class="bold">downIndex</b></td>
-							<td id='upDown2' class="opacity00"><b class="bold">downIndex</b></td>
-							<td id='upDown3' class="opacity00"><b class="bold">upIndex</b></td>
-							<td id='upDown4' class="opacity00"><b class="bold">upIndex</b></td>
-							<td id='upDown5' class=""><b class="bold">upIndex</b></td>
-						</tr> 
-					
-						<tr id="tr2">
-							<td></td>
-							<td id='index0'><span>0</span></td>
-							<td id='index1'><span>1</span></td>
-							<td id='index2'><span>2</span></td>
-							<td id='index3'><span>3</span></td>
-							<td id='index4'><span>4</span></td>
-							<td id='index5'><span>5</span></td>
-						</tr>
-						
-						<tr id="tr3">
-							<td id="arrName">arr :</td>
-							<td class="table-border"><span id="arrVal0">1</span></td>
-							<td class="table-border"><span id="arrVal1">3</span></td>
-							<td class="table-border"><span id="arrVal2">6</span></td>
-							<td class="table-border"><span id="arrVal3">8</span></td>
-							<td class="table-border"><span id="arrVal4">18</span></td>
-							<td class="table-border"><span id="arrVal5">25</span></td>
-						</tr>
-						
-						<tr class='' id='arrows'>
-							<td></td>
-							<td>
-								<div class='arrow-div' id='arrow0'>
-									<i class="fa fa-arrow-up"></i>
-								</div>
-							</td>
-							<td><div class='opacity00 arrow-div' id='arrow1'>
-									<i class="fa fa-arrow-up"></i>
-								</div></td>
-							<td><div class='opacity00 arrow-div' id='arrow2'>
-									<i class="fa fa-arrow-up"></i>
-								</div></td>
-							<td><div class='opacity00 midArrow arrow-div' id='arrow3'>
-									<i class="fa fa-arrow-up"></i>
-								</div></td>
-							<td><div class='opacity00 arrow-div' id='arrow4'>
-									<i class="fa fa-arrow-up"></i>
-								</div></td>
-							<td><div class='arrow-div' id='arrow5'>
-									<i class="fa fa-arrow-up"></i>
-								</div></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-					
-			<div id='animationCode' class='col-xs-12'>
-				<div class="col-xs-3 padding0 stack-div opacity00" id="stackDiv">
-					<div class="stack-border opacity00" id="stack5">5</div>
-					<div class="stack-border opacity00" id="stack4">4</div>
-					<div class="stack-border opacity00" id="stack3">3</div>
-					<div class="stack-border opacity00" id="stack2">2</div>
-					<div class="stack-border opacity00" id="stack1">1</div>
-					<div class="stack-border opacity00" id="stack0">0</div>
+				<div class="col-xs-12 margin-top-20 opacity00" id="animatePivot">
+					Pivot Value : <span id="pivotVal" class="opacity00">7</span>
 				</div>
-		
-					<pre id="codeAnimation" class='col-xs-offset-1 col-xs-6 creampretab4 opacity00'>public int partition(int[] arr, int lb, int ub) {
-		<span id="varInit">int pivot, <span id="downInit">down = lb</span>, <span id="upInit">up = ub</span>, temp;</span>
+
+				<div class="col-xs-12 margin-top-20">
+					<table align="center" class="text-center opacity00" id="arrTable">
+						<tbody>
+							<tr id="tr1" style='height: 50px;'>
+								<td></td>
+								<td id='upDown0'><b class="bold">downIndex</b></td>
+								<td id='upDown1'></td>
+								<td id='upDown2'></td>
+								<td id='upDown3'></td>
+								<td id='upDown4'></td>
+								<td id='upDown5'><b class="bold">upIndex</b></td>
+							</tr>
+
+							<tr id="tr2">
+								<td></td>
+								<td id='index0'><span>0</span></td>
+								<td id='index1'><span>1</span></td>
+								<td id='index2'><span>2</span></td>
+								<td id='index3'><span>3</span></td>
+								<td id='index4'><span>4</span></td>
+								<td id='index5'><span>5</span></td>
+							</tr>
+
+							<tr id="tr3">
+								<td id="arrName">arr :</td>
+								<td class="table-border"><span id="arrVal0">1</span></td>
+								<td class="table-border"><span id="arrVal1">3</span></td>
+								<td class="table-border"><span id="arrVal2">6</span></td>
+								<td class="table-border"><span id="arrVal3">8</span></td>
+								<td class="table-border"><span id="arrVal4">18</span></td>
+								<td class="table-border"><span id="arrVal5">25</span></td>
+							</tr>
+
+							<tr class='' id='arrows'>
+								<td></td>
+								<td><i class="fa fa-arrow-up opacity00"></i></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td><i class="fa fa-arrow-up opacity00"></i></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div id='animationCode' class='col-xs-12'>
+					<div class="col-xs-3 padding0 stack-div opacity00" id="stackDiv">
+						<!-- <div class="stack-border opacity00" id="stack5">5</div>
+						<div class="stack-border opacity00" id="stack4">4</div>
+						<div class="stack-border opacity00" id="stack3">3</div>
+						<div class="stack-border opacity00" id="stack2">2</div>
+						<div class="stack-border opacity00" id="stack1">1</div>
+						<div class="stack-border opacity00" id="stack0">0</div> -->
+					</div>
+
+					<pre id="codeAnimation"
+						class='col-xs-offset-1 col-xs-6 creampretab4 opacity00'>int partition(int arr[], int lb, int ub) {
+		<span id="varInit">int pivot, <span id="downInit">down = lb</span>, <span
+							id="upInit">up = ub</span>, temp;</span>
 		<span id="pivotInit">pivot = arr[lb];</span>
 		while (<span id="mainWhile">down < up</span>) {
-			while (<span id="while1"><span id="while1Cndtn1">arr[down] <= pivot</span> && <span id="while1Cndtn2">down < up</span></span>) {
+			while (<span id="while1"><span id="while1Cndtn1">arr[down] <= pivot</span> && <span
+							id="while1Cndtn2">down < up</span></span>) {
 				<span id="downInc">down++;</span>
 			}
 			while (<span id="while2">arr[up] > pivot</span>) {
@@ -1200,7 +1349,7 @@ void main() {
 		<span id="pivotSwap">arr[up] = pivot;</span>
 		<span id="returnUp">return up;</span>
 }</pre>
-			
+
 				</div>
 			</div>
 		</div>

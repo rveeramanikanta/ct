@@ -20,7 +20,6 @@
 <script type="text/javascript" src="/js/gs/TweenMax.min.js"></script>
 
 <!-- <script src="/secure/lang/c++/js/function-overloading.js" type="text/javascript"></script> -->
-
 <!-- <script src="/secure/lang/c/js-min/cof.min.js"></script> -->
 
 <style type="text/css">
@@ -240,58 +239,72 @@ function introGuide() {
 			 		element : "#topDiv",
 					intro : "",
 					tooltipClass : "hide",
+					visited: false
 				},{
 			 		element : "#code",
 					intro : "",
-					position : "right"
+					position : "right",
+					visited: false
 				},{
 			 		element : "#class",
 					intro : "",
-					position : "right"
+					position : "right",
+					visited: false
 				},{
 			 		element : "#constM",
 					intro : "",
-					position : "right"
+					position : "right",
+					visited: false
 				},{
 			 		element : "#defaultConst",
 					intro : "",
-					position : "right"
+					position : "right",
+					visited: false
 				},{
 			 		element : "#floatX",
 					intro : "",
-					position : "right"
+					position : "right",
+					visited: false
 				},{
 			 		element : "#cout1",
 					intro : "",
-					tooltipClass : "hide"
+					tooltipClass : "hide",
+					visited: false
 				},{
 			 		element : "#outputDiv",
 					intro : "",
-					tooltipClass : "hide"
+					tooltipClass : "hide",
+					visited: false
 				},{
 			 		element : "#cin",
 					intro : "",
-					position : "right"
+					position : "right",
+					visited: false
 				},{
 			 		element : "#outputDiv",
 					intro : "",
-					position : "top"
+					position : "top",
+					visited: false
 				},{
 			 		element : "#comments",
 					intro : "",
-					position : "top"
+					position : "top",
+					visited: false
 				},{
 			 		element : "#paraConst",
 					intro : "",
-					position : "right"
+					position : "right",
+					visited: false
 				},{
 			 		element : "#callMethod",
 					intro : "",
-					tooltipClass : "hide"
+					tooltipClass : "hide",
+					visited: false
 				},{
 			 		element : "#putdataFun",
 					intro : "",
-					position : "right"
+					position : "right",
+					visited: false
 				},{
 			 		element : "#outputDiv",
 					intro : "",
@@ -302,12 +315,30 @@ function introGuide() {
 					position : "right"
 				}
 			]});
-	/* introjs.onbeforechange(function(targetElement) {
-		introjs._targetElement.innerHTML = $("body").html();
-	}); */
+	introjs.onbeforechange(function(targetElement) {
+		introjs._introItems[introjs._currentStep]["currentState"] = $(introjs._introItems[introjs._currentStep]["element"]).html();
+		introjs._introItems[introjs._currentStep]["classes"] = $(introjs._introItems[introjs._currentStep]["element"]).attr("class");
+		if (!introjs._introItems[introjs._currentStep]["visited"]) {
+			console.log("not visited");
+			introjs._introItems[introjs._currentStep]["currentState"] = $(introjs._introItems[introjs._currentStep]["element"]).html();
+			introjs._introItems[introjs._currentStep]["classes"] = $(introjs._introItems[introjs._currentStep]["element"]).attr("class");
+			introjs._introItems[introjs._currentStep]["style"] = $(introjs._introItems[introjs._currentStep]["element"]).attr("style");
+		} else {
+			console.log("collecting initiall code");
+			$(introjs._introItems[introjs._currentStep]["element"]).html(introjs._introItems[introjs._currentStep]["currentState"]);
+			$(introjs._introItems[introjs._currentStep]["element"]).attr("class", introjs._introItems[introjs._currentStep]["classes"]);
+			$(introjs._introItems[introjs._currentStep]["element"]).attr("style", introjs._introItems[introjs._currentStep]["style"]);
+			
+		}
+	});
 	
 	introjs.onafterchange(function(targetElement) {
-		console.log("onafterchange");
+		introjs._introItems[introjs._currentStep]["visited"] = true;
+		if (introjs._introItems[introjs._currentStep + 1]["visited"]) {
+			$(introjs._introItems[introjs._currentStep + 1]["element"]).html(introjs._introItems[introjs._currentStep + 1]["currentState"]);
+			$(introjs._introItems[introjs._currentStep + 1]["element"]).attr("class", introjs._introItems[introjs._currentStep + 1]["classes"]);
+			$(introjs._introItems[introjs._currentStep + 1]["element"]).attr("style", introjs._introItems[introjs._currentStep + 1]["style"]);
+		}
 		var elementId = targetElement.id;
 		$("#" + elementId).removeClass("hide");
 		introjs.refresh();
@@ -652,7 +683,7 @@ function getStep(element, intro, position, tooltipClass) {
 	<h4 class='label ct-demo-heading' id='demoTitle'>Basic to Userdefined</h4>
 </div>
 <div class="col-xs-offset-1 col-xs-10 margin-top-20">
-		<div id="topDiv">
+		<div id="topDiv" class='hai'>
 			<ul style="font-family: monospace;">
 				<li id="li1" class="opacity00">
 					To convert a basic data type to user defined type the <b class='monospace lite-blue'>conversion function</b> should be defined in a class in the form of <b class='monospace lite-blue'>constructor</b>,

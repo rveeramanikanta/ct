@@ -44,3 +44,28 @@ DrawLine.prototype.draw = function(ctx) {
 	ctx.lineTo(this.newX, this.newY);
 	ctx.stroke();
 }
+
+function UndoConnect(objectID, x, y, newX, newY) {
+	this.objectID = objectID;
+	this.x = x;
+	this.y = y;
+	this.newX = newX;
+	this.newY = newY;
+	this.addedToScene = true;
+}
+
+DrawLine.prototype.createUndoDelete = function() {
+	return new UndoConnect(this.objectID, this.x, this.y, this.newX, this.newY);
+}
+
+UndoConnect.prototype.undoInitialStep = function(world) {
+	if (this.connect) {
+		world.connectEdge(this.objectID, this.x, this.y, this.newX, this.newY);
+	} else {
+		world.disconnect(this.objectID);
+	}
+}
+
+UndoConnect.prototype.addUndoAnimation = function(animationList) {
+	return false;
+}
