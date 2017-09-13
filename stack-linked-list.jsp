@@ -15,23 +15,27 @@
 <script type="text/javascript" src="/js/gs/TweenMax.min.js"></script>
 <script type="text/javascript" src="/js/intro.js"></script>
 <script type="text/javascript" src="/js/jquery.scrollTo.js"></script>
-<script type="text/javascript" src="js-min/stllt.min.js"></script>
+<!-- <script type="text/javascript" src="js-min/stllt.min.js"></script> -->
+<script type="text/javascript" src="js/stack-linked-list.js"></script>
 
 <script type="text/javascript" src="js-min/an-li/custom-events.min.js"></script>
 <script type="text/javascript" src="js-min/an-li/undo-functions.min.js"></script>
 <script type="text/javascript" src="js-min/an-li/animated-object.min.js"></script>
 <script type="text/javascript" src="js-min/an-li/animated-circle.min.js"></script>
-<script type="text/javascript" src="js-min/an-li/animated-rectangle.min.js"></script>
+<!-- <script type="text/javascript" src="js-min/an-li/animated-rectangle.min.js"></script> -->
 <script type="text/javascript" src="js-min/an-li/animated-linked-list.min.js"></script>
 <script type="text/javascript" src="js-min/an-li/highlight-circle.min.js"></script>
 <script type="text/javascript" src="js-min/an-li/line.min.js"></script>
 <script type="text/javascript" src="js-min/an-li/draw-line.min.js"></script>
 <script type="text/javascript" src="js-min/an-li/object-manager.min.js"></script>
-<script type="text/javascript" src="js-min/an-li/animated-label.min.js"></script>
+<!-- <script type="text/javascript" src="js-min/an-li/animated-label.min.js"></script> -->
 <script type="text/javascript" src="js-min/an-li/animation-main.min.js"></script>
 <script type="text/javascript" src="js-min/al-li/algorithm.min.js"></script>
-<script type="text/javascript" src="js-min/al-li/stackll.min.js"> </script>
+<!-- <script type="text/javascript" src="js-min/al-li/stackll.min.js"> </script> -->
+<script type="text/javascript" src="js/al-li/stackll.js"> </script>
+<script type="text/javascript" src="js/an-li/animated-label.js"></script>
 
+<script type="text/javascript" src="js/an-li/animated-rectangle.js"></script>
 <style type="text/css">
 .ct-demo-heading {
 	background: highlight none repeat scroll 0 0;

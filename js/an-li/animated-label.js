@@ -104,7 +104,7 @@ AnimatedLabel.prototype.draw = function(ctx)
 	    ctx.fillStyle = "#ff0000";
 		ctx.lineWidth = this.highlightDiff;
 		ctx.strokeText(this.label, this.x, this.y);		
-		//ctx.fillText(this.label, this.x, this.y);
+		// ctx.fillText(this.label, this.x, this.y);
 	}
 	ctx.strokeStyle = this.labelColor;
 	ctx.fillStyle = this.labelColor;
@@ -133,7 +133,7 @@ AnimatedLabel.prototype.draw = function(ctx)
 
 
                 }
-		//this.textWidth = ctx.measureText(this.label).width;
+		// this.textWidth = ctx.measureText(this.label).width;
 	}
 	else
 	{
@@ -141,7 +141,8 @@ AnimatedLabel.prototype.draw = function(ctx)
 		for (var i = 0; i < strList.length; i++)
 		{
 			ctx.fillText(strList[i], this.x, this.y + offset + i * 12);
-			//this.textWidth = Math.max(this.textWidth, ctx.measureText(strList[i]).width);
+			// this.textWidth = Math.max(this.textWidth,
+			// ctx.measureText(strList[i]).width);
 		}		
 	}
 	ctx.closePath();
@@ -264,7 +265,7 @@ AnimatedLabel.prototype.getWidth = function()
 
 AnimatedLabel.prototype.getHeight = function()
 {
-	return 10;  // HACK!  HACK!  HACK!  HACK!
+	return 10;  // HACK! HACK! HACK! HACK!
 }
 
 
@@ -309,7 +310,7 @@ AnimatedLabel.prototype.top = function()
 {
 	   if (this.centering)
 	   {
-		   return  this.y - 5; //TODO: Un-Hardwire
+		   return  this.y - 5; // TODO: Un-Hardwire
 	   }
 	   else 
 	   {
@@ -352,7 +353,7 @@ AnimatedLabel.prototype.left = function()
    }
    else
    {
-	   return  this.x; // TODO:  - a little?
+	   return  this.x; // TODO: - a little?
    }
 }
 

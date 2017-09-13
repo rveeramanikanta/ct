@@ -120,14 +120,9 @@ table {
 	background-color: #eee8aa;
 	border: 1px solid gray;
 	border-radius: 8px;
-	height: 25px;
-	line-height: 25px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 7px;
-	padding: 0;
-	text-align: center;
-	width: 96%;
+	margin: 0 5px 5px 5px;
+	padding: 4px;
+	position: relative;
 }
 
 .blinking-green {
@@ -186,9 +181,10 @@ r {
 	color: red;
 }
 
-#stackDiv>div {
+#stackBody {
 	position: relative;
 }
+
 </style>
 
 <script type="text/javascript">
@@ -202,6 +198,7 @@ var high = 5;
 var lb;
 var ub;
 var isTrue;
+var jVal = 0;
 
 $(document).ready(function() {
 	introGuide();
@@ -321,6 +318,7 @@ function introGuide() {
 	});
 	
 	introjs.onafterchange(function(targetElement) {
+		introjs.refresh();
 		var elementId = targetElement.id;
 		switch (elementId) {
 		case "javaCode":
@@ -391,7 +389,15 @@ function introGuide() {
 			
 		case "stackDiv":
 			$(".introjs-helperLayer").one("transitionend", function() {
-				if($("#stackDiv").hasClass("stack-partition-animation")) {
+				$("#stackDiv").removeClass("opacity00");
+				if (introjs._introItems[introjs._currentStep]["isCompleted"]) {
+					tl.to($("#stackBody > div:eq(0)"), 1, {top : -170, opacity: 0, onComplete: function() {
+						$("#stackBody > div:eq(0)").remove();
+						setTimeout(function() {
+							introjs.nextStep();
+						}, 1000);
+					}});
+				} else if($("#stackDiv").hasClass("stack-partition-animation")) {
 					$("#stackDiv").removeClass("stack-partition-animation");
 					stackPartitionFunction();
 				} else {
@@ -404,8 +410,10 @@ function introGuide() {
 		case "quickSortMethod":
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
+				downItr = parseInt($("#stackBody > div:eq(0)").attr("args1"));
+				upItr = parseInt($("#stackBody > div:eq(0)").attr("args2"));
 				$("#stackDiv").addClass("stack-quick-animation");
-				var text = "This is the sorting method. here parameter int[] arr initialized to given array, variables low = 0, high = " + upItr + ".";
+				var text = "This is the sorting method. here parameter int[] arr initialized to given array, variables low = " + downItr + ", high = " + upItr + ".";
 				typing(".introjs-tooltiptext", text, function() {
 					introjs.insertOption(introjs._currentStep + 1, getStep("#ifInQuickSort", "", "right"));
 					$(".introjs-nextbutton").removeClass("introjs-disabled").show();
@@ -418,7 +426,7 @@ function introGuide() {
 			introjs.refresh();
 			$(".introjs-helperLayer").one("transitionend", function() {
 				$(".introjs-tooltiptext").append("<span id='tooltipCndtn' style='font-family: monospace; font-weight: bold;'>" 
-					+ "<span id='tooltipLow'>low</span> <= <span id='tooltipHigh'>high</span></span>");
+					+ "<span id='tooltipLow'>low</span> < <span id='tooltipHigh'>high</span></span>");
 				var l1 = $("#quickSortingIfCndtn").offset();
 				$("#tooltipCndtn").offset({
 					"top" : l1.top,
@@ -427,7 +435,7 @@ function introGuide() {
 				$("#quickSortingIfCndtn").addClass("blinking-yellow");
 				tl.to("#tooltipCndtn", 1, {opacity:1, delay:1, top: 0, left: 0, onComplete: function() {
 					flipEffect("#tooltipHigh", upItr, function() {
-						flipEffect("#tooltipLow", 0, function() {
+						flipEffect("#tooltipLow", downItr, function() {
 							var text;
 							if (downItr < upItr) {
 								text = "Evaluates to <y>true</y>.";
@@ -439,6 +447,9 @@ function introGuide() {
 								$("#quickSortingIfCndtn").removeClass("blinking-yellow");
 								if (downItr < upItr) {
 									introjs.insertOption(introjs._currentStep + 1, getStep("#callPartition", "", "right"));
+								} else {
+									introjs.insertOption(introjs._currentStep + 1, getStep("#stackDiv", "", "right", "hide"));
+									introjs._introItems[introjs._currentStep + 1]["isCompleted"] = true; 
 								}
 								$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 							});
@@ -463,7 +474,7 @@ function introGuide() {
 				introjs.insertOption(introjs._currentStep + 3, getStep("#animationDiv", "", "left"));
 				introjs.insertOption(introjs._currentStep + 4, getStep("#recursiveQuickSort1", "", "right"));
 				$("#stackDiv").addClass("stack-partition-animation");
-				var text = "Here we are calling partition method. now parameteres low = 0, high = " + upItr + ".";
+				var text = "Here we are calling partition method. now parameteres low = " + downItr + ", high = " + upItr + ".";
 				typing(".introjs-tooltiptext", text, function() {
 					$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 				});
@@ -473,7 +484,9 @@ function introGuide() {
 		case "partition":
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
-				var text = "This is partition method. here lb = 0, ub = " + upItr + ", which we are sending parameters as low and high.";
+				downItr = parseInt($("#stackBody > div:eq(0)").attr("args1"));
+				upItr = parseInt($("#stackBody > div:eq(0)").attr("args2"));
+				var text = "This is partition method. here lb = " + downItr + ", ub = " + upItr + ", which we are sending parameters as low and high.";
 				typing(".introjs-tooltiptext", text, function() {
 					$(".introjs-nextbutton").show();
 				});
@@ -483,10 +496,13 @@ function introGuide() {
 		case "recursiveQuickSort1":
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
+				$(".partition-call:eq(0)").attr("jVal", jVal);
+				upItr = jVal - 1;
+				downItr = parseInt($("#stackBody > div:eq(0)").attr("args1"));
 				introjs.insertOption(introjs._currentStep + 1, getStep("#stackDiv", "", "right", "hide"));
 				introjs.insertOption(introjs._currentStep + 2, getStep("#quickSortMethod", "", "right"));
 				introjs.insertOption(introjs._currentStep + 3, getStep("#recursiveQuickSort2", "", "right"));
-				var text = "Now again we are calling quicksorting method. Here we are passing low = 0, j - 1 = " + upItr + ".";
+				var text = "Now again we are calling quicksorting method. Here we are passing low = " + downItr + ", j - 1 = " + upItr + ".";
 				typing(".introjs-tooltiptext", text, function() {
 					$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 				});
@@ -496,10 +512,12 @@ function introGuide() {
 		case "recursiveQuickSort2":
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
+				downItr = parseInt($(".partition-call:eq(0)").attr("jVal")) + 1;
+				upItr = parseInt($("#stackBody > div:eq(0)").attr("args2"));
 				introjs.insertOption(introjs._currentStep + 1, getStep("#stackDiv", "", "right", "hide"));
 				introjs.insertOption(introjs._currentStep + 2, getStep("#quickSortMethod", "", "right"));
 				//introjs.insertOption(introjs._currentStep + 3, getStep("#restart", "", "right"));
-				var text = "Now again we are calling quicksorting method. Here we are passing j + 1 = " + (downItr + 1) + ", high = " + upItr + ".";
+				var text = "Now again we are calling quicksorting method. Here we are passing j + 1 = " + (downItr) + ", high = " + upItr + ".";
 				typing(".introjs-tooltiptext", text, function() {
 					$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 				});
@@ -616,42 +634,47 @@ function partitionAnimation() {
 var stackCount = 0;
 
 function stackFunction() {
-	$("#stackDiv").append("<div class='stack-border opacity001'>quicksorting(arr, " + downItr + ", " + upItr + ")</div>");
-	setStackPositionToBottom();
-	tl.to("#stackDiv",1, {opacity: 1, onComplete:function() {
+	$("#stackBody").prepend("<div class='stack-border opacity001 quick-sorting-call' args1='" + downItr + "' args2='" + upItr + "'>" 
+			+ "quicksorting(arr, " + downItr + ", " + upItr + ")</div>");
+	setStackLocationToBottom();
+	/* tl.to("#stackDiv",1, {opacity: 1, onComplete:function() {
 		$("#stackDiv").removeClass("opacity00");
-	}});
+	}}); */
 	
-	$("#stack" + stackCount).removeClass("opacity00");
-	tl.from("#stack" + stackCount, 1, {opacity: 0, top: -175, onComplete: function() {
-		stackCount++;
+	tl.from($("#stackBody > div:eq(0)"), 1, {top : -175, onComplete : function() {
 		setTimeout(function() {
-			$(".introjs-nextbutton").click();
+			introjs.nextStep();
 		}, 1000);
 	}});
 }
 
-function setStackPositionToBottom() {
-	var setTop = $("#stackDiv").height() - $("#stackDiv > div").height();
+function setStackLocationToBottom() {
+	var setTop =  $("#stackDiv").height() - $("#stackDiv > div").height();
 	if (setTop > 0) {
 		$("#stackDiv > div").css({"top" : setTop});
 	}
 }
 
 function stackPartitionFunction() {
-	$("#stack" + stackCount).text("partition(arr, 0, " + upItr + ")");
-	
-	tl.to("#stackDiv",1, {opacity: 1, onComplete:function() {
+	$("#stackBody").prepend("<div class='stack-border partition-call' args1='" + downItr + "' args2='" + upItr + "'>partition(arr, " + downItr + ", " + upItr + ")</div>");
+	setStackLocationToBottom();
+	/* tl.to("#stackDiv",1, {opacity: 1, onComplete:function() {
 		$("#stackDiv").removeClass("opacity00");
+	}}); */
+	
+	tl.from($("#stackBody > div:eq(0)"), 1, {top : -175, onComplete : function() {
+		setTimeout(function() {
+			introjs.nextStep();
+		}, 1000);
 	}});
 	
-	$("#stack" + stackCount).removeClass("opacity00");
+	/* $("#stack" + stackCount).removeClass("opacity00");
 	tl.from("#stack" + stackCount, 1, {opacity: 0, top: -175, onComplete: function() {
 		stackCount++;
 		setTimeout(function() {
 			$(".introjs-nextbutton").click();
 		}, 1000);
-	}});
+	}}); */
 }
 
 function flipEffect(element, value, callBackFunction) {
@@ -740,7 +763,7 @@ function downWhileAnimation() {
 									});
 								} else {
 									$("#arrow" + downItr).addClass("ct-code-b-red");
-									var text = "condition Evaluates to <y>false</y>. now control not enters into while loop and goes next statement.";
+									var text = "condition Evaluates to <r>false</r>. now control not enters into while loop and goes next statement.";
 									typing("#evaluateTyping2", text, function() {
 										$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='upWhileAnimation()'>Next &#8594;</a>");
 									});
@@ -868,7 +891,7 @@ function upWhileAnimation() {
 						});
 					} else {
 						$("#arrow" + upItr).addClass("ct-code-b-red");
-						var text = "condition Evaluates to false. now control not enters into the while loop and goes to next statement.";
+						var text = "condition Evaluates to <r>false</r>. now control not enters into the while loop and goes to next statement.";
 						typing("#evaluateTyping2", text, function() {
 							$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='swapAnimation()'>Next &#8594;</a>");
 						});
@@ -1099,12 +1122,14 @@ function pivotSwapAnimation() {
 											$("#callPartition").addClass("blinking-white");
 											$("#callPartition").addClass("zIndex");
 											flipEffect("#flipReturnUp", upItr, function() {
-												var text = "partition method returned " + upItr + ". Now j = "+upItr+"";
+												var text = "partition method returned " + upItr + ". Now j = " + upItr + ".";
 												typing(".type-text", text, function() {
 													$("#callPartition").removeClass("blinking-white");
 													$("#callPartition").removeClass("zIndex");
-													upItr = upItr-1;
-													downItr = lb;
+													jVal = upItr;
+													/* downItr = lb; */
+													/* upItr = upItr-1;
+													downItr = lb; */
 													$(".introjs-nextbutton").show();
 												});
 											});
@@ -1122,7 +1147,6 @@ function pivotSwapAnimation() {
 }
 
 function dynamicSteps1(isTrue) {
-	console.log("In isTrue false ******");
 	var dynamicStep = {
 			"element" : "#stackDiv",
 			"tooltipClass" : "hide",
@@ -1169,7 +1193,6 @@ function dynamicSteps1(isTrue) {
 	introjs.insertOption(introjs._currentStep + 7, dynamicStep);
 	
 	if (isTrue && (downItr < upItr)) {
-		console.log("In isTrue true ******");
 		var dynamicStep = {
 				"element" : "#recursiveQuickSort1",
 				"intro" : "",
@@ -1317,13 +1340,8 @@ void main() {
 				</div>
 
 				<div id='animationCode' class='col-xs-12'>
-					<div class="col-xs-3 padding0 stack-div opacity00" id="stackDiv">
-						<!-- <div class="stack-border opacity00" id="stack5">5</div>
-						<div class="stack-border opacity00" id="stack4">4</div>
-						<div class="stack-border opacity00" id="stack3">3</div>
-						<div class="stack-border opacity00" id="stack2">2</div>
-						<div class="stack-border opacity00" id="stack1">1</div>
-						<div class="stack-border opacity00" id="stack0">0</div> -->
+					<div class="col-xs-3 padding0 opacity00 stack-div" id="stackDiv">
+						<div id='stackBody'></div>
 					</div>
 
 					<pre id="codeAnimation"

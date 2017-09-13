@@ -238,7 +238,7 @@ var stackLinkedListReady = function() {
 	introjs.setOption('exitOnOverlayClick', false);
 	introjs.setOption('exitOnEsc', false);
 	introjs.setOption('keyboardNavigation', false);
-	introjs.start();
+	//introjs.start();
 	$('.introjs-prevbutton').hide();
 	$('.introjs-skipbutton').hide();
 	$('.introjs-bullets').hide();
