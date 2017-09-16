@@ -151,6 +151,7 @@ AnimatedObject.prototype.getClosestCardinalPoint = function(fromX, fromY) {
 	var yPos;
 
 	if (fromX < this.left()) {
+		console.log(fromX);
 		xDelta = this.left() - fromX;
 		xPos = this.left();
 	} else if (fromX > this.right()) {
@@ -197,6 +198,7 @@ AnimatedObject.prototype.pulseHighlight = function(frameNum) {
 
 AnimatedObject.prototype.getTailPointerAttachPos = function(fromX, fromY,
 		anchorPoint) {
+	console.log(this);
 	return [ this.x, this.y ];
 }
 

@@ -207,16 +207,17 @@ AnimatedRectangle.prototype.draw = function(context) {
 	}
 	context.strokeStyle = this.foregroundColor;
 	context.fillStyle = this.backgroundColor;
-	/*context.shadowBlur = 10;*/
+	/* context.shadowBlur = 10; */
 	context.shadowColor = "gray";
-	
+
 	context.shadowBlur = 2;
 	context.shadowOffsetX = 5;
 	context.shadowOffsetY = 5;
-	/*context.setShadow("10px 10px 5px rgba(94, 128, 191, 0.5)");*/
-	/*context.shadowColor = 'black';
-	context.shadowOffsetY = 5;
-	context.shadowOffsetX = 5;*/
+	/* context.setShadow("10px 10px 5px rgba(94, 128, 191, 0.5)"); */
+	/*
+	 * context.shadowColor = 'black'; context.shadowOffsetY = 5;
+	 * context.shadowOffsetX = 5;
+	 */
 
 	context.beginPath();
 	context.moveTo(startX, startY);

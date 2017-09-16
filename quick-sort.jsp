@@ -10,14 +10,14 @@
 <link rel="stylesheet" href="/css/introjs.css">
 <link rel="stylesheet" href="/css/introjs-ct.css" />
 
-<script src="/js/jquery-latest.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/jquery-ui-latest.js"></script>
-<script src="/js/intro.js" type="text/javascript"></script>
-<script src="/js/typewriting.min.js" type="text/javascript"></script>
-<script src="/js/gs/TweenMax.min.js" type="text/javascript"></script>
-<script src="/js/gs/TweenLite.min.js" type="text/javascript"></script>
-<script src="/js/gs/TimelineLite.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/jquery-latest.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/jquery-ui-latest.js"></script>
+<script type="text/javascript" src="/js/intro.js"></script>
+<script type="text/javascript" src="/js/typewriting.min.js"></script>
+<script type="text/javascript" src="/js/gs/TweenMax.min.js"></script>
+<script type="text/javascript" src="/js/gs/TweenLite.min.js"></script>
+<script type="text/javascript" src="/js/gs/TimelineLite.min.js"></script>
 <title>quick-sort</title>
 
 <style type="text/css">
@@ -114,6 +114,7 @@ table {
 	height: 200px;
 	border-top: none;
 	text-align: center;
+	overflow: auto;
 }
 
 .stack-border {
@@ -185,11 +186,15 @@ r {
 	position: relative;
 }
 
+#tr3 td span {
+	position: relative;
+}
+
 </style>
 
 <script type="text/javascript">
 var introjs;
-var typingSpeed = 10;
+var typingSpeed = 5;
 var arr = [];
 var pivotVal;
 var tl;
@@ -199,6 +204,10 @@ var lb;
 var ub;
 var isTrue;
 var jVal = 0;
+var iterationsArr = [];
+var iterationCount = 0;
+var downItr = 0;
+var upItr = 5;
 
 $(document).ready(function() {
 	introGuide();
@@ -259,62 +268,11 @@ function introGuide() {
 			element : "#quickSortMethod",
 			intro : "",
 			position: "right"
-		}/* , {
-			element : "#ifInQuickSort",
-			intro : "",
-			position: "right"
 		}, {
-			element : "#callPartition",
+			element : "#restart",
 			intro : "",
-			position: "right"
-		}, {
-			element : "#stackDiv",
-			intro : "",
-			position: "left",
-			tooltipClass: "hide"
-		}, {
-			element : "#partition",
-			intro : "",
-			position: "right"
-		}, {
-			element : "#animationDiv",
-			intro : "",
-			position: "left", 
-		}, {
-			element : "#recursiveQuickSort1",
-			intro : "",
-			position: "right",
-		},  *//* {
-			element : "#stackDiv",
-			intro : "",
-			position: "left",
-			tooltipClass: "hide"
-		}, {
-			element : "#quickSortMethod",
-			intro : "",
-			position: "right"
-		}, {
-			element : "#ifInQuickSort",
-			intro : "",
-			position: "right"
-		}, {
-			element : "#callPartition",
-			intro : "",
-			position: "right"
-		}, {
-			element : "#stackDiv",
-			intro : "",
-			position: "left",
-			tooltipClass: "hide"
-		}, {
-			element : "#partition",
-			intro : "",
-			position: "right"
-		}, {
-			element : "#animationDiv",
-			intro : "",
-			position: "left" 
-		} */]
+			position : "right"
+		}]
 	});
 	
 	introjs.onafterchange(function(targetElement) {
@@ -349,6 +307,7 @@ function introGuide() {
 				if (introjs._currentStep == 2) {
 					$.each($("#arrInit span"), function(index, value) {
 						$("#arrTable tr:nth-child(3) span").eq(index).text($(this).text());
+						arr.push(parseInt($(this).text()));
 					});
 					
 					$('#arrInit').effect( "transfer", { to: $("#tr3"), className: "ui-effects-transfer" }, 1000, function() {
@@ -361,6 +320,8 @@ function introGuide() {
 							introjs.nextStep();
 						}, 1000);
 					});
+					
+					quicksorting(arr, 0, 5);
 				} else {
 					$('#partition').effect("transfer", { to: $("#codeAnimation"), className: "ui-effects-transfer" }, 1000, function() {
 						$("#codeAnimation").removeClass("opacity00");
@@ -379,6 +340,9 @@ function introGuide() {
 		case "callQuickSort":
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
+				downItr = iterationsArr[iterationCount]["quicksorting"][0];
+				upItr = iterationsArr[iterationCount]["quicksorting"][1];
+				iterationCount++;
 				$("#stackDiv").addClass("stack-quick-animation");
 				var text = "By using refrence variable quickSort we call quickSort() method, by sending the parameters.";
 				typing(".introjs-tooltiptext", text, function() {
@@ -391,12 +355,16 @@ function introGuide() {
 			$(".introjs-helperLayer").one("transitionend", function() {
 				$("#stackDiv").removeClass("opacity00");
 				if (introjs._introItems[introjs._currentStep]["isCompleted"]) {
-					tl.to($("#stackBody > div:eq(0)"), 1, {top : -170, opacity: 0, onComplete: function() {
+					$("#stackBody > div:eq(0)").css("background-color", "lightgray");
+					setTimeout(function() {
+						introjs.nextStep();
+					}, 1000);
+					/* tl.to($("#stackBody > div:eq(0)"), 1, {top : -170, opacity: 0, onComplete: function() {
 						$("#stackBody > div:eq(0)").remove();
 						setTimeout(function() {
 							introjs.nextStep();
 						}, 1000);
-					}});
+					}}); */
 				} else if($("#stackDiv").hasClass("stack-partition-animation")) {
 					$("#stackDiv").removeClass("stack-partition-animation");
 					stackPartitionFunction();
@@ -448,20 +416,14 @@ function introGuide() {
 								if (downItr < upItr) {
 									introjs.insertOption(introjs._currentStep + 1, getStep("#callPartition", "", "right"));
 								} else {
-									introjs.insertOption(introjs._currentStep + 1, getStep("#stackDiv", "", "right", "hide"));
-									introjs._introItems[introjs._currentStep + 1]["isCompleted"] = true; 
+									/* introjs.insertOption(introjs._currentStep + 1, getStep("#stackDiv", "", "right", "hide"));
+									introjs._introItems[introjs._currentStep + 1]["isCompleted"] = true;  */
 								}
 								$(".introjs-nextbutton").removeClass("introjs-disabled").show();
 							});
 						});
 					});
-					
-					
 				}});
-				
-				/* var text = "Here we are checking low &lt; high i.e 0 &lt; "+upItr+" evaluates true. so control enters in to the condition.";
-				typing(".introjs-tooltiptext", text, function() {
-				}); */
 			});
 			break;
 			
@@ -469,6 +431,9 @@ function introGuide() {
 			introjs.refresh();
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
+				downItr = iterationsArr[iterationCount]["partition"][0];
+				upItr = iterationsArr[iterationCount]["partition"][1];
+				iterationCount++;
 				introjs.insertOption(introjs._currentStep + 1, getStep("#stackDiv", "", "right", "hide"));
 				introjs.insertOption(introjs._currentStep + 2, getStep("#partition", "", "right"));
 				introjs.insertOption(introjs._currentStep + 3, getStep("#animationDiv", "", "left"));
@@ -484,8 +449,8 @@ function introGuide() {
 		case "partition":
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
-				downItr = parseInt($("#stackBody > div:eq(0)").attr("args1"));
-				upItr = parseInt($("#stackBody > div:eq(0)").attr("args2"));
+				/* downItr = parseInt($("#stackBody > div:eq(0)").attr("args1"));
+				upItr = parseInt($("#stackBody > div:eq(0)").attr("args2")); */
 				var text = "This is partition method. here lb = " + downItr + ", ub = " + upItr + ", which we are sending parameters as low and high.";
 				typing(".introjs-tooltiptext", text, function() {
 					$(".introjs-nextbutton").show();
@@ -497,8 +462,11 @@ function introGuide() {
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
 				$(".partition-call:eq(0)").attr("jVal", jVal);
-				upItr = jVal - 1;
-				downItr = parseInt($("#stackBody > div:eq(0)").attr("args1"));
+				/* upItr = jVal - 1;
+				downItr = parseInt($("#stackBody > div:eq(0)").attr("args1")); */
+				downItr = iterationsArr[iterationCount]["quicksorting"][0];
+				upItr = iterationsArr[iterationCount]["quicksorting"][1];
+				iterationCount++;
 				introjs.insertOption(introjs._currentStep + 1, getStep("#stackDiv", "", "right", "hide"));
 				introjs.insertOption(introjs._currentStep + 2, getStep("#quickSortMethod", "", "right"));
 				introjs.insertOption(introjs._currentStep + 3, getStep("#recursiveQuickSort2", "", "right"));
@@ -512,8 +480,11 @@ function introGuide() {
 		case "recursiveQuickSort2":
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
-				downItr = parseInt($(".partition-call:eq(0)").attr("jVal")) + 1;
-				upItr = parseInt($("#stackBody > div:eq(0)").attr("args2"));
+				downItr = iterationsArr[iterationCount]["quicksorting"][0];
+				upItr = iterationsArr[iterationCount]["quicksorting"][1];
+				iterationCount++;
+				/* downItr = parseInt($(".partition-call:eq(0)").attr("jVal")) + 1;
+				upItr = parseInt($("#stackBody > div:eq(0)").attr("args2")); */
 				introjs.insertOption(introjs._currentStep + 1, getStep("#stackDiv", "", "right", "hide"));
 				introjs.insertOption(introjs._currentStep + 2, getStep("#quickSortMethod", "", "right"));
 				//introjs.insertOption(introjs._currentStep + 3, getStep("#restart", "", "right"));
@@ -560,8 +531,7 @@ function charAtEnd(elementId) {
 }
 
 function partitionAnimation() {
-	/* $("#tr1 > td").addClass("opacity00");
-	$("#arrows > td > div").addClass("opacity00"); */
+	$("#animatePivot").removeAttr("style").addClass("opacity00");
 	$(".user-btn").remove();
 	$(".introjs-tooltiptext").append("<ul><li id='liDown' class='opacity00 ct-code-b-yellow'>  down = <span id='flipLb'>lb</span> </li>" +
 			"<li id='liUp' class='opacity00 ct-code-b-yellow'> up = <span id='flipUb'>ub</span> </li>" + 
@@ -600,22 +570,13 @@ function partitionAnimation() {
 						flipEffect("#pivotLb", downItr, function() { 
 							$("#tr3 td").eq(1).addClass("blinking-green");
 							flipEffect("#flipPivot", $("#arrVal" + downItr).text(), function() {
-								var l4 = $("#flipPivot").offset();
+								var l4 = $("#tr3 td:eq(" + (downItr + 1) + ") span").offset();
 								$("#pivotVal").offset({"top": l4.top, "left": l4.left});
 								tl.to("#animatePivot", 1, {opacity: 1, onComplete: function() {
 									$("#animatePivot").removeClass("opacity00");
 									$("#pivotVal").addClass("zIndex");
 									$("#pivotVal").removeClass("opacity00");
 								}});
-								
-								/* $("#tr1 > td").addClass("opacity00");
-								$("#arrows > td > div").addClass("opacity00"); */
-								
-								/* $("#tr1 > td").eq(downItr + 1).removeClass("opacity00").find("b").text("downIndex");
-								$("#arrows > td > div").eq(downItr).removeClass("opacity00"); */
-								
-								/* $("#tr1 > td").eq(upItr + 1).removeClass("opacity00").find("b").text("upIndex");
-								$("#arrows > td > div").eq(upItr).removeClass("opacity00"); */
 								
 								tl.to("#pivotVal", 1, {opacity: 1, top:0, left:0, onComplete: function() {
 									$("#pivotVal").removeClass("zIndex");
@@ -637,10 +598,6 @@ function stackFunction() {
 	$("#stackBody").prepend("<div class='stack-border opacity001 quick-sorting-call' args1='" + downItr + "' args2='" + upItr + "'>" 
 			+ "quicksorting(arr, " + downItr + ", " + upItr + ")</div>");
 	setStackLocationToBottom();
-	/* tl.to("#stackDiv",1, {opacity: 1, onComplete:function() {
-		$("#stackDiv").removeClass("opacity00");
-	}}); */
-	
 	tl.from($("#stackBody > div:eq(0)"), 1, {top : -175, onComplete : function() {
 		setTimeout(function() {
 			introjs.nextStep();
@@ -658,23 +615,11 @@ function setStackLocationToBottom() {
 function stackPartitionFunction() {
 	$("#stackBody").prepend("<div class='stack-border partition-call' args1='" + downItr + "' args2='" + upItr + "'>partition(arr, " + downItr + ", " + upItr + ")</div>");
 	setStackLocationToBottom();
-	/* tl.to("#stackDiv",1, {opacity: 1, onComplete:function() {
-		$("#stackDiv").removeClass("opacity00");
-	}}); */
-	
 	tl.from($("#stackBody > div:eq(0)"), 1, {top : -175, onComplete : function() {
 		setTimeout(function() {
 			introjs.nextStep();
 		}, 1000);
 	}});
-	
-	/* $("#stack" + stackCount).removeClass("opacity00");
-	tl.from("#stack" + stackCount, 1, {opacity: 0, top: -175, onComplete: function() {
-		stackCount++;
-		setTimeout(function() {
-			$(".introjs-nextbutton").click();
-		}, 1000);
-	}}); */
 }
 
 function flipEffect(element, value, callBackFunction) {
@@ -689,8 +634,8 @@ function flipEffect(element, value, callBackFunction) {
 	}});
 }
 
-var downItr = 0;
-var upItr = 5;
+/* var downItr = 0;
+var upItr = 5; */
 
 function whileAnimation() {
 	$(".user-btn").remove();
@@ -768,7 +713,6 @@ function downWhileAnimation() {
 										$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='upWhileAnimation()'>Next &#8594;</a>");
 									});
 								}
-								
 							});
 						});
 					}});
@@ -823,43 +767,6 @@ function downInc() {
 					$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='downWhileAnimation()'>Next &#8594;</a>");
 				});
 			}});
-			/* TweenMax.to("#arrow" + (downItr + 1), 1, {opacity:1, top: 0, left:0, onComplete: function() {
-				$("#upDown" + (downItr+1)).removeClass("opacity00");
-				$("#arrow" + (downItr+1)).removeClass("opacity00");
-				var text = "Now down has increased, control goes to while condition again.";
-				typing(".type-text", text, function() {
-					downItr++;
-					$("#downInc").removeClass("blinking-yellow");
-					$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='downWhileAnimation()'>Next &#8594;</a>");
-				});
-			}}); */
-			
-			
-			/* var l2 = $("#upDown" + downItr).offset();
-			var l3 = $("#arrow" + downItr).offset();
-			
-			$("#upDown" + (downItr+1)).offset({"top" : l2.top, "left": l2.left});
-			$("#arrow" + (downItr+1)).offset({"top" : l3.top, "left": l3.left});
-			$("#upDown" + downItr).addClass("opacity00").removeAttr("style");
-			$("#arrow" + downItr).addClass("opacity00").removeAttr("style");
-			$("#upDown"+(downItr+1)+" .bold").text("downIndex");
-			
-			if(downItr+1 == upItr) {
-				$("#arrow" + (downItr+1)).append(" <i class='fa fa-arrow-up up-down'></i>");
-				$("#upDown" + (downItr+1)).append(" <b class='bold2 up-down'>upIndex</b>");
-			}
-			
-			TweenMax.to($("#upDown" + (downItr + 1) + " *:contains('upIndex')"), 1, {opacity:1, top: 0, left:0});
-			TweenMax.to("#arrow" + (downItr + 1), 1, {opacity:1, top: 0, left:0, onComplete: function() {
-				$("#upDown" + (downItr+1)).removeClass("opacity00");
-				$("#arrow" + (downItr+1)).removeClass("opacity00");
-				var text = "Now down has increased, control goes to while condition again.";
-				typing(".type-text", text, function() {
-					downItr++;
-					$("#downInc").removeClass("blinking-yellow");
-					$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='downWhileAnimation()'>Next &#8594;</a>");
-				});
-			}}); */
 		});
 	}});
 }
@@ -920,7 +827,6 @@ function upDec() {
 				$("#tr1 td:eq(" + (upItr) + ")").find("br").remove();
 			}
 			
-			
 			var l = $("#tr1 td:eq(" + (upItr + 1) + ") *:contains('upIndex')").addClass("opacity00").offset();
 			$(".up").offset({
 				"top" : l.top,
@@ -947,30 +853,6 @@ function upDec() {
 					$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='upWhileAnimation()'>Next &#8594;</a>");
 				});
 			}});
-			
-			
-			/* var l2 = $("#upDown" + upItr).offset();
-			var l3 = $("#arrow" + upItr).offset();
-			$("#upDown"+(upItr-1)+" .bold").text("upIndex");
-			$("#upDown" + (upItr-1)).offset({"top" : l2.top, "left": l2.left});
-			$("#arrow" + (upItr-1)).offset({"top" : l3.top, "left": l3.left});
-			$(".up-down").remove();
-			if(downItr != upItr) {
-				$("#upDown" + upItr).addClass("opacity00").removeAttr("style");
-				$("#arrow" + upItr).addClass("opacity00").removeAttr("style");
-			}
-			
-			TweenMax.to("#upDown" + (upItr-1), 1, {opacity:1, top: 0, left:0});
-			TweenMax.to("#arrow" + (upItr-1), 1, {opacity:1, top: 0, left:0, onComplete: function() {
-				$("#upDown" + (upItr-1)).removeClass("opacity00");
-				$("#arrow" + (upItr-1)).removeClass("opacity00");
-				var text = "Now up has decreased, control goes to while condition again.";
-				typing(".type-text", text, function() {
-					upItr--;
-					$("#upDec").removeClass("blinking-yellow");
-					$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='upWhileAnimation()'>Next &#8594;</a>");
-				});
-			}}); */
 		});	
 	}});
 }
@@ -1048,13 +930,19 @@ function swapping() {
 											TweenMax.to("#arrVal"+ upItr, 1, {opacity: 1, top: downTop, left: downLeft});
 											TweenMax.to("#arrVal"+ downItr, 1, {opacity: 1, top: upTop, left: upLeft, onComplete: function() {
 												setTimeout(function() {
+													/* var l1 = $("#tr3 td span:eq(" + (upItr)  + ")").text(parseInt($("#flipSwapdownArr").text())).offset();
+													var l1 = $("#tr3 td span:eq(" + (downItr)  + ")").text(parseInt($("#flipSwapTemp").text())).offset(); */
 													$('#tr3 td span').eq(downItr).remove();
 													$('#tr3 td').eq(downItr + 1).append('<span></span>');
-													$('#tr3 td span').eq(downItr).attr('id', 'arrVal' + downItr).text(upAfterSwap);
+													var l1 = $('#tr3 td span').eq(downItr).attr('id', 'arrVal' + downItr).text(upAfterSwap).offset();
 													$('#tr3 td span').eq(upItr).remove();
 													$('#tr3 td').eq(upItr + 1).append('<span></span>');
-													$('#tr3 td span').eq(upItr).attr('id', 'arrVal' + upItr).text(downAfterSwap);
+													var l2 = $('#tr3 td span').eq(upItr).attr('id', 'arrVal' + upItr).text(downAfterSwap).offset();
 													$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='whileAnimation()'>Next &#8594;</a>");
+													/* TweenMax.to('#arrVal' + downItr, 1, {left: (l2.left - l1.left)});
+													TweenMax.to('#arrVal' + upItr, 1, {left: (l1.left - l2.left), onComplete: function() { */
+														$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='whileAnimation()'>Next &#8594;</a>");
+													/* }}); */
 												}, 1000);
 											}});
 										});
@@ -1106,7 +994,14 @@ function pivotSwapAnimation() {
 								
 								TweenMax.to("#arrVal"+ upItr, 1, {opacity: 1, top: downTop, left: downLeft});
 								TweenMax.to("#arrVal" + lb, 1, {opacity: 1, top: upTop, left: upLeft, onComplete: function() {
-									setTimeout(function() {	
+									setTimeout(function() {
+										
+										/* var l1 = $("#tr3 td span:eq(" + (downItr + 1) + ")").text(downAfterSwap).offset();
+										var l2 = $("#tr3 td span:eq(" + (upItr + 1) + ")").text(downItr).offset();
+										if (downItr != upItr) {
+											
+										} */
+										
 										$('#tr3 td span').eq(lb).remove();
 										$('#tr3 td').eq(lb + 1).append('<span></span>');
 										$('#tr3 td span').eq(lb).attr('id', 'arrVal'+ lb).text(upAfterSwap);
@@ -1127,9 +1022,6 @@ function pivotSwapAnimation() {
 													$("#callPartition").removeClass("blinking-white");
 													$("#callPartition").removeClass("zIndex");
 													jVal = upItr;
-													/* downItr = lb; */
-													/* upItr = upItr-1;
-													downItr = lb; */
 													$(".introjs-nextbutton").show();
 												});
 											});
@@ -1146,74 +1038,6 @@ function pivotSwapAnimation() {
 	}});
 }
 
-function dynamicSteps1(isTrue) {
-	var dynamicStep = {
-			"element" : "#stackDiv",
-			"tooltipClass" : "hide",
-	}
-	introjs.insertOption(introjs._currentStep + 1, dynamicStep);
-	
-	var dynamicStep = {
-			"element" : "#quickSortMethod",
-			"intro" : "",
-			"position" : "top"
-	}
-	introjs.insertOption(introjs._currentStep + 2, dynamicStep);
-	
-	var dynamicStep = {
-			"element" : "#ifInQuickSort",
-			"intro" : "",
-			"position" : "top"
-	}
-	introjs.insertOption(introjs._currentStep + 3, dynamicStep);
-	
-	var dynamicStep = {
-			"element" : "#callPartition",
-			"intro" : "",
-	}
-	introjs.insertOption(introjs._currentStep + 4, dynamicStep);
-	
-	var dynamicStep = {
-			"element" : "#stackDiv",
-			"tooltipClass" : "hide",
-	}
-	introjs.insertOption(introjs._currentStep + 5, dynamicStep);
-	
-	var dynamicStep = {
-			"element" : "#partition",
-			"intro" : "",
-	}
-	introjs.insertOption(introjs._currentStep + 6, dynamicStep);
-	
-	var dynamicStep = {
-			"element" : "#animationDiv",
-			"intro" : "",
-			"position" : "left"
-	}
-	introjs.insertOption(introjs._currentStep + 7, dynamicStep);
-	
-	if (isTrue && (downItr < upItr)) {
-		var dynamicStep = {
-				"element" : "#recursiveQuickSort1",
-				"intro" : "",
-		}
-		introjs.insertOption(introjs._currentStep + 8, dynamicStep);
-		
-		var dynamicStep = {
-				"element" : "#stackDiv",
-				"tooltipClass" : "hide",
-		}
-		introjs.insertOption(introjs._currentStep + 9, dynamicStep);
-		
-		var dynamicStep = {
-				"element" : "#quickSortMethod",
-				"intro" : "",
-		}
-		introjs.insertOption(introjs._currentStep + 10, dynamicStep);
-	}
-}
-
-
 function getStep(element, intro, position, tooltipClass) {
 	var step = {};
 	if (typeof element != 'undefined') {
@@ -1229,6 +1053,42 @@ function getStep(element, intro, position, tooltipClass) {
 		step['tooltipClass'] = tooltipClass;
 	}
 	return step;
+}
+
+function quicksorting(arr, low, high) {
+	iterationsArr.push({
+		"quicksorting" : [low, high]
+	});
+	var j;
+	if (low < high) {
+		j = partition(arr, low, high);
+		quicksorting(arr, low, j - 1);
+		quicksorting(arr, j + 1, high);
+	}
+}
+
+function partition(arr, lb, ub) {
+	iterationsArr.push({
+		"partition" : [lb, ub]
+	});
+	var pivot, down = lb, up = ub, temp;
+	pivot = arr[lb];
+	while (down < up) {
+		while (arr[down] <= pivot && down < up) {
+			down++;
+		}
+		while (arr[up] > pivot) {
+			up--;
+		}
+		if (down < up) {
+			temp = arr[up];
+			arr[up] = arr[down];
+			arr[down] = temp;
+		}
+	}
+	arr[lb] = arr[up];
+	arr[up] = pivot;
+	return up;
 }
 </script>
 

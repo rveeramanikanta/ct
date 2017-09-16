@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Medhios</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<style type="text/css">
+.svg-css {
+	width: 100%;
+	height: 500px;
+}
+
+line {
+	stroke: orange;
+	stroke-width: 5;
+	fill: #A7A9AC;
+	marker-end: url('#myMarker');
+}
+
+text {
+	font-weight: bold;
+	font-size: 200%;
+	fill: white;
+}
+
+.demo text {
+	fill: gold;
+}
+
+.demo, .content, line {
+	opacity: 01;
+}
+
+svg text {
+	font-family: FontAwesome;
+}
+
+.nav>li>a {
+	font-family: Verdana;
+	font-weight: bold;
+}
+
+.logo {
+	color: sienna !important;
+	font-family: "Comic Sans MS";
+	font-size: 30px;
+	font-weight: bold;
+	line-height: 2;
+	padding: 0 10px;
+}
+
+.active {
+	border-bottom: 3px solid gold;
+}
+
+a:focus {
+	outline: none;
+}
+</style>
+</head>
+<body>
+	<nav class='navbar navbar-inverse navbar-static-top'>
+		<div class='container-fluid'>
+			<div class='navbar-header'>
+				<button type='button' class='navbar-toggle' data-toggle='collapse' data-target='#myNavbar'>
+					<span class='icon-bar'></span> <span class='icon-bar'></span> <span
+						class='icon-bar'></span>
+				</button>
+				<a class='navbar-brand logo' href='#'>MedhIOS</a>
+			</div>
+			<div class='collapse navbar-collapse' id='myNavbar'>
+				<ul class='nav navbar-nav navbar-right'>
+					<li><a href='#' class='active'><span class='fa fa-home'></span>&nbsp;Home</a></li>
+					<li><a href='#'><span class='fa fa-phone'></span>&nbsp;Contact
+							Us</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div>
+		<svg class='svg-css'>
+			<defs>
+				<filter id='f1' x='0' y='0'>
+					<feGaussianBlur stdDeviation='3' />
+					<feOffset dx='5' dy='5' />
+				</filter>
+			</defs>
+			
+			<marker orient='auto' markerHeight='5' markerWidth='5' refY='2.5' refX='4' id='myMarker' fill='orange'>
+				<path d='M0,0 L5,2.5 L0,5 Z' />
+			</marker>
+			
+			<g>
+				<g id='devOps'>
+					<line x1='31%' y1='20%' x2='46%' y2='20%'></line>
+					<line x1='54%' y1='20%' x2='74%' y2='20%'></line>
+					<g class='course'>
+						<rect width='20%' height='15%' x='10%' y='12%' rx='15' ry='15' filter="url('#f1')"></rect>
+						<rect width='20%' height='15%' x='10%' y='12%' rx='15' ry='15' fill='#A7A9AC'></rect>
+						<text text-anchor='middle' x='20%' y='21%'>DevOps</text>
+					</g>
+					<g class='demo'>
+						<text text-anchor='middle' x='50%' y='25%' fill='red' class='fa-5x'>&#xf01d;</text>
+					</g>
+					<g class='content'>
+						<image xlink:href='images/toc.png' x='70%' y='10%' width='20%' height='20%' />
+					</g>
+				</g>
+				<g id='selenium'>
+					<line x1='39%' y1='50%' x2='26%' y2='50%'></line>
+					<line x1='61%' y1='50%' x2='76%' y2='50%'></line>
+					<g class='content'>
+						<image xlink:href='images/toc.png' x='10%' y='40%' width='20%' height='20%' />
+					</g>
+					<g class='course'>
+						<rect width='20%' height='15%' x='40%' y='42%' rx='15' ry='15' filter="url('#f1')"></rect>
+						<rect width='20%' height='15%' x='40%' y='42%' rx='15' ry='15' fill='#A7A9AC'></rect>
+						<text text-anchor='middle' x='50%' y='51%'>Selenium</text>
+					</g>
+					<g class='demo'>
+						<text text-anchor='middle' x='80%' y='55%' class='fa-5x'>&#xf01d;</text>
+					</g>
+				</g>
+				<g id='ruby'>
+					<line x1='46%' y1='80%' x2='26%' y2='80%'></line>
+					<line x1='69%' y1='80%' x2='54%' y2='80%'></line>
+					<g class='content'>
+						<image xlink:href='images/toc.png' x='10%' y='70%' width='20%' height='20%' />
+					</g>
+					<g class='demo'>
+						<text text-anchor='middle' x='50%' y='85%' class='fa-5x'>&#xf01d;</text>
+					</g>
+					<g class='course'>
+						<rect width='20%' height='15%' x='70%' y='72%' rx='15' ry='15' filter="url('#f1')"></rect>
+						<rect width='20%' height='15%' x='70%' y='72%' rx='15' ry='15' fill='#A7A9AC'></rect>
+						<text text-anchor='middle' x='80%' y='81%'>Ruby</text>
+					</g>
+				</g>
+			</g>
+		</svg>
+	</div>
+	
+	<script type="text/javascript">
+		$("document").ready(function() {
+			$(".nav > li > a").on("click", function() {
+				$(".active").removeClass("active");
+				$(this).addClass("active");
+			});
+		});
+	</script>
+</body>
+</html>
