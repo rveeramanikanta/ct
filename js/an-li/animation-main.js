@@ -73,7 +73,7 @@ function setCookie(cookieName, value, expireDays) {
 	document.cookie = cookieName + "=" + value;
 }
 
-var ANIMATION_SPEED_DEFAULT = 100;
+var ANIMATION_SPEED_DEFAULT = 80;
 
 // TODO: Move these out of global space into animation manager?
 var objectManager;
@@ -514,10 +514,10 @@ function AnimationManager(objectManager) {
 			} else if (nextCommand[0].toUpperCase() == "PAUSE") {
 				doPlayPause();
 			} else if(nextCommand[0].toUpperCase() == "SETNEXTINTROSTEP") {
-				//getIntrojsStep(nextCommand[1], nextCommand[2], nextCommand[3], nextCommand[4]);
+				getIntrojsStep(nextCommand[1], nextCommand[2], nextCommand[3], nextCommand[4]);
 			} else if (nextCommand[0].toUpperCase() == "RUNNEXTINTROSTEP") {
-				//doPlayPause();
-				//introjs.nextStep();
+				doPlayPause();
+				introjs.nextStep();
 			} else if (nextCommand[0].toUpperCase() == "CREATECIRCLE") {
 				this.animatedObjects.addCircleObject(parseInt(nextCommand[1]),
 						nextCommand[2]);

@@ -158,7 +158,7 @@ $(document).ready(function() {
 
 </script>
 </head>
-<body onload="init();" class="VisualizationMainPage">
+<body onload="init();">
 	<div id="container">
 		<div class='col-xs-12 text-center' style="margin-top: 20px;">
 			<h1 class='label label-default ct-demo-heading'>Stack using LinkedList</h1>

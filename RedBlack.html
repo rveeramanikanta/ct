@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+	Red-Black Tree
+</title>
+
+<link rel="stylesheet" href="/css/bootstrap.css">
+<link rel="stylesheet" href="/css/jquery-ui.css">
+<link rel="stylesheet" href="/css/introjs.css">
+<link rel="stylesheet" href="/css/introjs-ct.css">
+
+<script type="text/javascript" src="/js/jquery-latest.js"></script>
+<script type="text/javascript" src="/js/bootstrap.js"></script>
+<script type="text/javascript" src="/js/jquery-ui-all.js"></script>
+<script type="text/javascript" src="/js/typewriting.min.js"></script>
+<script type="text/javascript" src="/js/intro.js"></script>
+<script type="text/javascript" src="js-min/rb.min.js"></script>
+
+		
+<!-- Javascript for the actual visualization code -->
+<script type = "text/javascript" src = "js-min/an-li/custom-events.min.js"> </script>
+<script type = "text/javascript" src = "js-min/an-li/undo-functions.min.js"> </script>
+<script type = "text/javascript" src = "js-min/an-li/animated-object.min.js"> </script>
+<script type = "text/javascript" src = "js-min/an-li/animated-label.min.js"> </script>
+<script type = "text/javascript" src = "js-min/an-li/animated-circle.min.js"> </script>
+<script type = "text/javascript" src = "js-min/an-li/animated-rectangle.min.js"> </script>
+<script type = "text/javascript" src = "js-min/an-li/animated-linked-list.min.js"> </script>
+<script type = "text/javascript" src = "js-min/an-li/highlight-circle.min.js"> </script>
+<script type = "text/javascript" src = "js-min/an-li/line.min.js"> </script>
+<script type = "text/javascript" src = "js-min/an-li/object-manager.min.js"> </script>
+<script type = "text/javascript" src = "js-min/an-li/animation-main.min.js"> </script>
+<script type = "text/javascript" src = "js-min/al-li/algorithm.min.js"> </script>
+<script type = "text/javascript" src = "js-min/al-li/red-black.min.js"> </script>
+<style>
+
+.callout {
+	position: relative;
+	top: 0;
+	left: 0;
+	display: block;
+	padding: 10px;
+}
+
+.callout.right {
+	margin-left: 10px;
+}
+
+.callout.right::before {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	width: 0;
+	height: 0;
+	margin-top: -10px;
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent;
+	border-right: 10px solid #a8c3e5;
+	content: '';
+}
+
+.callout.right::after {
+	position: absolute;
+	top: 50%;
+	left: 2px;
+	width: 0;
+	height: 0;
+	margin-top: -10px;
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent;
+	border-right: 10px solid lavenderblush;
+	content: '';
+}
+
+.callout-inner {
+	padding: 2px;
+	overflow: hidden;
+	background: black;
+	background: #a8c3e5;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.callout-content {
+	padding: 14px;
+	margin: 0;
+	background-color: #f9f9f9;
+	color: #39569A;
+	font-family: sans-serif;
+	font-size: 13px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	-webkit-background-clip: padding-box;
+	-moz-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+.ct-demo-heading {
+	background: highlight none repeat scroll 0 0;
+	border-radius: 10px;
+	font-size: 18px;
+	position: relative;
+	z-index: 9999999;
+}
+
+.heading-css {
+	margin: 20px 0 10px;
+}
+
+.padding-col0 {
+	padding: 0;
+}
+
+.creamPreTab4 {
+	-moz-tab-size: 2;
+	background-color: #fffae6;
+	border-radius: 8px;
+	font-size: 11px;
+	margin: 5px;
+	padding: 10px;
+	white-space: pre;
+}
+
+.box-border {
+	border: 1px solid gray;
+	border-radius: 8px;
+	padding: 10px;
+}
+
+.margin-top-bottom {
+	margin: 10px 0;
+}
+
+.ct-btn-next {
+	float: right;
+	padding: 2px 5px;
+	cursor: move;
+}
+
+.ct-bt-next-div {
+	margin-top: 5px;
+	height: 20px;
+}
+
+.text-css {
+	background-color: #fffae6;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+	font-size: 11px;
+	margin: 5px;
+	padding: 10px;
+}
+
+.text-css ol {
+	margin: 0;
+	padding-left: 30px;
+}
+
+.introjs-tooltip {
+	min-width: 300px;
+	-moz-transition: opacity 0.3s ease-out !important;
+}
+
+.introjs-overlay {
+	opacity: 0.5 !important;
+	-moz-transition: all 0.5s ease-out !important;
+}
+
+.introjs-helperLayer {
+	-moz-transition: all 0.5s ease-out !important;
+}
+
+.introjs-tooltipReferenceLayer {
+	-moz-transition: all 0.5s ease-out !important;
+}
+
+a {
+	color: #40f59b;
+}
+
+a:hover, a:focus {
+	color: #b1ff00;
+}
+
+.input-group-addon {
+	padding: 4px 6px;
+}
+
+.btn-sm, .btn-group-sm > .btn {
+	padding: 0 6px;
+}
+
+.input-group-addon-border {
+	border: 1px solid #ccc !important;
+	border-radius: 4px !important;
+}
+
+#canvasDiv {
+	background-color: #6f35fb;
+	border: 4px solid brown;
+	border-radius : 4px;
+}
+
+#explanationDiv {
+	position: relative;
+	z-index: 9999999;
+}
+
+body {
+	background-color: black;
+}
+
+#rules {
+	position: relative;
+    z-index: 9999999;
+}
+
+.popover-content {
+    background-color: gray;
+    color: white;
+    z-index: 9999999;
+}
+
+.popover {
+	position: relative;
+	z-index: 10000000;
+}
+</style>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	redBlackReady();
+});
+
+</script>
+</head> 
+	
+<body onload="init();" class="VisualizationMainPage">
+<div class='col-xs-12'>
+	<div class='text-center heading-css'>
+		<h1 id='heading' class='label ct-demo-heading'>Red-Black Tree</h1>
+	</div>
+	
+	<div id="mainContent" class='col-xs-12 padding-col0'>
+		<div class='col-xs-12 padding-col0'>
+			<div class="form-group col-sm-9 margin-top-bottom" id="btnsDiv">
+				<div class='col-sm-offset-1 col-sm-2'>
+					<div class='col-sm-12 padding-col0' id='insertDiv'>
+						<div class="input-group">
+							<input class="form-control input-sm" id="insertText" name="insertText" size="4" type="text"/>
+							<span class="input-group-addon">
+								<span id="insertBtn" class="btn btn-sm btn-success">Insert</span>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class='col-sm-offset-1 col-sm-2'>
+					<div class='col-sm-12 padding-col0' id='deleteDiv'>
+						<div class="input-group">
+							<input class="form-control input-sm" id="deleteText" name="deleteText" type="text"/>
+							<span class="input-group-addon">
+								<span id="deleteBtn" class="btn btn-sm btn-success">Delete</span>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class='col-sm-offset-1 col-sm-2'>
+					<div class='col-sm-12 padding-col0' id='findDiv'>
+						<div class="input-group">
+							<input class="form-control input-sm" id="findText" name="findText" type="text"/>
+							<span class="input-group-addon">
+								<span id="findBtn" class="btn btn-sm btn-success">Find</span>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class='col-sm-12' id='printDiv'>
+						<div class="input-group">
+							<span class="input-group-addon input-group-addon-border">
+								<span id="printBtn" class="btn btn-sm btn-success">Print All Nodes</span>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='col-xs-12 padding-col0' id='animationDiv'>
+				<div id="canvasDiv" class='col-xs-8 padding-col0'>
+					<canvas id="canvas" width="800" height="500"></canvas>
+				</div>
+				<div class='col-xs-4 padding-col0' id='explanationDiv'></div>
+			</div>
+			<div id="generalAnimationControlSection">
+				<table id="GeneralAnimationControls" class='hide'></table>
+			</div>
+				<div class="col-xs-12 text-center" style="margin-top: 20px;">
+					<span id="rules" class="btn btn-info" data-toggle="popover" title="Properties of Red-Black tree" data-html="true"
+					data-content="<ol><li>Each node is either red or black.</li> 
+					<li>The root is black. This rule is sometimes omitted. 
+					Since the root can always be changed from red to black, but not necessarily vice versa, 
+					this rule has little effect on analysis.</li>
+					<li>All leaves (NIL) are black.</li>
+					<li>If a node is red, then both its children are black.</li>
+					<li>Every path from a given node to any of its descendant NIL nodes contains the same number of black nodes.</li><ol>" data-placement="top">
+					Properties</span>
+				</div>
+			</div>
+	</div>
+</div>
+<!-- container -->
+</body>
+</html>

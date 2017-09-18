@@ -251,7 +251,6 @@ QueueLL.prototype.enqueue = function(elemToPush) {
 		//this.cmd("Disconnect", this.tailID, this.linkedListDataField[1]);
 	}
 	
-	
 	this.cmd("Step");
 	this.cmd("SetNextIntroStep", "#queueElsePrintfBlk", "", "right", "");
 	this.cmd("RunNextIntroStep");
@@ -371,7 +370,6 @@ QueueLL.prototype.dequeue = function(ignored) {
 		this.cmd("RunNextIntroStep");
 	}
 
-	console.log(this.commands);
 	return this.commands;
 }
 
@@ -439,10 +437,13 @@ QueueLL.prototype.clearAll = function() {
 	this.cmd("Step");
 	for (var i = 0; i < this.top; i++) {
 		this.cmd("Delete", this.linkedListDataField[i]);
+		this.cmd("Delete", this.linkedListNextField[i]);
 		this.cmd("Delete", this.linkedListAddID[i]);
 	}
 	this.top = 0;
-	this.cmd("SetNull", this.headID, 1);
+	this.cmd("SetText", this.headID, "NULL")
+	this.cmd("SetText", this.tailID, "NULL")
+	/*this.cmd("SetNull", this.headID, 1);*/
 	return this.commands;
 }
 

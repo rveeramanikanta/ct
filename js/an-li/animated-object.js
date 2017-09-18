@@ -198,11 +198,12 @@ AnimatedObject.prototype.pulseHighlight = function(frameNum) {
 
 AnimatedObject.prototype.getTailPointerAttachPos = function(fromX, fromY,
 		anchorPoint) {
-	console.log(this);
+	//console.log(this);
 	return [ this.x, this.y ];
 }
 
 AnimatedObject.prototype.getHeadPointerAttachPos = function(fromX, fromY) {
+	console.log(this);
 	return [ this.x, this.y ];
 }
 

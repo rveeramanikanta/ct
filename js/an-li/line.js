@@ -94,16 +94,26 @@ function Line(n1, n2, color, cv, d, weight, anchorIndex) {
 		context.strokeStyle = color;
 		context.fillStyle = color;
 		context.lineWidth = pensize + 0.5;
-		var fromPos = this.Node1.getTailPointerAttachPos(this.Node2.x,
+		/*var fromPos = this.Node1.getTailPointerAttachPos(this.Node2.x,
+				this.Node2.y, this.anchorPoint);
+		var toPos = this.Node2.getHeadPointerAttachPos(this.Node1.x,
+				this.Node1.y);*/
+		
+		var fromPos = this.Node1.getHeadPointerAttachPos(this.Node2.x,
 				this.Node2.y, this.anchorPoint);
 		var toPos = this.Node2.getHeadPointerAttachPos(this.Node1.x,
 				this.Node1.y);
+		
+		if (this.Node1 == this.Node2) {
+			this.curve = 1.5
+			fromPos[0] = fromPos[0] + 20;
+			fromPos[1] = fromPos[1] + 2;
+			toPos[0] = toPos[0] - 5;
+			toPos[1] = toPos[1] - 23;
+		}
 
-		var fromPos = this.Node1.getTailPointerAttachPos(this.Node2.x,
-				this.Node2.y, this.anchorPoint);
-		var toPos = this.Node2.getHeadPointerAttachPos(this.Node1.x,
-				this.Node1.y);
-
+		console.log("fromPos ==== " + fromPos);
+		console.log("toPos ==== " + toPos);
 		var deltaX = toPos[0] - fromPos[0];
 		var deltaY = toPos[1] - fromPos[1];
 		var midX = (deltaX) / 2.0 + fromPos[0];
@@ -111,6 +121,11 @@ function Line(n1, n2, color, cv, d, weight, anchorIndex) {
 		var controlX = midX - deltaY * this.curve;
 
 		var controlY = midY + deltaX * this.curve;
+		
+		console.log(deltaX);
+		console.log(deltaY);
+		console.log(midX);
+		console.log(midY);
 
 		context.beginPath();
 		context.moveTo(fromPos[0], fromPos[1]);
@@ -143,8 +158,12 @@ function Line(n1, n2, color, cv, d, weight, anchorIndex) {
 			var xVec = controlX - toPos[0];
 			var yVec = controlY - toPos[1];
 			var len = Math.sqrt(xVec * xVec + yVec * yVec);
-
-			if (len > 0) {
+			
+			console.log("len ==== " + len);
+			
+			if (len >= 0) {
+				
+				console.log("len > 0 ifblock ----- ")
 				xVec = xVec / len
 				yVec = yVec / len;
 
@@ -160,6 +179,8 @@ function Line(n1, n2, color, cv, d, weight, anchorIndex) {
 				context.closePath();
 				context.stroke();
 				context.fill();
+				console.log("toPos[0] ==== " + toPos[0]);
+				console.log("toPos[1] ==== " + toPos[1]);
 			}
 		}
 	}
