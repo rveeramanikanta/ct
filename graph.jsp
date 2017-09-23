@@ -134,12 +134,15 @@ r {
 }
 
 .btn-css {
-	display: inline-block;
+	display: inline-table;
 	margin: 0 10px;
 }
 </style>
 </head>
 <body onload="init();">
+
+	
+
 	<div id="container">
 		<div class='col-xs-12 text-center' style="margin-top: 20px;">
 			<h1 class='label label-default ct-demo-heading'>Graphs</h1>
@@ -175,6 +178,13 @@ r {
 							<div class="btn-css">
 								<div class='col-sm-12'>
 									<div class="input-group">
+										<select id='fromID'>
+											<option>from Id</option>
+										</select>
+										
+										<select id='toID'>
+											<option>to Id</option>
+										</select>
 										<span class="input-group-addon input-group-addon-border">
 											<span id="edgeBtn" class="btn btn-sm btn-success">addEdge</span>
 										</span>
@@ -191,5 +201,14 @@ r {
 			</div>
 		</div>
 	</div>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("canvas").on("mousedown", function(evt) {
+				console.log(evt.clientX - $("canvas").offset().left);
+				console.log(evt.clientY - $("canvas").offset().top);
+			});
+		});
+	</script>
 </body>
 </html>

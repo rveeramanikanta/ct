@@ -315,33 +315,18 @@ function introGuide() {
 					position : "right"
 				}
 			]});
-	introjs.onbeforechange(function(targetElement) {
-		introjs._introItems[introjs._currentStep]["currentState"] = $(introjs._introItems[introjs._currentStep]["element"]).html();
-		introjs._introItems[introjs._currentStep]["classes"] = $(introjs._introItems[introjs._currentStep]["element"]).attr("class");
-		if (!introjs._introItems[introjs._currentStep]["visited"]) {
-			console.log("not visited");
-			introjs._introItems[introjs._currentStep]["currentState"] = $(introjs._introItems[introjs._currentStep]["element"]).html();
-			introjs._introItems[introjs._currentStep]["classes"] = $(introjs._introItems[introjs._currentStep]["element"]).attr("class");
-			introjs._introItems[introjs._currentStep]["style"] = $(introjs._introItems[introjs._currentStep]["element"]).attr("style");
-		} else {
-			console.log("collecting initiall code");
-			$(introjs._introItems[introjs._currentStep]["element"]).html(introjs._introItems[introjs._currentStep]["currentState"]);
-			$(introjs._introItems[introjs._currentStep]["element"]).attr("class", introjs._introItems[introjs._currentStep]["classes"]);
-			$(introjs._introItems[introjs._currentStep]["element"]).attr("style", introjs._introItems[introjs._currentStep]["style"]);
-			
-		}
-	});
-	
 	introjs.onafterchange(function(targetElement) {
-		introjs._introItems[introjs._currentStep]["visited"] = true;
-		if (introjs._introItems[introjs._currentStep + 1]["visited"]) {
-			$(introjs._introItems[introjs._currentStep + 1]["element"]).html(introjs._introItems[introjs._currentStep + 1]["currentState"]);
-			$(introjs._introItems[introjs._currentStep + 1]["element"]).attr("class", introjs._introItems[introjs._currentStep + 1]["classes"]);
-			$(introjs._introItems[introjs._currentStep + 1]["element"]).attr("style", introjs._introItems[introjs._currentStep + 1]["style"]);
-		}
 		var elementId = targetElement.id;
 		$("#" + elementId).removeClass("hide");
 		introjs.refresh();
+		if(introjs._introItems[introjs._currentStep]["isCompleted"]) {
+			$("#" + introjs._introItems[introjs._currentStep - 1].element.id).html(introjs._introItems[introjs._currentStep - 1]["currentState"]);
+			$("#" + elementId).html(introjs._introItems[introjs._currentStep]["currentState"]);
+		}
+		
+		introjs._introItems[introjs._currentStep]["isCompleted"] = true;
+		introjs._introItems[introjs._currentStep]["currentState"] = $("#" + elementId).html();
+		
 		switch (elementId) {
 		case "topDiv":
 			$('.introjs-nextbutton').hide();
@@ -582,10 +567,8 @@ function introGuide() {
 	
 	introjs.start();
 	$('.introjs-nextbutton').hide();
-	//$('.introjs-prevbutton').hide();
 	$('.introjs-skipbutton').hide();
 	$('.introjs-bullets').hide();
-	//introjs._introItems[introjs._currentStep]["previousCode"] = $("body").html();
 }
 
 function transferValue() {

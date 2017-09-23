@@ -651,8 +651,8 @@ function ObjectManager() {
 		 */
 	}
 	
-	this.drawLine = function(objectID, x, y, newX, newY) {
-		var newNode = new DrawLine(objectID, x, y, newX, newY);
+	this.drawLine = function(objectID, x, y, newX, newY, directed, curve) {
+		var newNode = new DrawLine(objectID, x, y, newX, newY, directed, curve);
 		this.Nodes[objectID] = newNode;
 	}
 }

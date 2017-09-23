@@ -73,7 +73,7 @@ function setCookie(cookieName, value, expireDays) {
 	document.cookie = cookieName + "=" + value;
 }
 
-var ANIMATION_SPEED_DEFAULT = 80;
+var ANIMATION_SPEED_DEFAULT = 40;
 
 // TODO: Move these out of global space into animation manager?
 var objectManager;
@@ -529,9 +529,23 @@ function AnimationManager(objectManager) {
 				undoBlock.push(new UndoCreate(parseInt(nextCommand[1])));
 
 			} else if (nextCommand[0].toUpperCase() == "DRAWLINE") {
-				this.animatedObjects.drawLine(parseInt(nextCommand[1]),
-						parseInt(nextCommand[2]), parseInt(nextCommand[3]),
-						parseInt(nextCommand[4]), parseInt(nextCommand[5]));
+				console.log(nextCommand.length);
+				if (nextCommand.length > 7) {
+					this.animatedObjects.drawLine(parseInt(nextCommand[1]),
+							parseInt(nextCommand[2]), parseInt(nextCommand[3]),
+							parseInt(nextCommand[4]), parseInt(nextCommand[5]), 
+							this.parseBool(nextCommand[6]), parseFloat(nextCommand[7]));
+				} else if (nextCommand.length > 6) {
+					this.animatedObjects.drawLine(parseInt(nextCommand[1]),
+							parseInt(nextCommand[2]), parseInt(nextCommand[3]),
+							parseInt(nextCommand[4]), parseInt(nextCommand[5]), 
+							this.parseBool(nextCommand[6]), 0.0);
+				} else {
+					this.animatedObjects.drawLine(parseInt(nextCommand[1]),
+							parseInt(nextCommand[2]), parseInt(nextCommand[3]),
+							parseInt(nextCommand[4]), parseInt(nextCommand[5]), false, 0.0);
+				}
+				
 				undoBlock.push(new UndoCreate(parseInt(nextCommand[1])));
 				
 			} else if (nextCommand[0].toUpperCase() == "CONNECT") {

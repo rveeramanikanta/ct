@@ -26,41 +26,76 @@
 
 // Values for xJust / yJust:  "center", "left", "right", "top", "bottom"
 
-var DrawLine = function(objectID, x, y, newX, newY) {
+var DrawLine = function(objectID, x, y, newX, newY, directed, curve) {
 	this.objectID = objectID;
 	this.x = x;
 	this.y = y;
 	this.newX = newX;
 	this.newY = newY;
+	this.curve = curve;
+	this.arrowHeight = 8;
+	this.arrowWidth = 4;
 	this.addedToScene = true;
+	this.directed = directed;
 }
 
 DrawLine.prototype = new AnimatedObject();
 DrawLine.prototype.constructor = DrawLine;
 DrawLine.prototype.draw = function(ctx) {
-	
+	ctx.lineWidth = 1.5;
+	var deltaX = this.newX - this.x;
+	var deltaY = this.newY - this.y;
+	var midX = (deltaX) / 2.0 + this.x;
+	var midY = (deltaY) / 2.0 + this.y;
+	var controlX = midX - deltaY * this.curve;
+	var controlY = midY + deltaX * this.curve;
 	ctx.beginPath();
 	ctx.moveTo(this.x, this.y);
-	ctx.lineTo(this.newX, this.newY);
+	ctx.quadraticCurveTo(controlX, controlY, this.newX, this.newY);
 	ctx.stroke();
+	
+	
+	if (this.directed) {
+		var xVec = controlX - this.newX;
+		var yVec = controlY - this.newY;
+		var len = Math.sqrt(xVec * xVec + yVec * yVec);
+		if (len > 0) {
+			xVec = xVec / len;
+			yVec = yVec / len;
+			ctx.beginPath();
+			ctx.moveTo(this.newX, this.newY);
+			ctx.lineTo(this.newX + xVec * this.arrowHeight - yVec
+					* this.arrowWidth, this.newY + yVec * this.arrowHeight
+					+ xVec * this.arrowWidth);
+			ctx.lineTo(this.newX + xVec * this.arrowHeight + yVec
+					* this.arrowWidth, this.newY + yVec * this.arrowHeight
+					- xVec * this.arrowWidth);
+			ctx.lineTo(this.newX, this.newY);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fill();
+		}
+	}
 }
 
-function UndoConnect(objectID, x, y, newX, newY) {
+function UndoConnect(objectID, x, y, newX, newY, directed, curve) {
 	this.objectID = objectID;
 	this.x = x;
 	this.y = y;
 	this.newX = newX;
 	this.newY = newY;
+	this.directed = directed;
+	this.curve = curve;
 	this.addedToScene = true;
 }
 
 DrawLine.prototype.createUndoDelete = function() {
-	return new UndoConnect(this.objectID, this.x, this.y, this.newX, this.newY);
+	return new UndoConnect(this.objectID, this.x, this.y, this.newX, this.newY, this.directed, this.curve);
 }
 
 UndoConnect.prototype.undoInitialStep = function(world) {
 	if (this.connect) {
-		world.connectEdge(this.objectID, this.x, this.y, this.newX, this.newY);
+		world.connectEdge(this.objectID, this.x, this.y, this.newX, this.newY, this.directed, this.curve);
 	} else {
 		world.disconnect(this.objectID);
 	}
