@@ -137,6 +137,10 @@ r {
 	display: inline-table;
 	margin: 0 10px;
 }
+
+select {
+	margin-top: 3px;
+}
 </style>
 </head>
 <body onload="init();">
@@ -165,7 +169,7 @@ r {
 				<div class='col-xs-12 padding0 box-border text-center'
 					id='animationDiv'>
 					<div class='col-xs-12 padding0 margin-top-20 text-center'>
-						<div class='col-xs-offset-3 col-xs-6 padding0' id='btnsDiv'>
+						<div class='col-xs-offset-1 col-xs-10 padding0' id='btnsDiv'>
 							<div class="btn-css">
 								<div class='col-sm-12'>
 									<div class="input-group">
@@ -189,6 +193,24 @@ r {
 											<span id="edgeBtn" class="btn btn-sm btn-success">addEdge</span>
 										</span>
 									</div>
+								</div>
+							</div>
+							
+							<div class="btn-css">
+								<div class='col-sm-12'>
+
+									<div class="input-group">
+										<input class="form-control input-sm" id="bfsVal" name="bfs"
+											type="text" /> <span class="input-group-addon"> <span
+											id="bfsBtn" class="btn btn-sm btn-success">BFS</span>
+										</span>
+									</div>
+									<!-- <div class="input-group">
+										<input class="form-control input-sm" id="pushText" name="push" type="text" />
+										<span class="input-group-addon input-group-addon-border">
+											<span id="bfsBtn" class="btn btn-sm btn-success">BFS</span>
+										</span>
+									</div> -->
 								</div>
 							</div>
 						</div>
