@@ -1,8 +1,9 @@
 var MAX_VERTICES_SIZE = 8;
-var COUNT = 0;
+var VERTICES_SIZE = 0;
 
 var edgesMap = {};
 var bfs = {};
+var visited = {};
 
 
 var edgesPointsMap = {
@@ -83,6 +84,21 @@ var HEIGHT_LABEL_COLOR = "#007700"
 
 var LINK_COLOR = "#f962f3";
 var HIGHLIGHT_CIRCLE_COLOR = "#f962f3";
+var visitedEdgeColor = "#6e00ff";
+
+var adjMap = {};
+
+var arr = [];
+var visited = {};
+var visit = [];
+var currentVertex;
+var startingVertex;
+var visit;
+var adj = {};
+var fp, np, pp;
+
+
+var colorsMap = {};
 
 function Graph(am, w, h) {
 	this.init(am, w, h);
@@ -137,6 +153,7 @@ Graph.prototype.setup = function() {
 	this.verticesEdges = new Array(MAX_VERTICES_SIZE);
 	for (var i = 0; i < MAX_VERTICES_SIZE; i++) {
 		this.vertices[i] = this.nextIndex++;
+		
 		//this.cmd("CreateCircle", this.vertices[i], i, VERTICES_FIXID_X_POS[i], VERTICES_FIXID_Y_POS[i]);
 		
 		//$("#fromID").append("<option>" + i + "</option>");
@@ -232,7 +249,7 @@ Graph.prototype.setup = function() {
 }
 
 Graph.prototype.vertexCallback = function(event) {
-	if (COUNT < MAX_VERTICES_SIZE) {
+	if (VERTICES_SIZE < MAX_VERTICES_SIZE) {
 		this.implementAction(this.vertex.bind(this), "");
 	}
 }
@@ -249,10 +266,10 @@ Graph.prototype.bfsCallback = function(event) {
 
 Graph.prototype.vertex = function() {
 	this.commands = new Array();
-	this.cmd("CreateCircle", this.vertices[COUNT], COUNT, VERTICES_FIXID_X_POS[COUNT], VERTICES_FIXID_Y_POS[COUNT]);
-	$("#fromID").append("<option>" + COUNT + "</option>");
-	$("#toID").append("<option>" + COUNT + "</option>");
-	COUNT++;
+	this.cmd("CreateCircle", this.vertices[VERTICES_SIZE], VERTICES_SIZE, VERTICES_FIXID_X_POS[VERTICES_SIZE], VERTICES_FIXID_Y_POS[VERTICES_SIZE]);
+	$("#fromID").append("<option>" + VERTICES_SIZE + "</option>");
+	$("#toID").append("<option>" + VERTICES_SIZE + "</option>");
+	VERTICES_SIZE++;
 	return this.commands;
 }
 
@@ -261,23 +278,22 @@ Graph.prototype.edge = function() {
 	var fromEdge = parseInt($("#fromID").val());
 	var toEdge = parseInt($("#toID").val());
 	
-	
+	//adj[fromEdge][toEdge] = 1;
 	if (edgesMap[fromEdge + "-" + toEdge] == undefined) {
 		var key = fromEdge + "-" + toEdge;
 		if (edgesMap[toEdge + "-" + fromEdge] != undefined) {
 			this.cmd("DisConnect", this.vertices[toEdge], this.vertices[fromEdge]);
 			this.cmd("Connect", this.vertices[toEdge], this.vertices[fromEdge], "", 0.3);
 			this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "", 0.3);
-			edgesMap[fromEdge + "-" + toEdge] = fromEdge + "-" + toEdge;
+			edgesMap[fromEdge + "-" + toEdge] = true;
 		} else {
 			if ((key == "0-3" || key == "3-0") || (key == "0-4" || key == "4-0")
 				|| (key == "3-7" || key == "7-3")  || (key == "4-7" || key == "7-4") ) {
 				this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "", 0.3);
 			} else {
-				console.log(key);
 				this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge]);
 			}
-			edgesMap[fromEdge + "-" + toEdge] = fromEdge + "-" + toEdge;
+			edgesMap[fromEdge + "-" + toEdge] = true;
 		}
 		
 		var connections = [];
@@ -286,10 +302,8 @@ Graph.prototype.edge = function() {
 		}
 		connections.push(toEdge);
 		bfs[fromEdge] = connections.sort();
+		adjMap[key] = 1;
 	}
-	
-	
-	
 	
 	/*if (edgesMap[fromEdge + "-" + toEdge] == undefined) {
 		if (edgesMap[toEdge + "-" + fromEdge] != undefined) {
@@ -328,31 +342,272 @@ Graph.prototype.edge = function() {
 		this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "", curve);
 		edgesMap[fromEdge + "-" + toEdge] = fromEdge + "-" + toEdge; 
 	}*/
-	console.log(this.commands);
 	return this.commands;
 }
 
 
 Graph.prototype.bfs = function() {
 	this.commands = new Array();
-	var source = this.bfsVal.value;
+	startingVertex = parseInt(this.bfsVal.value);
 	this.highlightID = this.nextIndex++;
+	this.queueID = this.nextIndex++;
 	
-	this.cmd("CreateHighlightCircle", this.highlightID, HIGHLIGHT_COLOR, VERTICES_FIXID_X_POS[source], VERTICES_FIXID_Y_POS[source]);
+	for(let i = 0; i < Object.keys(edgesMap).length; i++) {
+		this.cmd("SetEdgeColor", Object.keys(edgesMap)[i][0], Object.keys(edgesMap)[i][2], "#000000");
+	}
 	
-	/*while(bfs[source].length > 0) {
-		
-		
-		
-		
+	/*$.each(edgesMap, function(key, val) {
+		this.cmd("SetEdgeColor", key[0], key[2], "#000000");
+	});*/
+	//this.cmd("Delete", this.queueID);
+	/*this.cmd("CreateLabel", this.queueID, "QUEUE : ", 100, 80);*/
+	var QUEUE_STARTING_X_POS = 150;
+	var QUEUE_STARTING_Y_POS = 80;
+	
+	adj = {};
+	for (let i = 0; i < VERTICES_SIZE; i++) {
+		for (let j = 0; j < VERTICES_SIZE; j++) {
+			if (adjMap[i + "-" + j] == 1) {
+				adj[i + "-" + j] = 1;
+			} else {
+				adj[i + "-" + j] = 0;
+			}
+		}
+	}
+	
+	visit = [];
+	visited = {};
+	
+	for (let i = 0; i < VERTICES_SIZE; i++) {
+		visit[i] = -1;
+	}
+	
+	//visit = visited;
+	currentVertex = startingVertex;
+	np = fp = {};
+	fp["data"] = currentVertex;
+	fp["next"] = null;
+	pp = fp;
+	this.cmd("Pause");
+	this.cmd("Step");
+	var text = "Initially, we should start traversing from <y>given vertex</y>, i.e. <y>" + startingVertex + "</y>";
+	customPopover("canvas", "left", text, function() {
+		$(".customPopover:last").append("<br/><a class='introjs-button user-btn' onclick='step1()' style='float: right;'>Next &#8594;</a>");
+	});
+	this.cmd("CreateLabel", this.queueID, "QUEUE : ", 100, 80);
+	this.cmd("CreateRectangle", this.nextIndex++, startingVertex, 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
+	QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
+	this.cmd("SetBackgroundColor", this.nextIndex - 1, "#9befdb");
+	this.cmd("SetBackgroundColor", startingVertex, "#9befdb");
+	colorsMap[startingVertex] = "#9befdb";
+	
+	this.cmd("BFSButton", "play");
+	this.cmd("Step");
+	var text = "We push all adjacent vertices of <y>" + startingVertex + "</y> into <y>queue</y>, they are <y>" 
+			+ (bfs[startingVertex] != undefined ? bfs[startingVertex].toString() : "null (no vertices)")  + "</y>";
+	this.cmd("BFSText", text);
+	this.cmd("Step");
+	if (bfs[startingVertex] != undefined) {
+		for (let i = 0; i < bfs[startingVertex].length; i++) {
+			this.cmd("CreateRectangle", this.nextIndex++, bfs[startingVertex][i], 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
+			this.cmd("SetBackgroundColor", this.nextIndex - 1, "#bbe2a7");
+			this.cmd("SetBackgroundColor", bfs[startingVertex][i], "#bbe2a7");
+			colorsMap[bfs[startingVertex][i]] = "#bbe2a7";
+			QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
+		}
+		this.cmd("BFSButton", "play");
+		this.cmd("Step");
+		var text = "Now Visit all adjacent vertices <y>" + startingVertex + "</y>";
+		this.cmd("BFSText", text);
+		this.cmd("Step");
+		this.cmd("BFSButton", "play");
+		this.cmd("Step");
+	}
+	//this.cmd("Pause");
+	this.cmd("Step");
+	
+	visited[startingVertex] = true;
+	QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
+	while (fp != null) {
+		currentVertex = fp["data"];
+		if (this.seqSearch(visit, VERTICES_SIZE, currentVertex) == 0) {
+			this.insert(visit, VERTICES_SIZE, currentVertex);
+			for (let i = 0; i < VERTICES_SIZE; i++) {
+				if (adj[currentVertex + "-" + i] == 1) {
+					pp["next"] = {};
+					np = pp["next"];
+					np["data"] = i;
+					np["next"] = null;
+					pp = np;
+					this.cmd("Step");
+					this.cmd("SetHighlight", currentVertex, 1);
+					this.cmd("SetEdgeHighlight", currentVertex, i, 1);
+					/*if (!visited[i]) {
+						this.cmd("CreateRectangle", this.nextIndex++, i, 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
+						QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
+					}*/
+					this.cmd("Step");
+					this.cmd("Step");
+					if (!visited[i]) {
+						this.cmd("SetEdgeColor", currentVertex, i, visitedEdgeColor);
+					}
+					this.cmd("SetEdgeHighlight", currentVertex, i, 0);
+					this.cmd("SetHighlight", currentVertex, 0);
+					visited[i] = true;
+				}
+			}
+			this.cmd("BFSButton", "play");
+			this.cmd("Step");
+			var text = "Now Visit all adjacent vertices of vertex <y>" + fp["next"]["data"] + "</y>";
+			this.cmd("BFSText", text);
+			this.cmd("Step");
+			this.cmd("BFSButton", "play");
+			this.cmd("Step");
+		}
+		fp = fp["next"];
+	}
+	
+	console.log("BFS result : ");
+	for (let i = 0; i < VERTICES_SIZE; i++) {
+		console.log(visit[i]);
+	}
+	
+	
+	
+	
+	/*this.travel(startingVertex);
+	for (var i = 0; i < bfs[startingVertex].length; i++) {
+		this.travel(bfs[startingVertex][i]);
+	}*/
+	
+	visit = visited;
+	currentVertex = startingVertex;
+	
+	/*this.travel(startingVertex);
+	
+	for(var i = 0; i < arr.length; i++) {
+		this.travel(arr[i]);
+	}*/
+	
+	
+	/*for (var i = 0; i < bfs[startingVertex].length; i++) {
+		this.travel(bfs[startingVertex][i]);
+	}*/
+	
+	
+	/*for (var i = 0; i < bfs[startingVertex].length; i++) {
+		this.travel(bfs[startingVertex][i]);
 	}*/
 	
 	
 	
+	/*this.cmd("CreateHighlightCircle", this.highlightID, HIGHLIGHT_COLOR, 
+			VERTICES_FIXID_X_POS[startingVertex], 
+			VERTICES_FIXID_Y_POS[startingVertex]);*/
+	
+	//this.cmd("SetHighlight", startingVertex, 1);
+	//visited[startingVertex] = true;
+	
+	/*for (var i = 0; i < bfs[startingVertex].length; i++) {
+		this.cmd("SetEdgeHighlight", startingVertex, bfs[startingVertex][i], 1);
+		this.cmd("Step");
+		this.cmd("Step");
+		this.cmd("SetEdgeHighlight", startingVertex, bfs[startingVertex][i], 0);
+		this.cmd("SetEdgeColor", startingVertex, bfs[startingVertex][i], visitedEdgeColor);
+	}*/
+	 
+	/*while(bfs[startingVertex].length > 0) {
+		//visited[bfs[startingVertex][0]] = true;
+		this.cmd("SetEdgeHighlight", startingVertex, bfs[startingVertex][0], 1);
+		this.cmd("Step");
+		this.cmd("Step");
+		
+		this.cmd("SetEdgeHighlight", startingVertex, bfs[startingVertex][0], 0);
+		this.cmd("SetEdgeColor", startingVertex, bfs[startingVertex][0], visitedEdgeColor);
+		bfs[startingVertex].splice(0, 1);
+	}*/
+	//this.cmd("SetHighlight", startingVertex, 0);
+	
+	//console.log(this.commands);
 	return this.commands;
 }
 
 
+Graph.prototype.seqSearch = function(visit, n, currentVertex) {
+	for (let i = 0; i < n; i++) {
+		if (visit[i] != currentVertex) {
+			continue;
+		} else {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+Graph.prototype.insert = function(visit, n, currentVertex) {
+	for (let i = 0; i < n; i++) {
+		if (visit[i] == -1) {
+			visit[i] = currentVertex;
+			return;
+		} else {
+		}
+	}
+}
+
+Graph.prototype.travel = function(vertex) {
+	if (bfs[vertex] != undefined) {
+		this.cmd("SetHighlight", vertex, 1);
+		visited[vertex] = true;
+		for (var i = 0; i < bfs[vertex].length; i++) {
+			arr.push(bfs[vertex][i]);
+			this.cmd("SetEdgeHighlight", vertex, bfs[vertex][i], 1);
+			this.cmd("Step");
+			this.cmd("Step");
+			this.cmd("SetEdgeHighlight", vertex, bfs[vertex][i], 0);
+			
+			if(!visited[bfs[vertex][i]]) {
+				this.cmd("SetEdgeColor", vertex, bfs[vertex][i], visitedEdgeColor);
+			}
+			visited[bfs[vertex][i]] = true;
+		}
+		this.cmd("SetHighlight", vertex, 0);
+	}
+}
+
+function customPopover(selector, position, text, callBackFunction) {
+	//doPlayPause();
+	$(selector).popover({
+		placement: position,
+		html: true,
+		trigger: 'focus',
+		container : $("canvas").parent(),
+		content: '<div class="customPopover">' + text + '</div>'
+	}).popover('show').next().css("top", "0");
+	
+	typing($(".customPopover:last"), text, function() {
+		if (typeof callBackFunction === "function") {
+			callBackFunction();
+		}
+	});
+}
+
+function play() {
+	$(".user-btn").remove();
+	doPlayPause();
+}
+
+function step1() {
+	$(".user-btn").remove();
+	$(".popover-content").append("<div class='customPopover'></div>");
+	var text = "Now, starting vertex <y>" + startingVertex + "</y> is pushed into the <y>queue</y>.";
+	typing($(".customPopover:last"), text, function() {
+		$(".customPopover:last").append("<br/><a class='introjs-button user-btn' onclick='play()' style='float: right;'>Next &#8594;</a>");
+	});
+}
+
+var step2 = function() {
+	console.log("STEP2 CALLED")
+}
 
 var currentAlg;
 

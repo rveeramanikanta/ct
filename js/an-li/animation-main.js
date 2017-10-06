@@ -511,6 +511,15 @@ function AnimationManager(objectManager) {
 				typing($(".callout-content div:last-child"), nextCommand[2], function() {
 					doPlayPause();
 				});
+			} else if (nextCommand[0].toUpperCase() == "BFSTEXT") {
+				doPlayPause();
+				$(".popover-content").append("<div class='customPopover'></div>");
+				typing($(".customPopover:last"), nextCommand[1], function() {
+					doPlayPause();
+				});
+			} else if (nextCommand[0].toUpperCase() == "BFSBUTTON") {
+				doPlayPause();
+				$(".customPopover:last").append("<br/><a class='introjs-button user-btn' onclick='" + nextCommand[1] + "()' style='float: right;'>Next &#8594;</a>");
 			} else if (nextCommand[0].toUpperCase() == "PAUSE") {
 				doPlayPause();
 			} else if(nextCommand[0].toUpperCase() == "SETNEXTINTROSTEP") {
@@ -529,7 +538,7 @@ function AnimationManager(objectManager) {
 				undoBlock.push(new UndoCreate(parseInt(nextCommand[1])));
 
 			} else if (nextCommand[0].toUpperCase() == "DRAWLINE") {
-				console.log(nextCommand.length);
+				//console.log(nextCommand.length);
 				if (nextCommand.length > 7) {
 					this.animatedObjects.drawLine(parseInt(nextCommand[1]),
 							parseInt(nextCommand[2]), parseInt(nextCommand[3]),
@@ -613,7 +622,7 @@ function AnimationManager(objectManager) {
 
 				}
 				if (nextCommand.length > 6) {
-					console.log(nextCommand);
+					//console.log(nextCommand);
 					this.animatedObjects.setNodePosition(
 							parseInt(nextCommand[1]), parseInt(nextCommand[5]),
 							parseInt(nextCommand[6]));

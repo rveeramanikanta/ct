@@ -141,12 +141,13 @@ r {
 select {
 	margin-top: 3px;
 }
+
+.popover-content {
+	display: table;
+} 
 </style>
 </head>
 <body onload="init();">
-
-	
-
 	<div id="container">
 		<div class='col-xs-12 text-center' style="margin-top: 20px;">
 			<h1 class='label label-default ct-demo-heading'>Graphs</h1>
@@ -154,15 +155,15 @@ select {
 
 		<div id="mainContent" class='col-xs-12 margin-top-20 padding0'>
 			<div class='col-xs-3'>
-				<div class='col-xs-12 box-border'></div>
-				<div id="outputDiv" class='opacity00 col-xs-12 padding0 margin-top-20'>
+				<div class='col-xs-12 box-border1'></div>
+				<!-- <div id="outputDiv" class='opacity00 col-xs-12 padding0 margin-top-20'>
 					<div class="output-console-title-bar">
 						<span class="title">Output</span>
 					</div>
 					<div class="output-console-body">
 						<span id="output"></span>
 					</div>
-				</div>
+				</div> -->
 
 			</div>
 			<div class='col-xs-9'>
