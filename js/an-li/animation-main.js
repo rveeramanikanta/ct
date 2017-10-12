@@ -513,13 +513,13 @@ function AnimationManager(objectManager) {
 				});
 			} else if (nextCommand[0].toUpperCase() == "BFSTEXT") {
 				doPlayPause();
-				$(".popover-content").append("<div class='customPopover'></div>");
-				typing($(".customPopover:last"), nextCommand[1], function() {
+				$(".introjs-tooltiptext ul").append("<li></li>")
+				typing($(".introjs-tooltiptext ul li:last"), nextCommand[1], function() {
 					doPlayPause();
 				});
 			} else if (nextCommand[0].toUpperCase() == "BFSBUTTON") {
 				doPlayPause();
-				$(".customPopover:last").append("<br/><a class='introjs-button user-btn' onclick='" + nextCommand[1] + "()' style='float: right;'>Next &#8594;</a>");
+				$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='" + nextCommand[1] + "()'>Next &#8594;</a>");
 			} else if (nextCommand[0].toUpperCase() == "PAUSE") {
 				doPlayPause();
 			} else if(nextCommand[0].toUpperCase() == "SETNEXTINTROSTEP") {

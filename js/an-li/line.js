@@ -114,13 +114,14 @@ function Line(n1, n2, color, cv, d, weight, anchorIndex) {
 					toPos[1] = toPos[1] - 8;
 				}
 			} else if (this.Node1.y == this.Node2.y) {
+				this.curve = 0.1;
 				if (this.Node1.objectID < this.Node2.objectID) {
 					toPos[1] = toPos[1] + 5;
 				} else {
 					toPos[1] = toPos[1] - 5;
 				}
 			} else if (this.Node1.x == this.Node2.x) {
-				this.curve = 0.15;
+				this.curve = 0.10;
 				if (this.Node1.objectID < this.Node2.objectID) {
 					toPos[1] = toPos[1] - 2;
 					toPos[0] = toPos[0] - 5;
@@ -139,7 +140,7 @@ function Line(n1, n2, color, cv, d, weight, anchorIndex) {
 			} else {
 				if (this.Node1.objectID < this.Node2.objectID) {
 					toPos[0] = toPos[0] - 5;
-					toPos[1] = toPos[1] + 5;
+					toPos[1] = toPos[1] + 0;
 				} else {
 					toPos[0] = toPos[0] + 5;
 					toPos[1] = toPos[1] - 0;

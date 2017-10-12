@@ -96,9 +96,19 @@ var startingVertex;
 var visit;
 var adj = {};
 var fp, np, pp;
-
-
+var queueIDMap = {};
 var colorsMap = {};
+
+var adjacentTableMap = {};
+
+var ADJACENT_TABLE_HORIZONTAL_X_POS = 725;
+var ADJACENT_TABLE_HORIZONTAL_Y_POS = 100;
+var ADJACENT_TABLE_VERTICAL_X_POS = 700;
+var ADJACENT_TABLE_VERTICAL_Y_POS = 125;
+var ADJACENT_TABLE_LINE_FLAG = false;
+
+var VISITED_VERTEX_X_POS = 150;
+
 
 function Graph(am, w, h) {
 	this.init(am, w, h);
@@ -123,7 +133,7 @@ Graph.prototype.addControls = function() {
 	this.vertexButton.onclick = this.vertexCallback.bind(this);
 	this.controls.push(this.vertexButton);
 
-	this.edgeButton = document.getElementById("edgeBtn");
+	this.edgeButton = document.getElementById("addEdgeBtn");
 	this.edgeButton.onclick = this.edgeCallback.bind(this);
 	this.controls.push(this.edgeButton);
 	
@@ -151,14 +161,65 @@ Graph.prototype.disableUI = function(event) {
 Graph.prototype.setup = function() {
 	this.vertices = new Array(MAX_VERTICES_SIZE);
 	this.verticesEdges = new Array(MAX_VERTICES_SIZE);
+	
+	this.visitedVertices = new Array(MAX_VERTICES_SIZE);
+	this.parentVertices = new Array(MAX_VERTICES_SIZE);
+	
+	/*this.adjacentTableID = new Array(64);*/
+	
+	/*for (let i = 0; i < 8; i++) {
+		for (let j = 0; j < 8; j++) {
+			this.cmd("CreateLabel", i + "" + j, 0, 775, 100);
+		}
+	}*/
+	
+	/*console.log(this.adjacentTableID);*/
 	for (var i = 0; i < MAX_VERTICES_SIZE; i++) {
 		this.vertices[i] = this.nextIndex++;
-		
 		//this.cmd("CreateCircle", this.vertices[i], i, VERTICES_FIXID_X_POS[i], VERTICES_FIXID_Y_POS[i]);
-		
 		//$("#fromID").append("<option>" + i + "</option>");
 		//$("#toID").append("<option>" + i + "</option>");
 	}
+	//var VISITED_VERTEX_X_POS = 150;
+	for (var i = 0; i < MAX_VERTICES_SIZE; i++) {
+		this.visitedVertices[i] = this.nextIndex++;
+		this.parentVertices[i] = this.nextIndex++;
+		/*this.cmd("CreateLabel", this.nextIndex++, i, VISITED_VERTEX_X_POS, 60);
+		this.cmd("CreateRectangle", this.nextIndex++, "-1", 25, 25, VISITED_VERTEX_X_POS, 80);
+		this.cmd("CreateRectangle", this.nextIndex++, "-", 25, 25, VISITED_VERTEX_X_POS, 105);
+		VISITED_VERTEX_X_POS = VISITED_VERTEX_X_POS + 25;*/
+	}
+	
+	
+	this.ADJACENT_TABLE_HORIZONTAL_LINE = this.nextIndex++;
+	this.ADJACENT_TABLE_VERTICAL_LINE = this.nextIndex++;
+	
+	
+	/*this.cmd("CreateLabel", this.nextIndex++, "Visited", 110, 80);
+	this.cmd("CreateLabel", this.nextIndex++, "Parent", 110, 105);*/
+	
+	
+	/*this.cmd("CreateLabel", this.nextIndex++, 0, 775, 100);
+	this.cmd("CreateLabel", this.nextIndex++, 1, 800, 100);
+	this.cmd("CreateLabel", this.nextIndex++, 2, 825, 100);
+	this.cmd("CreateLabel", this.nextIndex++, 3, 850, 100);
+	this.cmd("CreateLabel", this.nextIndex++, 4, 875, 100);
+	this.cmd("CreateLabel", this.nextIndex++, 5, 900, 100);
+	this.cmd("CreateLabel", this.nextIndex++, 6, 925, 100);
+	this.cmd("CreateLabel", this.nextIndex++, 7, 950, 100);
+	
+	this.cmd("DrawLine", this.nextIndex++, 725, 110, 975, 110);
+	this.cmd("DrawLine", this.nextIndex++, 765, 85, 765, 315);
+	
+	
+	this.cmd("CreateLabel", this.nextIndex++, 0, 750, 125);
+	this.cmd("CreateLabel", this.nextIndex++, 1, 750, 150);
+	this.cmd("CreateLabel", this.nextIndex++, 2, 750, 175);
+	this.cmd("CreateLabel", this.nextIndex++, 3, 750, 200);
+	this.cmd("CreateLabel", this.nextIndex++, 4, 750, 225);
+	this.cmd("CreateLabel", this.nextIndex++, 5, 750, 250);
+	this.cmd("CreateLabel", this.nextIndex++, 6, 750, 275);
+	this.cmd("CreateLabel", this.nextIndex++, 7, 750, 300);*/
 	
 	//this.cmd("Connect", this.vertices[3], this.vertices[7], "", 0.3)
 	//this.cmd("Connect", this.vertices[7], this.vertices[3], "", 0.3)
@@ -249,34 +310,91 @@ Graph.prototype.setup = function() {
 }
 
 Graph.prototype.vertexCallback = function(event) {
+	if($(".btn").is(":disabled")) {
+		return;
+	}
+	
 	if (VERTICES_SIZE < MAX_VERTICES_SIZE) {
 		this.implementAction(this.vertex.bind(this), "");
 	}
 }
 
 Graph.prototype.edgeCallback = function(event) {
-	if (!isNaN($("#fromID").val()) && !isNaN($("#toID").val())) {
+	if($(".btn").is(":disabled")) {
+		return;
+	}
+	
+	if (!isNaN($("#fromID .active").text()) && !isNaN($("#toID .active").text()) ) {
 		this.implementAction(this.edge.bind(this), "");
 	}
 }
 
 Graph.prototype.bfsCallback = function(event) {
+	if($(".btn").is(":disabled")) {
+		return;
+	}
 	this.implementAction(this.bfs.bind(this), "");
 }
 
 Graph.prototype.vertex = function() {
 	this.commands = new Array();
+	
+	if (!$("#animationDiv").hasClass("introjs-showElement")) {
+		introjs.goToStep(4);
+		this.cmd("Step");
+	}
+	
 	this.cmd("CreateCircle", this.vertices[VERTICES_SIZE], VERTICES_SIZE, VERTICES_FIXID_X_POS[VERTICES_SIZE], VERTICES_FIXID_Y_POS[VERTICES_SIZE]);
-	$("#fromID").append("<option>" + VERTICES_SIZE + "</option>");
-	$("#toID").append("<option>" + VERTICES_SIZE + "</option>");
+	$("#fromID ul").append("<li><a href='#'>" + VERTICES_SIZE + "</a></li>");
+	$("#toID ul").append("<li><a href='#'>" + VERTICES_SIZE + "</a></li>");
+	
+	this.cmd("CreateLabel", this.nextIndex++, VERTICES_SIZE, ADJACENT_TABLE_HORIZONTAL_X_POS, ADJACENT_TABLE_HORIZONTAL_Y_POS);
+	this.cmd("CreateLabel", this.nextIndex++, VERTICES_SIZE, ADJACENT_TABLE_VERTICAL_X_POS, ADJACENT_TABLE_VERTICAL_Y_POS);
+	if (ADJACENT_TABLE_LINE_FLAG) {
+		this.cmd("Delete", this.ADJACENT_TABLE_HORIZONTAL_LINE);
+		this.cmd("Delete", this.ADJACENT_TABLE_VERTICAL_LINE);
+	}
+	this.cmd("DrawLine", this.ADJACENT_TABLE_HORIZONTAL_LINE, 675, 110, 
+			ADJACENT_TABLE_HORIZONTAL_X_POS + 25, 110);
+	this.cmd("DrawLine", this.ADJACENT_TABLE_VERTICAL_LINE, 710, 85, 710, ADJACENT_TABLE_VERTICAL_Y_POS + 25);
+	
+	this.cmd("CreateLabel", this.nextIndex++, 0, ADJACENT_TABLE_HORIZONTAL_X_POS, ADJACENT_TABLE_HORIZONTAL_Y_POS + 25);
+	adjacentTableMap["0-" + VERTICES_SIZE] = this.nextIndex - 1;
+	if (ADJACENT_TABLE_LINE_FLAG) {
+		for (let i = 0; i < VERTICES_SIZE; i++) {
+			this.cmd("CreateLabel", this.nextIndex++, 0, ADJACENT_TABLE_HORIZONTAL_X_POS, ADJACENT_TABLE_HORIZONTAL_Y_POS + (i + 2) * 25);
+			adjacentTableMap[(i + 1) + "-" + VERTICES_SIZE] = this.nextIndex - 1;
+			this.cmd("CreateLabel", this.nextIndex++, 0, ADJACENT_TABLE_VERTICAL_X_POS + (i + 1) * 25, ADJACENT_TABLE_VERTICAL_Y_POS);
+			adjacentTableMap[(VERTICES_SIZE) + "-" + i] = this.nextIndex - 1;
+		}
+	}
+	
+	ADJACENT_TABLE_HORIZONTAL_X_POS = ADJACENT_TABLE_HORIZONTAL_X_POS + 25;
+	ADJACENT_TABLE_VERTICAL_Y_POS = ADJACENT_TABLE_VERTICAL_Y_POS + 25;
+	
+	this.cmd("CreateLabel", this.nextIndex++, VERTICES_SIZE, VISITED_VERTEX_X_POS, 55);
+	this.cmd("CreateRectangle", this.parentVertices[VERTICES_SIZE], "-", 25, 25, VISITED_VERTEX_X_POS, 105);
+	this.cmd("CreateRectangle", this.visitedVertices[VERTICES_SIZE], "-1", 25, 25, VISITED_VERTEX_X_POS, 80);
+	VISITED_VERTEX_X_POS = VISITED_VERTEX_X_POS + 25;
+	
+	if (!ADJACENT_TABLE_LINE_FLAG) {
+		this.cmd("CreateLabel", this.nextIndex++, "Visited : ", 110, 80);
+		this.cmd("CreateLabel", this.nextIndex++, "Parent : ", 110, 105);
+	}
+	
+	ADJACENT_TABLE_LINE_FLAG = true;
 	VERTICES_SIZE++;
+	
+	if (VERTICES_SIZE == 8) {
+		$("#addVertexBtn").addClass("disabled");
+	}
 	return this.commands;
 }
 
 Graph.prototype.edge = function() {
 	this.commands = new Array();
-	var fromEdge = parseInt($("#fromID").val());
-	var toEdge = parseInt($("#toID").val());
+	var fromEdge = parseInt($("#fromID .active").text());
+	var toEdge = parseInt($("#toID .active").text());
 	
 	//adj[fromEdge][toEdge] = 1;
 	if (edgesMap[fromEdge + "-" + toEdge] == undefined) {
@@ -303,6 +421,9 @@ Graph.prototype.edge = function() {
 		connections.push(toEdge);
 		bfs[fromEdge] = connections.sort();
 		adjMap[key] = 1;
+		
+		this.cmd("SetText", adjacentTableMap[key], 1);
+		this.cmd("SetForegroundColor", adjacentTableMap[key], "#cd3232");
 	}
 	
 	/*if (edgesMap[fromEdge + "-" + toEdge] == undefined) {
@@ -351,6 +472,9 @@ Graph.prototype.bfs = function() {
 	startingVertex = parseInt(this.bfsVal.value);
 	this.highlightID = this.nextIndex++;
 	this.queueID = this.nextIndex++;
+	queueIDMap = {};
+	
+	$(".btn").addClass("disabled");
 	
 	for(let i = 0; i < Object.keys(edgesMap).length; i++) {
 		this.cmd("SetEdgeColor", Object.keys(edgesMap)[i][0], Object.keys(edgesMap)[i][2], "#000000");
@@ -362,7 +486,7 @@ Graph.prototype.bfs = function() {
 	//this.cmd("Delete", this.queueID);
 	/*this.cmd("CreateLabel", this.queueID, "QUEUE : ", 100, 80);*/
 	var QUEUE_STARTING_X_POS = 150;
-	var QUEUE_STARTING_Y_POS = 80;
+	var QUEUE_STARTING_Y_POS = 250;
 	
 	adj = {};
 	for (let i = 0; i < VERTICES_SIZE; i++) {
@@ -390,12 +514,30 @@ Graph.prototype.bfs = function() {
 	pp = fp;
 	this.cmd("Pause");
 	this.cmd("Step");
-	var text = "Initially, we should start traversing from <y>given vertex</y>, i.e. <y>" + startingVertex + "</y>";
-	customPopover("canvas", "left", text, function() {
+	var text = "Initially, we should start traversing from <y>given vertex</y>, i.e. <y id='startingVertex'>" + startingVertex + "</y>";
+	$(".introjs-tooltip").removeClass("hide");
+	$(".introjs-nextbutton").hide();
+	$(".introjs-tooltiptext").append("<ul><li></li></ul>");
+	typing($(".introjs-tooltiptext ul li:last"), text, function() {
+		$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='step1()'>Next &#8594;</a>");
+	})
+	
+	/*customPopover("canvas", "left", text, function() {
 		$(".customPopover:last").append("<br/><a class='introjs-button user-btn' onclick='step1()' style='float: right;'>Next &#8594;</a>");
-	});
-	this.cmd("CreateLabel", this.queueID, "QUEUE : ", 100, 80);
+	});*/
+	this.cmd("SetHighlight", currentVertex, 1);
+	this.cmd("Step");
+	this.cmd("BFSButton", "play");
+	this.cmd("Step");
+	var text = "Now, starting vertex <y>" + startingVertex + "</y> is pushed into the <y>queue</y>.";
+	this.cmd("BFSText", text);
+	this.cmd("Step");
+	
+	
+	
+	this.cmd("CreateLabel", this.queueID, "QUEUE : ", 100, 250);
 	this.cmd("CreateRectangle", this.nextIndex++, startingVertex, 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
+	queueIDMap[startingVertex] = this.nextIndex - 1;
 	QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
 	this.cmd("SetBackgroundColor", this.nextIndex - 1, "#9befdb");
 	this.cmd("SetBackgroundColor", startingVertex, "#9befdb");
@@ -403,31 +545,35 @@ Graph.prototype.bfs = function() {
 	
 	this.cmd("BFSButton", "play");
 	this.cmd("Step");
-	var text = "We push all adjacent vertices of <y>" + startingVertex + "</y> into <y>queue</y>, they are <y>" 
+	var text = "First find all the adjacent vertices of <y>" + startingVertex + "</y>, they are <y>" 
 			+ (bfs[startingVertex] != undefined ? bfs[startingVertex].toString() : "null (no vertices)")  + "</y>";
 	this.cmd("BFSText", text);
 	this.cmd("Step");
 	if (bfs[startingVertex] != undefined) {
+		this.cmd("BFSButton", "play");
+		this.cmd("Step");
+		var text = "Now push the vertices into the <y>queue</y>.";
+		this.cmd("BFSText", text);
+		this.cmd("Step");
 		for (let i = 0; i < bfs[startingVertex].length; i++) {
 			this.cmd("CreateRectangle", this.nextIndex++, bfs[startingVertex][i], 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
 			this.cmd("SetBackgroundColor", this.nextIndex - 1, "#bbe2a7");
 			this.cmd("SetBackgroundColor", bfs[startingVertex][i], "#bbe2a7");
 			colorsMap[bfs[startingVertex][i]] = "#bbe2a7";
+			queueIDMap[bfs[startingVertex][i]] = this.nextIndex - 1;
 			QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
 		}
 		this.cmd("BFSButton", "play");
 		this.cmd("Step");
-		var text = "Now Visit all adjacent vertices <y>" + startingVertex + "</y>";
+		var text = "Now Visit all adjacent vertices <y>" + startingVertex + "</y>, i.e. " 
+			+ "<y>" + (bfs[startingVertex] != undefined ? bfs[startingVertex].toString() : "null (no vertices)")  + "</y>";
 		this.cmd("BFSText", text);
 		this.cmd("Step");
 		this.cmd("BFSButton", "play");
 		this.cmd("Step");
 	}
-	//this.cmd("Pause");
 	this.cmd("Step");
-	
 	visited[startingVertex] = true;
-	QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
 	while (fp != null) {
 		currentVertex = fp["data"];
 		if (this.seqSearch(visit, VERTICES_SIZE, currentVertex) == 0) {
@@ -442,10 +588,6 @@ Graph.prototype.bfs = function() {
 					this.cmd("Step");
 					this.cmd("SetHighlight", currentVertex, 1);
 					this.cmd("SetEdgeHighlight", currentVertex, i, 1);
-					/*if (!visited[i]) {
-						this.cmd("CreateRectangle", this.nextIndex++, i, 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
-						QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
-					}*/
 					this.cmd("Step");
 					this.cmd("Step");
 					if (!visited[i]) {
@@ -456,23 +598,41 @@ Graph.prototype.bfs = function() {
 					visited[i] = true;
 				}
 			}
-			this.cmd("BFSButton", "play");
+			
+			this.cmd("SetBackgroundColor", queueIDMap[currentVertex], "#d8d0d0");
 			this.cmd("Step");
-			var text = "Now Visit all adjacent vertices of vertex <y>" + fp["next"]["data"] + "</y>";
-			this.cmd("BFSText", text);
-			this.cmd("Step");
-			this.cmd("BFSButton", "play");
-			this.cmd("Step");
+			if (fp["next"] != null && bfs[fp["next"]["data"]] != undefined) {
+				this.cmd("BFSButton", "play");
+				this.cmd("Step");
+				/*var text = "Now push and visit all adjacent vertices of vertex <y>" + fp["next"]["data"] +  "</y>."
+							+ " They are : <y>" + (bfs[fp["next"]["data"]].toString())  + "</y>";*/
+				var text = "Next element in the queue is <y>" + fp["next"]["data"] +  "</y>.";
+				this.cmd("BFSText", text);
+				this.cmd("Step");
+				this.cmd("BFSButton", "play");
+				this.cmd("Step");
+				for (let i = 0; i < bfs[fp["next"]["data"]].length; i++) {
+					if (!visited[bfs[fp["next"]["data"]][i]]) {
+						this.cmd("CreateRectangle", this.nextIndex++, bfs[fp["next"]["data"]][i], 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
+						QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
+					}
+				}
+			}
 		}
 		fp = fp["next"];
 	}
-	
+	this.cmd("Step");
+	var text = "<br/><br/>All vertices are visited.";
+	this.cmd("BFSText", text);
 	console.log("BFS result : ");
+	this.cmd("Step");
+	var text = "BFS result : ";
 	for (let i = 0; i < VERTICES_SIZE; i++) {
+		text = text + " <y>" + visit[i] + "</y>";
 		console.log(visit[i]);
 	}
 	
-	
+	this.cmd("BFSText", text);
 	
 	
 	/*this.travel(startingVertex);
@@ -549,7 +709,6 @@ Graph.prototype.insert = function(visit, n, currentVertex) {
 		if (visit[i] == -1) {
 			visit[i] = currentVertex;
 			return;
-		} else {
 		}
 	}
 }
@@ -598,15 +757,31 @@ function play() {
 
 function step1() {
 	$(".user-btn").remove();
-	$(".popover-content").append("<div class='customPopover'></div>");
+	$(".introjs-tooltiptext").append("<y id='dummy'>" + startingVertex + "</y>");
+	$("#dummy").offset({
+		top : $("#startingVertex").offset().top,
+		left : $("#startingVertex").offset().left
+	});
+	let topVal = ($("canvas").offset().top- $("#startingVertex").offset().top) + VERTICES_FIXID_Y_POS[$("#startingVertex").text()] 
+					+ parseInt($("#dummy").css("top"))
+	let leftVal = ($("canvas").offset().left - $("#startingVertex").offset().left) + VERTICES_FIXID_X_POS[$("#startingVertex").text()] 
+					+ parseInt($("#dummy").css("left"))
+	
+	TweenMax.to("#dummy", 1, {top : topVal - 5, left: leftVal - 5, onComplete: function() {
+		$("#dummy").remove();
+		doPlayPause();
+	}});
+	
+	
+	/*$(".popover-content").append("<div class='customPopover'></div>");
 	var text = "Now, starting vertex <y>" + startingVertex + "</y> is pushed into the <y>queue</y>.";
 	typing($(".customPopover:last"), text, function() {
 		$(".customPopover:last").append("<br/><a class='introjs-button user-btn' onclick='play()' style='float: right;'>Next &#8594;</a>");
-	});
+	});*/
 }
 
 var step2 = function() {
-	console.log("STEP2 CALLED")
+	console.log("STEP2 CALLED");
 }
 
 var currentAlg;
