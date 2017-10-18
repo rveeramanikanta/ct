@@ -4,8 +4,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Breadth First Search</title>
+<title>Depth First Search</title>
 <link rel="stylesheet" href="/css/bootstrap.css">
 <link rel="stylesheet" href="/css/jquery-ui.css">
 <link rel="stylesheet" href="/css/introjs.css">
@@ -34,13 +35,8 @@
 <script type="text/javascript" src="js/an-li/animation-main.js"></script>
 <script type="text/javascript" src="js/al-li/algorithm.js"></script>
 
-<script type="text/javascript" src="js/al-li/graph.js"></script>
+<script type="text/javascript" src="js/al-li/dfs.js"></script>
 <script type="text/javascript" src="js/breadth-first-search.js"></script>
-
-<!-- <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script> -->
-
-
 <style type="text/css">
 .ct-demo-heading {
 	background: highlight none repeat scroll 0 0;
@@ -79,6 +75,10 @@
 .introjs-tooltiptext {
 	min-width: 250px;
 }
+
+/* .introjs-tooltip {
+	max-height: 400px;
+} */
 
 .introjs-tooltiptext li span {
 	display: inline-block;
@@ -178,70 +178,72 @@ r {
 	display: flex;
 	justify-content: center;
 }
+
+.introjs-tooltiptext ol, .introjs-tooltiptext ul {
+	margin-bottom: 0;
+	margin-left: -15px;
+}
+
+.vertical-center {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+}
+
+.padding10 {
+	padding: 10px;
+}
 </style>
 
 </head>
-<body onload="init();">
+<body onload="init()">
 	<div id="container">
 		<div class='col-xs-12 text-center' style="margin-top: 20px;">
-			<h1 class='label label-default ct-demo-heading'>Breadth First Search</h1>
+			<h1 class='label label-default ct-demo-heading'>Depth First
+				Search</h1>
 		</div>
 
 		<div id="mainContent" class='col-xs-12 margin-top-20 padding0'>
 			<div class='col-xs-3' style="padding-right: 0;">
 				<div class='col-xs-12 box-border' style="padding: 5px;">
-				
+
 					<div id='bfsDiv'>
-						<span>BFS</span>
-						<div class='code'><pre class='creampretab4'>for (i = 0; i < n; i++) {
-	visited[i] = -1;
-}
-visit = visited;
-currentVertex = startingVertex;
-fp = (struct queue *)malloc(
-				sizeof(struct queue));
-np = fp;
-fp -> data = currentVertex;
-fp -> next = NULL;
-pp = fp;
-while (fp != NULL) {
-	currentVertex = fp -> data;
-	if (seqSearch(visit, n, currentVertex) == 0) {
-		insert(visit, n, currentVertex);
-		for (i = 0; i < n; i++) {
-			if (adj[currentVertex][i] == 1) {
-				pp -> next = (struct queue *)malloc(
-						sizeof(struct queue));
-				np = pp -> next;
-				np -> data = i;
-				np -> next = NULL;
-				pp = np;
+						<span class='btn btn-primary' data-toggle='collapse' data-target='#code' style='margin-bottom: 10px;'>DFS</span>
+						<div id='code' class='collapse'>
+							<pre class='creampretab4'>void depthFirstSearch() {
+	for (i = 0; i < n; i++) {
+		visited[i] = -1;
+	}
+	visit = visited;
+	currentVertex = startingVertex;
+	fp = (struct stack *)malloc(
+			sizeof(struct stack *));
+	top = fp;
+	fp -> data = currentVertex;
+	fp -> next = NULL;
+	while (top != NULL) {
+		currentVertex = top -> data;
+		top = top -> next;
+		if (seqSearch(visit, n, currentVertex) == 0) {
+			insert(visit, n, currentVertex);
+			for (i = 0; i < n; i++) {
+				if (adj[currentVertex][i] == 1) {
+					np = (struct stack *)malloc(
+							sizeof(struct stack));
+					np -> data = i;
+					np -> next = top;
+					top = np;
+					fp = np;
+				}
 			}
 		}
 	}
-	fp = fp -> next;
-}
-printf("BFS result : ");
-for (i = 0; i < n; i++) {
-	printf(" %d ", *(visit+i));
-}
-printf("\n");</pre>
-						
-						
+}</pre>
+
+
 						</div>
 					</div>
-				
-				
 				</div>
-				<!-- <div id="outputDiv" class='opacity00 col-xs-12 padding0 margin-top-20'>
-					<div class="output-console-title-bar">
-						<span class="title">Output</span>
-					</div>
-					<div class="output-console-body">
-						<span id="output"></span>
-					</div>
-				</div> -->
-
 			</div>
 			<div class='col-xs-9'>
 				<div class='col-xs-12 padding0 box-border text-center'
@@ -252,50 +254,19 @@ printf("\n");</pre>
 								<div class='col-sm-12'>
 									<div class="input-group" id='addVertexBtnDiv'>
 										<span class="input-group-addon input-group-addon-border">
-											<span id="addVertexBtn" class="btn btn-sm btn-success">Add Vertex</span>
+											<span id="addVertexBtn" class="btn btn-sm btn-success">Add
+												Vertex</span>
 										</span>
 									</div>
 								</div>
 							</div>
-							<div id='addEdgeDiv' class='col-xs-5' style="border: 1px solid gray; display: flex; justify-content: center; align-items: center; padding: 10px; border-radius: 5px;">
-								<div style="display: inline-block;">
-									<table>
-										<tr>
-											<td><b style="font-family: monospace;">From Vertex :
-											</b></td>
-											<td>
-												<div class="dropdown dropdown-select" id='fromID'>
-													<button class="btn dropdown-toggle btn-info btn-xs"
-														type="button" data-toggle="dropdown">
-														vertex &nbsp;<span class="caret"></span>
-													</button>
-													<ul class="dropdown-menu"></ul>
-												</div>
-											</td>
-										</tr>
-
-										<tr>
-											<td><b style="font-family: monospace;">To Vertex
-													&emsp;&emsp;: </b></td>
-											<td>
-												<div class="dropdown dropdown-select" id='toID'>
-													<button class="btn dropdown-toggle btn-info btn-xs"
-														type="button" data-toggle="dropdown">
-														vertex &nbsp;<span class="caret"></span>
-													</button>
-													<ul class="dropdown-menu"></ul>
-												</div>
-											</td>
-										</tr>
-									</table>
-								</div>
-
-								<div class="btn-css col-xs-2">
-									<div class='col-sm-12'>
-										<div class="input-group">
-											<!-- <table>
+							<div class='col-xs-5'>
+								<div id='addEdgeDiv' class='vertical-center box-border padding10'>
+									<div style="display: inline-block;">
+										<table>
 											<tr>
-												<td><b style="font-family: monospace;">From Vertex : </b></td>
+												<td><b style="font-family: monospace;">From Vertex
+														: </b></td>
 												<td>
 													<div class="dropdown dropdown-select" id='fromID'>
 														<button class="btn dropdown-toggle btn-info btn-xs"
@@ -306,9 +277,10 @@ printf("\n");</pre>
 													</div>
 												</td>
 											</tr>
-											
+
 											<tr>
-												<td><b style="font-family: monospace;">To Vertex &emsp;&emsp;: </b></td>
+												<td><b style="font-family: monospace;">To Vertex
+														&emsp;&emsp;: </b></td>
 												<td>
 													<div class="dropdown dropdown-select" id='toID'>
 														<button class="btn dropdown-toggle btn-info btn-xs"
@@ -320,53 +292,47 @@ printf("\n");</pre>
 												</td>
 											</tr>
 										</table>
-										
-										<span id="addEdgeBtn" class="btn btn-sm btn-success">Add Edge</span> -->
-											<!-- <span class="input-group-addon input-group-addon-border">
-										</span> -->
+									</div>
 
-											<!-- <b style="font-family: monospace;">From Vertex : </b> -->
-											<!-- <div class="dropdown dropdown-select" id='fromID'>
-											<button class="btn dropdown-toggle btn-info btn-xs" type="button" data-toggle="dropdown">
-												From Vertex &nbsp;<span class="caret"></span>
-											</button>
-											<ul class="dropdown-menu"></ul>
-										</div> -->
-											<!-- <br/>
-										<b style="font-family: monospace;">To Vertex : </b> -->
-											<!-- <div class="dropdown dropdown-select" id='toID'>
-											<button class="btn dropdown-toggle btn-info btn-xs" type="button" data-toggle="dropdown">
-												To Vertex &nbsp;<span class="caret"></span>
-											</button>
-											<ul class="dropdown-menu"></ul>
-										</div> -->
-
-											<span class="input-group-addon input-group-addon-border">
-												<span id="addEdgeBtn" class="btn btn-sm btn-success">Add
-													Edge</span>
-											</span>
+									<div style="display: table;">
+										<div class='col-sm-12'>
+											<div class="input-group">
+												<span class="input-group-addon input-group-addon-border">
+													<span id="addEdgeBtn" class="btn btn-sm btn-success">Add
+														Edge</span>
+												</span>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-
-							<div class="col-xs-2">
-								<div class='col-sm-12' style="">
-									<div class="input-group" id='bfsBtnDiv'>
-										<input class="form-control input-sm" id="bfsVal" name="bfs"
-											type="text" /> <span class="input-group-addon"> <span
-											id="bfsBtn" class="btn btn-sm btn-success">BFS</span>
-										</span>
-									</div>
+							
+							
+							<div class='col-xs-4'>
+								<div id='dfsBtnDiv' class='vertical-center box-border padding10'>
+									<table>
+										<tr>
+											<td><b style="font-family: monospace;">Starting Vertex : </b></td>
+											<td>
+												<div class="dropdown dropdown-select" id='dfsVal'>
+													<button class="btn dropdown-toggle btn-info btn-xs"
+														type="button" data-toggle="dropdown">
+														vertex &nbsp;<span class="caret"></span>
+													</button>
+													<ul class="dropdown-menu"></ul>
+												</div>
+											</td>
+											<td>
+												<div class="input-group">
+													<span class="input-group-addon input-group-addon-border">
+														<span id="dfsBtn" class="btn btn-sm btn-success">Start</span>
+													</span>
+												</div>
+											</td>
+										</tr>
+									</table>
 								</div>
 							</div>
-							
-									
-							<!-- <div class="btn-css">
-								<div class='col-sm-12'>
-									<input id='code' checked data-toggle="toggle" data-on="With Code" data-off="Without Code" data-onstyle="success" data-offstyle="danger" type="checkbox">
-								</div>
-							</div> -->
 						</div>
 					</div>
 					<canvas id="canvas" width="1000" height="500"></canvas>
@@ -377,27 +343,25 @@ printf("\n");</pre>
 			</div>
 		</div>
 	</div>
-	
+
 	<script type="text/javascript">
 		$(document).ready(function() {
-			
-			$("#bfsDiv").on("click", function() {
+			/* $("#bfsDiv").on("click", function() {
 				$(this).find(".code").addClass("active");
-			});
-			
+			}); */
+
 			$("canvas").on("mousedown", function(evt) {
 				console.log(evt.clientX - $("canvas").offset().left);
 				console.log(evt.clientY - $("canvas").offset().top);
 			});
-			
-			$('.dropdown').on('click', '.dropdown-menu li a', function() { 
+
+			$('.dropdown').on('click','.dropdown-menu li a', function() {
 				$('.dropdown-menu').css('min-width', $(".dropdown").width());
 				$(this).parents('.dropdown-menu').find('li').removeClass('active');
 				$(this).parent('li').addClass('active');
 				$(this).parents('.dropdown-select').find('.dropdown-toggle').html($(this).text() + ' &nbsp;<span class="caret"></span>');
 			});
-			
-			introGuide();
+			//introGuide();
 		});
 	</script>
 </body>

@@ -97,7 +97,9 @@ var visit;
 var adj = {};
 var fp, np, pp;
 var queueIDMap = {};
-var colorsMap = {};
+var queueArr = [];
+var colorsArr = ["#4cef83", "#3acde0", "#e039dd", "#8d96ba", "#e8b068", "#e8d668", "#ed368d"];
+var usedColorsCount = 0;
 
 var adjacentTableMap = {};
 
@@ -193,11 +195,11 @@ Graph.prototype.setup = function() {
 	
 	this.ADJACENT_TABLE_HORIZONTAL_LINE = this.nextIndex++;
 	this.ADJACENT_TABLE_VERTICAL_LINE = this.nextIndex++;
-	
+	this.CURRENT_INDEX_LABEL = this.nextIndex++;
+	this.CURRENT_INDEX_POINTER = this.nextIndex++;
 	
 	/*this.cmd("CreateLabel", this.nextIndex++, "Visited", 110, 80);
 	this.cmd("CreateLabel", this.nextIndex++, "Parent", 110, 105);*/
-	
 	
 	/*this.cmd("CreateLabel", this.nextIndex++, 0, 775, 100);
 	this.cmd("CreateLabel", this.nextIndex++, 1, 800, 100);
@@ -234,8 +236,6 @@ Graph.prototype.setup = function() {
 	this.cmd("DrawLine", this.nextIndex++, 407, 162, 352, 229, 1, 0.3);
 	this.cmd("DrawLine", this.nextIndex++, 363, 233, 418, 169, 1, 0.3);
 	
-	
-	
 	//0-2
 	this.cmd("DrawLine", this.nextIndex++, 510, 68, 556, 141, 1, 0.3);
 	this.cmd("DrawLine", this.nextIndex++, 570, 130, 520, 58, 1, 0.3);
@@ -249,8 +249,6 @@ Graph.prototype.setup = function() {
 	//0-3
 	this.cmd("DrawLine", this.nextIndex++, 480, 50, 334, 234, 1, 0.3);
 	this.cmd("DrawLine", this.nextIndex++, 590, 336, 643, 269, 1, 0.3);
-	
-	
 	
 	//0-4
 	this.cmd("DrawLine", this.nextIndex++, 519, 42, 665, 235, 1, -0.3);
@@ -338,15 +336,14 @@ Graph.prototype.bfsCallback = function(event) {
 
 Graph.prototype.vertex = function() {
 	this.commands = new Array();
-	
-	if (!$("#animationDiv").hasClass("introjs-showElement")) {
+	if (!$("#animationDiv").hasClass("introjs-showElement") && introjs != undefined) {
 		introjs.goToStep(4);
 		this.cmd("Step");
 	}
-	
 	this.cmd("CreateCircle", this.vertices[VERTICES_SIZE], VERTICES_SIZE, VERTICES_FIXID_X_POS[VERTICES_SIZE], VERTICES_FIXID_Y_POS[VERTICES_SIZE]);
 	$("#fromID ul").append("<li><a href='#'>" + VERTICES_SIZE + "</a></li>");
 	$("#toID ul").append("<li><a href='#'>" + VERTICES_SIZE + "</a></li>");
+	$("#bfsVal ul").append("<li><a href='#'>" + VERTICES_SIZE + "</a></li>");
 	
 	this.cmd("CreateLabel", this.nextIndex++, VERTICES_SIZE, ADJACENT_TABLE_HORIZONTAL_X_POS, ADJACENT_TABLE_HORIZONTAL_Y_POS);
 	this.cmd("CreateLabel", this.nextIndex++, VERTICES_SIZE, ADJACENT_TABLE_VERTICAL_X_POS, ADJACENT_TABLE_VERTICAL_Y_POS);
@@ -469,24 +466,18 @@ Graph.prototype.edge = function() {
 
 Graph.prototype.bfs = function() {
 	this.commands = new Array();
-	startingVertex = parseInt(this.bfsVal.value);
+	startingVertex = parseInt($("#bfsVal .active").text());
 	this.highlightID = this.nextIndex++;
 	this.queueID = this.nextIndex++;
 	queueIDMap = {};
-	
 	$(".btn").addClass("disabled");
-	
-	for(let i = 0; i < Object.keys(edgesMap).length; i++) {
-		this.cmd("SetEdgeColor", Object.keys(edgesMap)[i][0], Object.keys(edgesMap)[i][2], "#000000");
-	}
-	
-	/*$.each(edgesMap, function(key, val) {
-		this.cmd("SetEdgeColor", key[0], key[2], "#000000");
-	});*/
-	//this.cmd("Delete", this.queueID);
-	/*this.cmd("CreateLabel", this.queueID, "QUEUE : ", 100, 80);*/
 	var QUEUE_STARTING_X_POS = 150;
-	var QUEUE_STARTING_Y_POS = 250;
+	var QUEUE_STARTING_Y_POS = 350;
+	var CURRENT_INDEX_POINTER_X_POS = 150;
+	var CURRENT_INDEX_POINTER_Y_POS = 370;
+	var CURRENT_INDEX_LABEL_X_POS = 150;
+	var CURRENT_INDEX_LABEL_Y_POS = 400;
+	
 	
 	adj = {};
 	for (let i = 0; i < VERTICES_SIZE; i++) {
@@ -498,33 +489,25 @@ Graph.prototype.bfs = function() {
 			}
 		}
 	}
-	
 	visit = [];
 	visited = {};
-	
 	for (let i = 0; i < VERTICES_SIZE; i++) {
 		visit[i] = -1;
 	}
-	
 	//visit = visited;
 	currentVertex = startingVertex;
 	np = fp = {};
 	fp["data"] = currentVertex;
 	fp["next"] = null;
 	pp = fp;
-	this.cmd("Pause");
-	this.cmd("Step");
-	var text = "Initially, we should start traversing from <y>given vertex</y>, i.e. <y id='startingVertex'>" + startingVertex + "</y>";
 	$(".introjs-tooltip").removeClass("hide");
+	this.cmd("BFSStep");
+	var text = "Initially, we should start traversing from <y>given vertex</y>, i.e. <y id='startingVertex'>" + startingVertex + "</y>";
+	this.cmd("BFSText", text);
+	this.cmd("Step");
+	this.cmd("BFSButton", "step1");
+	this.cmd("Step");
 	$(".introjs-nextbutton").hide();
-	$(".introjs-tooltiptext").append("<ul><li></li></ul>");
-	typing($(".introjs-tooltiptext ul li:last"), text, function() {
-		$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='step1()'>Next &#8594;</a>");
-	})
-	
-	/*customPopover("canvas", "left", text, function() {
-		$(".customPopover:last").append("<br/><a class='introjs-button user-btn' onclick='step1()' style='float: right;'>Next &#8594;</a>");
-	});*/
 	this.cmd("SetHighlight", currentVertex, 1);
 	this.cmd("Step");
 	this.cmd("BFSButton", "play");
@@ -532,17 +515,19 @@ Graph.prototype.bfs = function() {
 	var text = "Now, starting vertex <y>" + startingVertex + "</y> is pushed into the <y>queue</y>.";
 	this.cmd("BFSText", text);
 	this.cmd("Step");
-	
-	
-	
-	this.cmd("CreateLabel", this.queueID, "QUEUE : ", 100, 250);
+	this.cmd("CreateLabel", this.queueID, "QUEUE : ", 100, 350);
 	this.cmd("CreateRectangle", this.nextIndex++, startingVertex, 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
+	//queueArr.push(startingVertex);
+	
+	this.cmd("CreateLabel", this.CURRENT_INDEX_POINTER, "", CURRENT_INDEX_POINTER_X_POS, CURRENT_INDEX_POINTER_Y_POS);
+	this.cmd("CreateLabel", this.CURRENT_INDEX_LABEL, "Current Index", CURRENT_INDEX_LABEL_X_POS, CURRENT_INDEX_LABEL_Y_POS);
+	this.cmd("Connect", this.CURRENT_INDEX_LABEL, this.CURRENT_INDEX_POINTER);
+	
 	queueIDMap[startingVertex] = this.nextIndex - 1;
 	QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
-	this.cmd("SetBackgroundColor", this.nextIndex - 1, "#9befdb");
-	this.cmd("SetBackgroundColor", startingVertex, "#9befdb");
-	colorsMap[startingVertex] = "#9befdb";
-	
+	this.cmd("SetBackgroundColor", this.nextIndex - 1, colorsArr[usedColorsCount]);
+	this.cmd("SetBackgroundColor", startingVertex, colorsArr[usedColorsCount]);
+	usedColorsCount++;
 	this.cmd("BFSButton", "play");
 	this.cmd("Step");
 	var text = "First find all the adjacent vertices of <y>" + startingVertex + "</y>, they are <y>" 
@@ -550,34 +535,44 @@ Graph.prototype.bfs = function() {
 	this.cmd("BFSText", text);
 	this.cmd("Step");
 	if (bfs[startingVertex] != undefined) {
+		for (let i = 0; i < bfs[startingVertex].length; i++) {
+			if (bfs[startingVertex][i] != startingVertex) {
+				this.cmd("SetBackgroundColor", bfs[startingVertex][i], colorsArr[usedColorsCount]);
+			}
+		}
+		
 		this.cmd("BFSButton", "play");
 		this.cmd("Step");
-		var text = "Now push the vertices into the <y>queue</y>.";
+		var text = "Now push them into the <y>queue</y>.";
 		this.cmd("BFSText", text);
 		this.cmd("Step");
 		for (let i = 0; i < bfs[startingVertex].length; i++) {
-			this.cmd("CreateRectangle", this.nextIndex++, bfs[startingVertex][i], 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
-			this.cmd("SetBackgroundColor", this.nextIndex - 1, "#bbe2a7");
-			this.cmd("SetBackgroundColor", bfs[startingVertex][i], "#bbe2a7");
-			colorsMap[bfs[startingVertex][i]] = "#bbe2a7";
-			queueIDMap[bfs[startingVertex][i]] = this.nextIndex - 1;
-			QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
+			if (bfs[startingVertex][i] != startingVertex) {
+				this.cmd("CreateRectangle", this.nextIndex++, bfs[startingVertex][i], 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
+				this.cmd("SetBackgroundColor", this.nextIndex - 1, colorsArr[usedColorsCount]);
+				queueIDMap[bfs[startingVertex][i]] = this.nextIndex - 1;
+				QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
+				queueArr.push(bfs[startingVertex][i]);
+			}
 		}
-		this.cmd("BFSButton", "play");
-		this.cmd("Step");
-		var text = "Now Visit all adjacent vertices <y>" + startingVertex + "</y>, i.e. " 
-			+ "<y>" + (bfs[startingVertex] != undefined ? bfs[startingVertex].toString() : "null (no vertices)")  + "</y>";
-		this.cmd("BFSText", text);
-		this.cmd("Step");
+		usedColorsCount++;
 		this.cmd("BFSButton", "play");
 		this.cmd("Step");
 	}
 	this.cmd("Step");
-	visited[startingVertex] = true;
+	//visited[startingVertex] = true;
 	while (fp != null) {
 		currentVertex = fp["data"];
 		if (this.seqSearch(visit, VERTICES_SIZE, currentVertex) == 0) {
 			this.insert(visit, VERTICES_SIZE, currentVertex);
+			if (bfs[currentVertex] != undefined) {
+				var text = "Now Visit all adjacent vertices <y>" + currentVertex + "</y>, i.e. " 
+				+ "<y>" + (bfs[currentVertex].toString())  + "</y>";
+				this.cmd("BFSText", text);
+				this.cmd("Step");
+				this.cmd("BFSButton", "play");
+				this.cmd("Step");
+			}
 			for (let i = 0; i < VERTICES_SIZE; i++) {
 				if (adj[currentVertex + "-" + i] == 1) {
 					pp["next"] = {};
@@ -588,107 +583,118 @@ Graph.prototype.bfs = function() {
 					this.cmd("Step");
 					this.cmd("SetHighlight", currentVertex, 1);
 					this.cmd("SetEdgeHighlight", currentVertex, i, 1);
+					this.cmd("SetHighlight", this.visitedVertices[i], 1);
+					this.cmd("SetText", this.visitedVertices[i], "0");
 					this.cmd("Step");
 					this.cmd("Step");
 					if (!visited[i]) {
-						this.cmd("SetEdgeColor", currentVertex, i, visitedEdgeColor);
+						this.cmd("SetText", this.parentVertices[i], currentVertex);
+						this.cmd("SetEdgeColor", currentVertex, i, colorsArr[usedColorsCount - 1]);
 					}
 					this.cmd("SetEdgeHighlight", currentVertex, i, 0);
 					this.cmd("SetHighlight", currentVertex, 0);
+					this.cmd("SetHighlight", this.visitedVertices[i], 0);
 					visited[i] = true;
 				}
 			}
-			
-			this.cmd("SetBackgroundColor", queueIDMap[currentVertex], "#d8d0d0");
 			this.cmd("Step");
-			if (fp["next"] != null && bfs[fp["next"]["data"]] != undefined) {
+			var flag = true;
+			if (queueArr.length == 0) {
+				flag = false;
+			}
+			
+			var nextElmt = queueArr.splice(0, 1);
+			if (fp["next"] != null && flag && bfs[nextElmt] == undefined) {
 				this.cmd("BFSButton", "play");
 				this.cmd("Step");
-				/*var text = "Now push and visit all adjacent vertices of vertex <y>" + fp["next"]["data"] +  "</y>."
-							+ " They are : <y>" + (bfs[fp["next"]["data"]].toString())  + "</y>";*/
-				var text = "Next element in the queue is <y>" + fp["next"]["data"] +  "</y>.";
+				this.cmd("BFSStep");
+				var text = "Next element in the queue is <y>" + nextElmt +  "</y>";
 				this.cmd("BFSText", text);
 				this.cmd("Step");
 				this.cmd("BFSButton", "play");
 				this.cmd("Step");
-				for (let i = 0; i < bfs[fp["next"]["data"]].length; i++) {
-					if (!visited[bfs[fp["next"]["data"]][i]]) {
-						this.cmd("CreateRectangle", this.nextIndex++, bfs[fp["next"]["data"]][i], 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
+				CURRENT_INDEX_POINTER_X_POS = CURRENT_INDEX_POINTER_X_POS + 30;
+				CURRENT_INDEX_LABEL_X_POS = CURRENT_INDEX_LABEL_X_POS + 30;
+				this.cmd("Move", this.CURRENT_INDEX_POINTER, CURRENT_INDEX_POINTER_X_POS, CURRENT_INDEX_POINTER_Y_POS);
+				this.cmd("Move", this.CURRENT_INDEX_LABEL, CURRENT_INDEX_LABEL_X_POS, CURRENT_INDEX_LABEL_Y_POS);
+				this.cmd("Step");
+				this.cmd("BFSButton", "play");
+				this.cmd("Step");
+				var text = "But there is no adjacent vertices for vertex <y> " + nextElmt + "</y>, " 
+						+ "so back tracking to <y>parent</y> vertex and visit next element in the <y>queue</y>.";
+				this.cmd("BFSText", text);
+				this.cmd("Step");
+			} else if (fp["next"] != null && flag && bfs[nextElmt] != undefined) {
+				this.cmd("BFSButton", "play");
+				this.cmd("Step");
+				this.cmd("BFSStep");
+				var text = "Next element in the queue is <y>" + nextElmt +  "</y>.";
+				this.cmd("BFSText", text);
+				this.cmd("Step");
+				this.cmd("BFSButton", "play");
+				this.cmd("Step");
+				CURRENT_INDEX_POINTER_X_POS = CURRENT_INDEX_POINTER_X_POS + 30;
+				CURRENT_INDEX_LABEL_X_POS = CURRENT_INDEX_LABEL_X_POS + 30;
+				this.cmd("Move", this.CURRENT_INDEX_POINTER, CURRENT_INDEX_POINTER_X_POS, CURRENT_INDEX_POINTER_Y_POS);
+				this.cmd("Move", this.CURRENT_INDEX_LABEL, CURRENT_INDEX_LABEL_X_POS, CURRENT_INDEX_LABEL_Y_POS);
+				this.cmd("Step");
+				this.cmd("BFSButton", "play");
+				this.cmd("Step");
+				var text = "So find all adjacent vertices for vertex <y>" + nextElmt +  "</y>. <br/>They are : "
+						+ "<y>" + bfs[nextElmt].toString() + "</y>.";
+				this.cmd("BFSText", text);
+				this.cmd("Step");
+				var visitedVertices = [];
+				for (let i = 0; i < bfs[nextElmt].length; i++) {
+					if (visited[bfs[nextElmt][i]]) {
+						visitedVertices.push(bfs[nextElmt][i]);
+					}
+				}
+				
+				if (visitedVertices.length > 0) {
+					this.cmd("BFSButton", "play");
+					this.cmd("Step");
+					var text = "<y>" + visitedVertices.toString() + "</y> " 
+							+ (visitedVertices.length == 1 ? "is" : "are") + " already visited, so don't push them into the <y>queue</y>."; 
+					this.cmd("BFSText", text);
+					this.cmd("Step");
+				}
+				
+				this.cmd("BFSButton", "play");
+				this.cmd("Step");
+				var text = "Now push them into the <y>queue</y>.";
+				this.cmd("BFSText", text);
+				this.cmd("Step");
+				for (let i = 0; i < bfs[nextElmt].length; i++) {
+					if (!visited[bfs[nextElmt][i]]) {
+						this.cmd("CreateRectangle", this.nextIndex++, bfs[nextElmt][i], 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
+						this.cmd("SetBackgroundColor", bfs[nextElmt][i], colorsArr[usedColorsCount]);
+						this.cmd("SetBackgroundColor", this.nextIndex - 1, colorsArr[usedColorsCount]);
+						queueArr.push(bfs[nextElmt][i]);
 						QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
 					}
 				}
+				usedColorsCount++;
+				this.cmd("BFSButton", "play");
+				this.cmd("Step");
 			}
 		}
 		fp = fp["next"];
 	}
+	this.cmd("BFSButton", "play");
 	this.cmd("Step");
-	var text = "<br/><br/>All vertices are visited.";
+	var text = "All vertices are visited.";
 	this.cmd("BFSText", text);
 	console.log("BFS result : ");
 	this.cmd("Step");
 	var text = "BFS result : ";
 	for (let i = 0; i < VERTICES_SIZE; i++) {
 		text = text + " <y>" + visit[i] + "</y>";
-		console.log(visit[i]);
 	}
-	
+	console.log(text);
 	this.cmd("BFSText", text);
-	
-	
-	/*this.travel(startingVertex);
-	for (var i = 0; i < bfs[startingVertex].length; i++) {
-		this.travel(bfs[startingVertex][i]);
-	}*/
-	
 	visit = visited;
 	currentVertex = startingVertex;
-	
-	/*this.travel(startingVertex);
-	
-	for(var i = 0; i < arr.length; i++) {
-		this.travel(arr[i]);
-	}*/
-	
-	
-	/*for (var i = 0; i < bfs[startingVertex].length; i++) {
-		this.travel(bfs[startingVertex][i]);
-	}*/
-	
-	
-	/*for (var i = 0; i < bfs[startingVertex].length; i++) {
-		this.travel(bfs[startingVertex][i]);
-	}*/
-	
-	
-	
-	/*this.cmd("CreateHighlightCircle", this.highlightID, HIGHLIGHT_COLOR, 
-			VERTICES_FIXID_X_POS[startingVertex], 
-			VERTICES_FIXID_Y_POS[startingVertex]);*/
-	
-	//this.cmd("SetHighlight", startingVertex, 1);
-	//visited[startingVertex] = true;
-	
-	/*for (var i = 0; i < bfs[startingVertex].length; i++) {
-		this.cmd("SetEdgeHighlight", startingVertex, bfs[startingVertex][i], 1);
-		this.cmd("Step");
-		this.cmd("Step");
-		this.cmd("SetEdgeHighlight", startingVertex, bfs[startingVertex][i], 0);
-		this.cmd("SetEdgeColor", startingVertex, bfs[startingVertex][i], visitedEdgeColor);
-	}*/
-	 
-	/*while(bfs[startingVertex].length > 0) {
-		//visited[bfs[startingVertex][0]] = true;
-		this.cmd("SetEdgeHighlight", startingVertex, bfs[startingVertex][0], 1);
-		this.cmd("Step");
-		this.cmd("Step");
-		
-		this.cmd("SetEdgeHighlight", startingVertex, bfs[startingVertex][0], 0);
-		this.cmd("SetEdgeColor", startingVertex, bfs[startingVertex][0], visitedEdgeColor);
-		bfs[startingVertex].splice(0, 1);
-	}*/
-	//this.cmd("SetHighlight", startingVertex, 0);
-	
-	//console.log(this.commands);
 	return this.commands;
 }
 
@@ -780,12 +786,11 @@ function step1() {
 	});*/
 }
 
-var step2 = function() {
+/*var step2 = function() {
 	console.log("STEP2 CALLED");
-}
+}*/
 
 var currentAlg;
-
 function init() {
 	var animManag = initCanvas();
 	currentAlg = new Graph(animManag, canvas.width, canvas.height);

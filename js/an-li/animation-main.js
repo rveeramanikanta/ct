@@ -511,9 +511,13 @@ function AnimationManager(objectManager) {
 				typing($(".callout-content div:last-child"), nextCommand[2], function() {
 					doPlayPause();
 				});
+			} else if (nextCommand[0].toUpperCase() == "BFSSTEP") {
+				$(".introjs-tooltiptext").append("<code class='steps'>Step : " + ($("code").length + 1)+ "</code>");
+				$(".introjs-tooltiptext").append("<ul></ul>");
+				$(".introjs-tooltip").scrollTo($(".introjs-tooltiptext ul:last"), 500)
 			} else if (nextCommand[0].toUpperCase() == "BFSTEXT") {
 				doPlayPause();
-				$(".introjs-tooltiptext ul").append("<li></li>")
+				$(".introjs-tooltiptext ul:last").append("<li></li>");
 				typing($(".introjs-tooltiptext ul li:last"), nextCommand[1], function() {
 					doPlayPause();
 				});
