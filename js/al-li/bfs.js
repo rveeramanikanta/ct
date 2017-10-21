@@ -500,37 +500,37 @@ Graph.prototype.bfs = function() {
 	fp["data"] = currentVertex;
 	fp["next"] = null;
 	pp = fp;
-	$(".introjs-tooltip").removeClass("hide");
+	//$(".introjs-tooltip").removeClass("hide");
+	this.cmd("BFSTooltipPos", VERTICES_FIXID_X_POS[currentVertex] + 30, VERTICES_FIXID_Y_POS[currentVertex] - 20);
 	this.cmd("BFSStep");
-	var text = "Initially, we should start traversing from <y>given vertex</y>, i.e. <y id='startingVertex'>" + startingVertex + "</y>";
+	var text = "Initially, we should start traversing from the <y>given vertex</y>, i.e. <y id='startingVertex'>" + startingVertex + "</y>";
 	this.cmd("BFSText", text);
+	this.cmd("SetBackgroundColor", startingVertex, colorsArr[usedColorsCount]);
 	this.cmd("Step");
-	this.cmd("BFSButton", "step1");
-	this.cmd("Step");
-	$(".introjs-nextbutton").hide();
 	this.cmd("SetHighlight", currentVertex, 1);
 	this.cmd("Step");
 	this.cmd("BFSButton", "play");
 	this.cmd("Step");
-	var text = "Now, starting vertex <y>" + startingVertex + "</y> is pushed into the <y>queue</y>.";
-	this.cmd("BFSText", text);
-	this.cmd("Step");
 	this.cmd("CreateLabel", this.queueID, "QUEUE : ", 100, 350);
 	this.cmd("CreateRectangle", this.nextIndex++, startingVertex, 30, 30, QUEUE_STARTING_X_POS, QUEUE_STARTING_Y_POS);
-	//queueArr.push(startingVertex);
-	
+	this.cmd("SetBackgroundColor", this.nextIndex - 1, colorsArr[usedColorsCount]);
 	this.cmd("CreateLabel", this.CURRENT_INDEX_POINTER, "", CURRENT_INDEX_POINTER_X_POS, CURRENT_INDEX_POINTER_Y_POS);
 	this.cmd("CreateLabel", this.CURRENT_INDEX_LABEL, "Current Index", CURRENT_INDEX_LABEL_X_POS, CURRENT_INDEX_LABEL_Y_POS);
 	this.cmd("Connect", this.CURRENT_INDEX_LABEL, this.CURRENT_INDEX_POINTER);
-	
 	queueIDMap[startingVertex] = this.nextIndex - 1;
 	QUEUE_STARTING_X_POS = QUEUE_STARTING_X_POS + 30;
-	this.cmd("SetBackgroundColor", this.nextIndex - 1, colorsArr[usedColorsCount]);
-	this.cmd("SetBackgroundColor", startingVertex, colorsArr[usedColorsCount]);
 	usedColorsCount++;
+	
+	this.cmd("BFSTooltipPos", 200, 330);
+	this.cmd("BFSStep");
+	var text = "Now, starting vertex <y>" + startingVertex + "</y> is pushed into the <y>queue</y>.";
+	this.cmd("BFSText", text);
+	this.cmd("Step");
 	this.cmd("BFSButton", "play");
 	this.cmd("Step");
-	var text = "First find all the adjacent vertices of <y>" + startingVertex + "</y>, they are <y>" 
+	this.cmd("BFSTooltipPos", VERTICES_FIXID_X_POS[currentVertex] + 30, VERTICES_FIXID_Y_POS[currentVertex] - 20);
+	this.cmd("BFSStep");
+	var text = "Now find all the adjacent vertices of <y>" + startingVertex + "</y>, they are <y>" 
 			+ (bfs[startingVertex] != undefined ? bfs[startingVertex].toString() : "null (no vertices)")  + "</y>";
 	this.cmd("BFSText", text);
 	this.cmd("Step");
@@ -543,6 +543,9 @@ Graph.prototype.bfs = function() {
 		
 		this.cmd("BFSButton", "play");
 		this.cmd("Step");
+		QUEUE_TOOLTIP_POS = 200 + (bfs[startingVertex].length * 25);
+		this.cmd("BFSTooltipPos", QUEUE_TOOLTIP_POS, 330);
+		this.cmd("BFSStep");
 		var text = "Now push them into the <y>queue</y>.";
 		this.cmd("BFSText", text);
 		this.cmd("Step");
@@ -560,13 +563,14 @@ Graph.prototype.bfs = function() {
 		this.cmd("Step");
 	}
 	this.cmd("Step");
-	//visited[startingVertex] = true;
 	while (fp != null) {
 		currentVertex = fp["data"];
 		if (this.seqSearch(visit, VERTICES_SIZE, currentVertex) == 0) {
 			this.insert(visit, VERTICES_SIZE, currentVertex);
 			if (bfs[currentVertex] != undefined) {
-				var text = "Now Visit all adjacent vertices <y>" + currentVertex + "</y>, i.e. " 
+				this.cmd("BFSTooltipPos", VERTICES_FIXID_X_POS[currentVertex] + 30, VERTICES_FIXID_Y_POS[currentVertex] - 20);
+				this.cmd("BFSStep");
+				var text = "Now Visit all adjacent vertices of <y>" + currentVertex + "</y>, i.e. " 
 				+ "<y>" + (bfs[currentVertex].toString())  + "</y>";
 				this.cmd("BFSText", text);
 				this.cmd("Step");
@@ -607,6 +611,7 @@ Graph.prototype.bfs = function() {
 			if (fp["next"] != null && flag && bfs[nextElmt] == undefined) {
 				this.cmd("BFSButton", "play");
 				this.cmd("Step");
+				this.cmd("BFSTooltipPos", QUEUE_TOOLTIP_POS, 330);
 				this.cmd("BFSStep");
 				var text = "Next element in the queue is <y>" + nextElmt +  "</y>";
 				this.cmd("BFSText", text);
@@ -620,6 +625,8 @@ Graph.prototype.bfs = function() {
 				this.cmd("Step");
 				this.cmd("BFSButton", "play");
 				this.cmd("Step");
+				this.cmd("BFSTooltipPos", VERTICES_FIXID_X_POS[nextElmt] + 30, VERTICES_FIXID_Y_POS[nextElmt] - 20);
+				this.cmd("BFSStep");
 				var text = "But there is no adjacent vertices for vertex <y> " + nextElmt + "</y>, " 
 						+ "so back tracking to <y>parent</y> vertex and visit next element in the <y>queue</y>.";
 				this.cmd("BFSText", text);
@@ -627,6 +634,7 @@ Graph.prototype.bfs = function() {
 			} else if (fp["next"] != null && flag && bfs[nextElmt] != undefined) {
 				this.cmd("BFSButton", "play");
 				this.cmd("Step");
+				this.cmd("BFSTooltipPos", QUEUE_TOOLTIP_POS, 330);
 				this.cmd("BFSStep");
 				var text = "Next element in the queue is <y>" + nextElmt +  "</y>.";
 				this.cmd("BFSText", text);
@@ -640,6 +648,8 @@ Graph.prototype.bfs = function() {
 				this.cmd("Step");
 				this.cmd("BFSButton", "play");
 				this.cmd("Step");
+				this.cmd("BFSTooltipPos", VERTICES_FIXID_X_POS[nextElmt] + 30, VERTICES_FIXID_Y_POS[nextElmt] - 20);
+				this.cmd("BFSStep");
 				var text = "So find all adjacent vertices for vertex <y>" + nextElmt +  "</y>. <br/>They are : "
 						+ "<y>" + bfs[nextElmt].toString() + "</y>.";
 				this.cmd("BFSText", text);
@@ -662,6 +672,10 @@ Graph.prototype.bfs = function() {
 				
 				this.cmd("BFSButton", "play");
 				this.cmd("Step");
+				
+				QUEUE_TOOLTIP_POS = QUEUE_TOOLTIP_POS + (bfs[nextElmt].length - visitedVertices.length) * 25;
+				this.cmd("BFSTooltipPos", QUEUE_TOOLTIP_POS, 330);
+				this.cmd("BFSStep");
 				var text = "Now push them into the <y>queue</y>.";
 				this.cmd("BFSText", text);
 				this.cmd("Step");

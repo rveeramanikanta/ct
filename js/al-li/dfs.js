@@ -100,6 +100,7 @@ var queueIDMap = {};
 var queueArr = [];
 var colorsArr = ["#4cef83", "#3acde0", "#e039dd", "#8d96ba", "#e8b068", "#e8d668", "#ed368d"];
 var usedColorsCount = 0;
+var HIGHLIGHT_CIRCLE_COLOR = "#FF0000";
 
 var adjacentTableMap = {};
 
@@ -127,9 +128,11 @@ Graph.prototype.init = function(am, w, h) {
 	this.commands = [];
 	this.setup();
 	this.initialIndex = this.nextIndex;
+	scope = this;
 }
 
 Graph.prototype.addControls = function() {
+	console.log(this);
 	this.controls = [];
 	this.vertexButton = document.getElementById("addVertexBtn");
 	this.vertexButton.onclick = this.vertexCallback.bind(this);
@@ -333,36 +336,93 @@ Graph.prototype.dfs = function() {
 		visit[i] = -1;
 	}
 	currentVertex = startingVertex;
-	fp = stackTop = {};
+	fp = {};
+	stackTop = fp;
 	fp["data"] = currentVertex;
 	fp["next"] = null;
 	this.highlightCircleID = this.nextIndex++;
-	this.cmd("CreateHighlightCircle", this.highlightCircleID, VERTICES_FIXID_X_POS[startingVertex], VERTICES_FIXID_Y_POS[startingVertex]);
+	this.cmd("CreateHighlightCircle", this.highlightCircleID, HIGHLIGHT_CIRCLE_COLOR, 
+			VERTICES_FIXID_X_POS[startingVertex], VERTICES_FIXID_Y_POS[startingVertex]);
 	
+	parentV = startingVertex;
+	dummyParentV = startingVertex;
+	
+	pMap = {};
 	while(stackTop != null) {
-		console.log(stackTop);
+		/*dummyParentV = currentVertex;*/
 		currentVertex = stackTop["data"];
 		stackTop = stackTop["next"];
+		console.log(currentVertex);
 		if (this.seqSearch(visit, VERTICES_SIZE, currentVertex) == 0) {
 			this.insert(visit, VERTICES_SIZE, currentVertex);
+			parentV = dummyParentV;
+			this.cmd("Step");
+			/*pMap[parentV] = currentVertex;*/
+			//this.cmd("Move", this.highlightCircleID, VERTICES_FIXID_X_POS[currentVertex], VERTICES_FIXID_Y_POS[currentVertex]);
+			//this.cmd("SetText", this.visitedVertices[currentVertex], parentV);
+			//this.cmd("SetText", this.parentVertices[currentVertex], parentV);
+			this.cmd("Step");
 			for (let i = 0; i < VERTICES_SIZE; i++) {
 				if (adj[currentVertex + "-" + i] == 1) {
-					console.log("if block")
 					np = {};
 					np["data"] = i;
 					np["next"] = stackTop;
+					np["parent"] = currentVertex;
 					stackTop = np;
 					fp = np;
 				}
 			}
+		} else {
+			console.log(currentVertex, "-------------------", parentV);
 		}
+		
+		if (dfs[currentVertex] == undefined) {
+			//console.log(currentVertex, "-------------------", parentV);
+			/*console.log(parentArr);
+			console.log("-------------------");
+			parentArr = [];*/
+			/*console.log(np);
+			console.log(fp);
+			console.log(stackTop);*/
+			
+			//console.log("---------", currentVertex ,"--------", parentsMap[currentVertex]);
+			/*this.cmd("Step");
+			this.cmd("Move", this.highlightCircleID, VERTICES_FIXID_X_POS[parentsMap[currentVertex]], VERTICES_FIXID_Y_POS[parentsMap[currentVertex]]);
+			this.cmd("Step");*/
+			/*console.log("-----", currentVertex ,"--------");
+			console.log("-----", np ,"--------");
+			console.log("-----", fp ,"--------");
+			console.log("-----", stackTop ,"--------");*/
+		}
+		/*if (dfs[currentVertex] == undefined) {
+			console.log("-----", currentVertex ,"--------");
+			console.log("-----", np ,"--------");
+			console.log("-----", fp ,"--------");
+			console.log("-----", stackTop ,"--------");
+		}*/
 	}
+	
+	/*console.log("-----", np ,"--------");
+	console.log("-----", fp ,"--------");
+	console.log("-----", stackTop ,"--------");*/
 	
 	console.log("DFS result : ");
 	for (i = 0; i < VERTICES_SIZE; i++) {
 		console.log(visit[i] + "  ");
 	}
+	console.log(this.commands);
+	this.cmd("Pause");
+	this.cmd("Step");
+	//testing(this);
+	this.cmd("Step");
+	console.log(this.commands);
 	return this.commands;
+}
+
+Graph.prototype.testing = function() {
+	console.log(this.scope);
+	console.log(this);
+	this.cmd("createLabel", 500, "manikanta   manikanta", 200, 200);
 }
 
 

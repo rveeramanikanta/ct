@@ -512,18 +512,20 @@ function AnimationManager(objectManager) {
 					doPlayPause();
 				});
 			} else if (nextCommand[0].toUpperCase() == "BFSSTEP") {
-				$(".introjs-tooltiptext").append("<code class='steps'>Step : " + ($("code").length + 1)+ "</code>");
-				$(".introjs-tooltiptext").append("<ul></ul>");
-				$(".introjs-tooltip").scrollTo($(".introjs-tooltiptext ul:last"), 500)
+				$(".canvas-tooltip-text").append("<code class='steps'>Step : " + ($("code").length + 1)+ "</code>");
+				$(".canvas-tooltip-text").append("<ul></ul>");
 			} else if (nextCommand[0].toUpperCase() == "BFSTEXT") {
 				doPlayPause();
-				$(".introjs-tooltiptext ul:last").append("<li></li>");
-				typing($(".introjs-tooltiptext ul li:last"), nextCommand[1], function() {
+				$(".canvas-tooltip-text ul:last").append("<li></li>");
+				typing($(".canvas-tooltip-text ul li:last"), nextCommand[1], function() {
 					doPlayPause();
 				});
+			} else if (nextCommand[0].toUpperCase() == "BFSTOOLTIPPOS") {
+				$(".canvas-tooltip-text").empty();
+				$(".canvas-tooltip").css({"opacity" : "", "left" : nextCommand[1] + "px", "top" : nextCommand[2] + "px"});
 			} else if (nextCommand[0].toUpperCase() == "BFSBUTTON") {
 				doPlayPause();
-				$(".introjs-tooltipbuttons").append("<a class='introjs-button user-btn' onclick='" + nextCommand[1] + "()'>Next &#8594;</a>");
+				$(".canvas-tooltip-buttons").append("<a class='introjs-button user-btn' onclick='" + nextCommand[1] + "()'>Next &#8594;</a>");
 			} else if (nextCommand[0].toUpperCase() == "PAUSE") {
 				doPlayPause();
 			} else if(nextCommand[0].toUpperCase() == "SETNEXTINTROSTEP") {

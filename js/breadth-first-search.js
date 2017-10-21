@@ -8,7 +8,7 @@ function introGuide() {
 		steps : [{
 			element : "#addVertexBtnDiv",
 			intro : "",
-			position : "left"
+			position : "right"
 		}, {
 			element : "#addEdgeDiv",
 			intro : "",
