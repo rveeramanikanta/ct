@@ -36,7 +36,7 @@
 <script type="text/javascript" src="js/al-li/algorithm.js"></script>
 
 <script type="text/javascript" src="js/al-li/dfs.js"></script>
-<script type="text/javascript" src="js/breadth-first-search.js"></script>
+<script type="text/javascript" src="js/depth-first-search.js"></script>
 <style type="text/css">
 .ct-demo-heading {
 	background: highlight none repeat scroll 0 0;
@@ -193,6 +193,48 @@ r {
 .padding10 {
 	padding: 10px;
 }
+
+#canvasExpDiv {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.canvas-tooltip {
+	background: black none repeat scroll 0 0;
+	border-radius: 3px;
+	color: white;
+	line-height: 150%;
+	padding: 12px 12px 24px;
+	z-index: 9999;
+	position: relative;
+	display: inline-block;
+	min-width: 200px;
+	max-width: 300px;
+}
+
+.canvas-tooltip-arrow.left {
+	border-color: transparent black transparent transparent;
+	left: -10px;
+	top: 10px;
+}
+.canvas-tooltip-arrow {
+	border: 5px solid black;
+	content: "";
+	position: absolute;
+}
+
+.canvas-tooltip-buttons {
+	text-align: right;
+	white-space: nowrap;
+}
+
+canvas {
+	position: relative;
+	z-index: 1;
+}
 </style>
 
 </head>
@@ -246,7 +288,7 @@ r {
 				</div>
 			</div>
 			<div class='col-xs-9'>
-				<div class='col-xs-12 padding0 box-border text-center'
+				<div class='col-xs-12 padding0 box-border'
 					id='animationDiv'>
 					<div class='col-xs-12 padding0 margin-top-20 text-center'>
 						<div class='col-xs-offset-0 col-xs-12 padding0' id='btnsDiv'>
@@ -335,7 +377,16 @@ r {
 							</div>
 						</div>
 					</div>
-					<canvas id="canvas" width="1000" height="500"></canvas>
+					<div class='col-xs-12' style="padding: 0;">
+						<canvas id="canvas" width="1000" height="500"></canvas>
+						<div id='canvasExpDiv'>
+							<div class="canvas-tooltip" style="opacity: 0;">
+								<div class='canvas-tooltip-text'></div>
+								<div class="canvas-tooltip-arrow left" style="display: inherit;"></div>
+								<div class='canvas-tooltip-buttons'></div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div id="generalAnimationControlSection">
@@ -361,7 +412,7 @@ r {
 				$(this).parent('li').addClass('active');
 				$(this).parents('.dropdown-select').find('.dropdown-toggle').html($(this).text() + ' &nbsp;<span class="caret"></span>');
 			});
-			//introGuide();
+			introGuide();
 		});
 	</script>
 </body>

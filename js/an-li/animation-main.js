@@ -511,19 +511,19 @@ function AnimationManager(objectManager) {
 				typing($(".callout-content div:last-child"), nextCommand[2], function() {
 					doPlayPause();
 				});
-			} else if (nextCommand[0].toUpperCase() == "BFSSTEP") {
+			} else if (nextCommand[0].toUpperCase() == "BFSSTEP" || nextCommand[0].toUpperCase() == "DFSSTEP") {
 				$(".canvas-tooltip-text").append("<code class='steps'>Step : " + ($("code").length + 1)+ "</code>");
 				$(".canvas-tooltip-text").append("<ul></ul>");
-			} else if (nextCommand[0].toUpperCase() == "BFSTEXT") {
+			} else if (nextCommand[0].toUpperCase() == "BFSTEXT" || nextCommand[0].toUpperCase() == "DFSTEXT") {
 				doPlayPause();
 				$(".canvas-tooltip-text ul:last").append("<li></li>");
 				typing($(".canvas-tooltip-text ul li:last"), nextCommand[1], function() {
 					doPlayPause();
 				});
-			} else if (nextCommand[0].toUpperCase() == "BFSTOOLTIPPOS") {
+			} else if (nextCommand[0].toUpperCase() == "BFSTOOLTIPPOS" || nextCommand[0].toUpperCase() == "DFSTOOLTIPPOS") {
 				$(".canvas-tooltip-text").empty();
 				$(".canvas-tooltip").css({"opacity" : "", "left" : nextCommand[1] + "px", "top" : nextCommand[2] + "px"});
-			} else if (nextCommand[0].toUpperCase() == "BFSBUTTON") {
+			} else if (nextCommand[0].toUpperCase() == "BFSBUTTON" || nextCommand[0].toUpperCase() == "DFSBUTTON") {
 				doPlayPause();
 				$(".canvas-tooltip-buttons").append("<a class='introjs-button user-btn' onclick='" + nextCommand[1] + "()'>Next &#8594;</a>");
 			} else if (nextCommand[0].toUpperCase() == "PAUSE") {

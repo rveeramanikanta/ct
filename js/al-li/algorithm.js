@@ -162,9 +162,7 @@ Algorithm.prototype.sizeChanged = function(newWidth, newHeight) {
 Algorithm.prototype.implementAction = function(funct, val) {
 	var nxt = [ funct, val ];
 	this.actionHistory.push(nxt);
-	console.log(funct);
 	var retVal = funct(val);
-	console.log(retVal);
 	this.animationManager.StartNewAnimation(retVal);
 }
 

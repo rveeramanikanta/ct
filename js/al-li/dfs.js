@@ -109,7 +109,6 @@ var ADJACENT_TABLE_HORIZONTAL_Y_POS = 100;
 var ADJACENT_TABLE_VERTICAL_X_POS = 700;
 var ADJACENT_TABLE_VERTICAL_Y_POS = 125;
 var ADJACENT_TABLE_LINE_FLAG = false;
-
 var VISITED_VERTEX_X_POS = 150;
 
 
@@ -132,7 +131,6 @@ Graph.prototype.init = function(am, w, h) {
 }
 
 Graph.prototype.addControls = function() {
-	console.log(this);
 	this.controls = [];
 	this.vertexButton = document.getElementById("addVertexBtn");
 	this.vertexButton.onclick = this.vertexCallback.bind(this);
@@ -181,6 +179,18 @@ Graph.prototype.setup = function() {
 	this.ADJACENT_TABLE_VERTICAL_LINE = this.nextIndex++;
 	this.CURRENT_INDEX_LABEL = this.nextIndex++;
 	this.CURRENT_INDEX_POINTER = this.nextIndex++;
+	
+	
+	this.stackLabelID = this.nextIndex++;
+	this.stackBaseLineID = this.nextIndex++;
+	this.stackLeftLineID = this.nextIndex++;
+	this.stackRightLineID = this.nextIndex++;
+	
+	/*this.cmd("DrawLine", this.nextIndex++, 150, 400, 200, 400);
+	this.cmd("DrawLine", this.nextIndex++, 150, 400, 150, 200);
+	this.cmd("DrawLine", this.nextIndex++, 200, 400, 200, 200);
+	this.cmd("CreateLabel", this.nextIndex++, "stack", 175, 410)*/
+	
 	
 	this.animationManager.StartNewAnimation(this.commands);
 	this.animationManager.skipForward();
@@ -268,6 +278,9 @@ Graph.prototype.vertex = function() {
 	return this.commands;
 }
 
+var parentsMap = {};
+var childsMap = {};
+
 Graph.prototype.edge = function() {
 	this.commands = new Array();
 	var fromEdge = parseInt($("#fromID .active").text());
@@ -301,6 +314,14 @@ Graph.prototype.edge = function() {
 		
 		this.cmd("SetText", adjacentTableMap[key], 1);
 		this.cmd("SetForegroundColor", adjacentTableMap[key], "#cd3232");
+		
+		var parents = [];
+		
+		if (parentsMap[toEdge] != undefined) {
+			parents = parentsMap[toEdge]; 
+		}
+		parents.push(fromEdge);
+		parentsMap[toEdge] = parents.sort();
 	}
 	return this.commands;
 }
@@ -341,90 +362,180 @@ Graph.prototype.dfs = function() {
 	fp["data"] = currentVertex;
 	fp["next"] = null;
 	this.highlightCircleID = this.nextIndex++;
-	this.cmd("CreateHighlightCircle", this.highlightCircleID, HIGHLIGHT_CIRCLE_COLOR, 
-			VERTICES_FIXID_X_POS[startingVertex], VERTICES_FIXID_Y_POS[startingVertex]);
+	/*this.cmd("CreateHighlightCircle", this.highlightCircleID, HIGHLIGHT_CIRCLE_COLOR, 
+			VERTICES_FIXID_X_POS[startingVertex], VERTICES_FIXID_Y_POS[startingVertex]);*/
 	
-	parentV = startingVertex;
-	dummyParentV = startingVertex;
+	this.cmd("DFSTooltipPos", VERTICES_FIXID_X_POS[currentVertex] + 30, VERTICES_FIXID_Y_POS[currentVertex] - 20);
+	this.cmd("DFSStep");
+	var text = "Initially, we should start traversing from the <y>given vertex</y>, i.e. <y id='startingVertex'>" + startingVertex + "</y>";
+	this.cmd("DFSText", text);
+	this.cmd("SetBackgroundColor", startingVertex, colorsArr[usedColorsCount]);
+	this.cmd("Step");
+	this.cmd("SetHighlight", currentVertex, 1);
+	this.cmd("Step");
+	this.cmd("DFSButton", "play");
+	this.cmd("Step");
+	this.cmd("DrawLine", this.nextIndex++, 150, 400, 200, 400);
+	this.cmd("DrawLine", this.nextIndex++, 150, 400, 150, 200);
+	this.cmd("DrawLine", this.nextIndex++, 200, 400, 200, 200);
+	this.cmd("CreateLabel", this.nextIndex++, "stack", 175, 410);
 	
-	pMap = {};
-	while(stackTop != null) {
-		/*dummyParentV = currentVertex;*/
-		currentVertex = stackTop["data"];
-		stackTop = stackTop["next"];
-		console.log(currentVertex);
-		if (this.seqSearch(visit, VERTICES_SIZE, currentVertex) == 0) {
-			this.insert(visit, VERTICES_SIZE, currentVertex);
-			parentV = dummyParentV;
-			this.cmd("Step");
-			/*pMap[parentV] = currentVertex;*/
-			//this.cmd("Move", this.highlightCircleID, VERTICES_FIXID_X_POS[currentVertex], VERTICES_FIXID_Y_POS[currentVertex]);
-			//this.cmd("SetText", this.visitedVertices[currentVertex], parentV);
-			//this.cmd("SetText", this.parentVertices[currentVertex], parentV);
-			this.cmd("Step");
-			for (let i = 0; i < VERTICES_SIZE; i++) {
-				if (adj[currentVertex + "-" + i] == 1) {
-					np = {};
-					np["data"] = i;
-					np["next"] = stackTop;
-					np["parent"] = currentVertex;
-					stackTop = np;
-					fp = np;
-				}
-			}
-		} else {
-			console.log(currentVertex, "-------------------", parentV);
-		}
-		
-		if (dfs[currentVertex] == undefined) {
-			//console.log(currentVertex, "-------------------", parentV);
-			/*console.log(parentArr);
-			console.log("-------------------");
-			parentArr = [];*/
-			/*console.log(np);
-			console.log(fp);
-			console.log(stackTop);*/
-			
-			//console.log("---------", currentVertex ,"--------", parentsMap[currentVertex]);
-			/*this.cmd("Step");
-			this.cmd("Move", this.highlightCircleID, VERTICES_FIXID_X_POS[parentsMap[currentVertex]], VERTICES_FIXID_Y_POS[parentsMap[currentVertex]]);
-			this.cmd("Step");*/
-			/*console.log("-----", currentVertex ,"--------");
-			console.log("-----", np ,"--------");
-			console.log("-----", fp ,"--------");
-			console.log("-----", stackTop ,"--------");*/
-		}
-		/*if (dfs[currentVertex] == undefined) {
-			console.log("-----", currentVertex ,"--------");
-			console.log("-----", np ,"--------");
-			console.log("-----", fp ,"--------");
-			console.log("-----", stackTop ,"--------");
-		}*/
-	}
+	this.cmd("DFSTooltipPos", 220, 200);
+	this.cmd("DFSStep");
+	var text = "Now, starting vertex <y>" + startingVertex + "</y> is insert into the <y>stack</y>.";
+	this.cmd("DFSText", text);
+	this.cmd("Step");
+	this.cmd("DFSButton", "play");
+	this.cmd("Step");
 	
-	/*console.log("-----", np ,"--------");
-	console.log("-----", fp ,"--------");
-	console.log("-----", stackTop ,"--------");*/
+	stackToID = this.nextIndex++;
+	stackTop = 370;
+	this.cmd("CreateRectangle", stackToID, startingVertex, 30, 30, 175, 180);
+	this.cmd("SetBackgroundColor", stackToID, colorsArr[usedColorsCount]);
+	usedColorsCount++;
+	this.cmd("Move", stackToID, 175, stackTop);
+	this.cmd("Step");
+	this.cmd("DFSButton", "play");
+	this.cmd("Step");
+	this.cmd("DFSTooltipPos", VERTICES_FIXID_X_POS[currentVertex] + 30, VERTICES_FIXID_Y_POS[currentVertex] - 20);
+	this.cmd("DFSStep");
 	
-	console.log("DFS result : ");
-	for (i = 0; i < VERTICES_SIZE; i++) {
+	this.testing(currentVertex);
+	//console.log("DFS result : ");
+	/*for (i = 0; i < VERTICES_SIZE; i++) {
 		console.log(visit[i] + "  ");
-	}
-	console.log(this.commands);
-	this.cmd("Pause");
-	this.cmd("Step");
-	//testing(this);
-	this.cmd("Step");
-	console.log(this.commands);
+	}*/
 	return this.commands;
 }
 
-Graph.prototype.testing = function() {
-	console.log(this.scope);
-	console.log(this);
-	this.cmd("createLabel", 500, "manikanta   manikanta", 200, 200);
+
+Graph.prototype.testing = function(currentVertex) {
+	var text = "Now, find all the adjacent vertices of <y>" + currentVertex + "</y>, ";
+	if (dfs[currentVertex] == undefined || dfs[currentVertex].length == 0) {
+		text = text + "but there is <r>no</r> adjacent vertices for vertex <y>" + currentVertex + "</y>";
+	} else {
+		text = text + "they are <y>" + dfs[currentVertex].toString() + "</y>";
+	}
+	this.cmd("DFSText", text);
+	this.cmd("Step");
+	this.cmd("DFSButton", "play");
+	this.cmd("Step");
+	
+	if (dfs[currentVertex] != undefined) {
+		for (let i = 0; i < dfs[currentVertex].length; i++) {
+			this.cmd("SetBackgroundColor", dfs[currentVertex][i], colorsArr[usedColorsCount]);
+		}
+		var text;
+		if (dfs[currentVertex].length > 1) {
+			text = "Now, travel any one of the adjacent vertex, in my case <y>" + dfs[currentVertex].slice(-1).pop() + "</y>";
+		} else {
+			text = "Now, travel the adjacent vertex i.e. <y>" + dfs[currentVertex].slice(-1).pop() + "</y>";
+		}
+		this.cmd("DFSText", text);
+		this.cmd("Step");
+		this.cmd("DFSButton", "play");
+		this.cmd("Step");
+		
+		this.cmd("DFSTooltipPos", 220, 200);
+		this.cmd("DFSStep");
+		var text = "Now, adjacent vertex <y>" + dfs[currentVertex].slice(-1).pop() + "</y> is insert into the <y>stack</y>.";
+		this.cmd("DFSText", text);
+		this.cmd("Step");
+		this.cmd("DFSButton", "play");
+		this.cmd("Step");
+		
+		stackToID = this.nextIndex++;
+		stackTop = stackTop - 35;
+		this.cmd("CreateRectangle", stackToID, dfs[currentVertex].slice(-1).pop(), 30, 30, 175, 180);
+		this.cmd("SetBackgroundColor", stackToID, colorsArr[usedColorsCount]);
+		this.cmd("Move", stackToID, 175, stackTop);
+		this.cmd("Step");
+		this.cmd("DFSButton", "play");
+		this.cmd("Step");
+		this.cmd("DFSTooltipPos", VERTICES_FIXID_X_POS[currentVertex] + 30, VERTICES_FIXID_Y_POS[currentVertex] - 20);
+		this.cmd("DFSStep");
+		var text = "Now visit vertex <y>" + dfs[currentVertex].slice(-1).pop() + "</y>.";
+		this.cmd("DFSText", text);
+		this.cmd("Step");
+		this.cmd("DFSButton", "play");
+		this.cmd("Step");
+		this.cmd("SetHighlight", currentVertex, 0);
+		this.cmd("CreateHighlightCircle", this.highlightCircleID, HIGHLIGHT_CIRCLE_COLOR, 
+				VERTICES_FIXID_X_POS[currentVertex], VERTICES_FIXID_Y_POS[currentVertex]);
+		this.cmd("Step");
+		parentVertex = currentVertex;
+		currentVertex = dfs[currentVertex].pop();
+		this.cmd("Move", this.highlightCircleID, VERTICES_FIXID_X_POS[currentVertex], VERTICES_FIXID_Y_POS[currentVertex]);
+		this.cmd("Step");
+		this.cmd("SetHighlight", currentVertex, 1);
+		this.cmd("Delete", this.highlightCircleID)
+		this.cmd("DFSButton", "play");
+		this.cmd("Step");
+		this.cmd("DFSTooltipPos", VERTICES_FIXID_X_POS[currentVertex] + 30, VERTICES_FIXID_Y_POS[currentVertex] - 20);
+		this.cmd("DFSStep");
+		
+		if (dfs[currentVertex] != undefined) {
+			this.testing(currentVertex);
+		} else {
+			this.backTracking(currentVertex);
+		}
+	} else if (parentsMap[currentVertex] != undefined && parentsMap[currentVertex].length > 0) {
+		console.log("parentVertex ====", parentsMap[currentVertex]);
+		//parentsMap[currentVertex].pop();
+		//currentVertex = parentsMap[currentVertex].pop();
+		this.backTracking(currentVertex);
+	} else {
+		var text = "DFS Completed."
+		this.cmd("DFSText", text);
+		this.cmd("Step");
+	}
 }
 
+Graph.prototype.backTracking = function(currentVertex) {
+	var text = "There is no adjacent vertices for vertex <y>" + currentVertex + "</y>, " 
+		+ "so back tracking to parent vertex and remove from the <y>stack</y>.";
+	this.cmd("DFSText", text);
+	this.cmd("Step");
+	this.cmd("DFSButton", "play");
+	this.cmd("Step");
+	this.cmd("SetHighlight", currentVertex, 0);
+	//parentVertex = parentsMap[currentVertex].splice(0, 1);
+	this.cmd("CreateHighlightCircle", this.highlightCircleID, HIGHLIGHT_CIRCLE_COLOR, 
+			VERTICES_FIXID_X_POS[currentVertex], VERTICES_FIXID_Y_POS[currentVertex]);
+	this.cmd("Step");
+	this.cmd("Move", this.highlightCircleID, VERTICES_FIXID_X_POS[parentVertex], VERTICES_FIXID_Y_POS[parentVertex]);
+	this.cmd("Step");
+	currentVertex = parentVertex;
+	this.cmd("SetHighlight", currentVertex, 1);
+	this.cmd("Delete", this.highlightCircleID);
+	this.cmd("Step");
+	this.cmd("DFSButton", "play");
+	this.cmd("Step");
+	this.cmd("DFSTooltipPos", 220, 200);
+	this.cmd("DFSStep");
+	var text = "Now remove the top vertex from the stack...";
+	this.cmd("DFSText", text);
+	this.cmd("Step");
+	this.cmd("DFSButton", "play");
+	this.cmd("Step");
+	stackTop = stackTop + 35;
+	this.cmd("Move", stackToID, 175, 175);
+	this.cmd("Step");
+	this.cmd("Delete", stackToID);
+	this.cmd("DFSButton", "play");
+	this.cmd("Step");
+	var text = "Now, back to parent vertex.";
+	this.cmd("DFSText", text);
+	this.cmd("Step");
+	this.cmd("DFSButton", "play");
+	this.cmd("Step");
+	this.cmd("DFSTooltipPos", VERTICES_FIXID_X_POS[currentVertex] + 30, VERTICES_FIXID_Y_POS[currentVertex] - 20);
+	this.cmd("DFSStep");
+	if (dfs[currentVertex] != undefined || dfs[currentVertex].length == 0) {
+		dfs[currentVertex] = undefined;
+	}
+	this.testing(currentVertex);
+}
 
 Graph.prototype.seqSearch = function(visit, n, currentVertex) {
 	for (let i = 0; i < n; i++) {
