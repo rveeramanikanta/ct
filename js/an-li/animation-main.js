@@ -487,7 +487,11 @@ function AnimationManager(objectManager) {
 				&& !foundBreak) {
 			var nextCommand = this.AnimationSteps[this.currentAnimation]
 					.split("<;>");
-			if (nextCommand[0].toUpperCase() == "HIDE") {
+			if (nextCommand[0].toUpperCase() == "NEXTFUN") {
+				console.log(nextCommand[1]);
+				console.log(nextCommand[2]);
+				testing(this);
+			} else if (nextCommand[0].toUpperCase() == "HIDE") {
 				$(nextCommand[1]).hide();
 				$(nextCommand[1]).addClass("hide");
 			} else if (nextCommand[0].toUpperCase() == "SHOW") {

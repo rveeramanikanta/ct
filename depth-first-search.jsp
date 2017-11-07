@@ -412,7 +412,7 @@ canvas {
 				$(this).parent('li').addClass('active');
 				$(this).parents('.dropdown-select').find('.dropdown-toggle').html($(this).text() + ' &nbsp;<span class="caret"></span>');
 			});
-			introGuide();
+			//introGuide();
 		});
 	</script>
 </body>

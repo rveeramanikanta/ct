@@ -121,13 +121,18 @@ Graph.prototype.constructor = Graph;
 Graph.superclass = Algorithm.prototype;
 
 Graph.prototype.init = function(am, w, h) {
-	Graph.superclass.init.call(this, am, w, h); 
+	Graph.superclass.init.call(this, am, w, h);
 	this.addControls();
 	this.nextIndex = 0;
 	this.commands = [];
 	this.setup();
 	this.initialIndex = this.nextIndex;
-	scope = this;
+	//this.
+	console.log(this)
+}
+
+Graph.prototype.getScope = function() {
+	/*console.log(this);*/
 }
 
 Graph.prototype.addControls = function() {
@@ -147,6 +152,8 @@ Graph.prototype.addControls = function() {
 	this.dfsButton = document.getElementById("dfsBtn");
 	this.dfsButton.onclick = this.dfsCallback.bind(this);
 	this.controls.push(this.dfsButton);
+	//console.log(this);
+	//this.mani.bind(this);
 }
 
 Graph.prototype.enableUI = function(event) {
@@ -275,6 +282,25 @@ Graph.prototype.vertex = function() {
 	if (VERTICES_SIZE == 8) {
 		$("#addVertexBtn").addClass("disabled");
 	}
+	this.cmd("Pause")
+	this.cmd("Step");
+	this.cmd("CreateLabel", this.nextIndex++, "ABCD", 700, 100);
+	this.cmd("Step");
+	this.cmd("Step");
+	this.cmd("CreateLabel", this.nextIndex++, "EFGH", 600, 100);
+	this.cmd("Step");
+	console.log(this);
+	return this.commands;
+}
+
+Graph.prototype.mani = function(event) {
+	//this.commands = new Array();
+	console.log(this);
+	
+	this.cmd("Step");
+	this.cmd("CreateLabel", this.nextIndex++, "Mani", 500, 300);
+	this.cmd("Step");
+	
 	return this.commands;
 }
 
@@ -407,7 +433,6 @@ Graph.prototype.dfs = function() {
 	}*/
 	return this.commands;
 }
-
 
 Graph.prototype.testing = function(currentVertex) {
 	var text = "Now, find all the adjacent vertices of <y>" + currentVertex + "</y>, ";
