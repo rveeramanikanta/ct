@@ -20,8 +20,7 @@ function introGuide() {
 		}, {
 			element : "#animationDiv",
 			intro : "",
-			position: "left",
-			tooltipClass : "hide"
+			position: "left"
 		}]
 	});
 	
@@ -39,7 +38,7 @@ function introGuide() {
 			$(".introjs-nextbutton").hide();
 			$(".introjs-helperLayer").one("transitionend", function() {
 				var text = "Here, we can create a <y>connection (egde)</y> between the any two " 
-					+ "<y>vertices</y>, by using <y>From Vertex</y> point and <y>To Vertex</y> point.";
+					+ "<y>vertices</y>, by using <y>From Vertex</y> point to <y>To Vertex</y> point.";
 				typing(".introjs-tooltiptext", text, function() {
 					$('.introjs-nextbutton').show();
 				});
@@ -52,6 +51,21 @@ function introGuide() {
 					+ " <y>vertices</y> using the <y>Depth First Search</y> algorithm.";
 				typing(".introjs-tooltiptext", text, function() {
 					$('.introjs-nextbutton').show();
+				});
+			});
+			break;
+			
+		case "animationDiv":
+			$(".introjs-nextbutton").hide();
+			$(".introjs-helperLayer").one("transitionend", function() {
+				$(".introjs-tooltiptext").append("<ol></ol>");
+				let text = "<li>Create the <y>Vertices</y> in to the <y>graph</y>.</li>" 
+						+ "<li>Build an <y>edge</y> between any two <y>Vertices</y>.</li>"
+						+ "<li>After complition of creating <y>vertices</y> and <y>edges</y>, " 
+						+ "click on <y>start</y> button to find the <y>shortest path</y> by uisng <y>DFS</y>.</li>";				
+				typing($(".introjs-tooltiptext ol"), text, function() {
+					$(".disabled").removeClass("disabled");
+					//$('.introjs-nextbutton').show();
 				});
 			});
 			break;

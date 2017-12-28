@@ -5,73 +5,6 @@ var edgesMap = {};
 var dfs = {};
 var visited = {};
 
-
-var edgesPointsMap = {
-	"0-1" : {
-		"x1" : 484,
-		"y1" : 61,
-		"x2" : 431,
-		"y2" : 130,
-		"curve" : 0.3
-	},
-	"1-0" : {
-		"x1" : 440,
-		"y1" : 135,
-		"x2" : 492,
-		"y2" : 69,
-		"curve" : 0.3
-	},
-	"1-3" : {
-		"x1" : 407,
-		"y1" : 162,
-		"x2" : 352,
-		"y2" : 229,
-		"curve" : 0.3
-	},
-	"3-1" : {
-		"x1" : 363,
-		"y1" : 233,
-		"x2" : 418,
-		"y2" : 169,
-		"curve" : 0.3
-	},
-	"0-2" : {
-		"x1" : 510,
-		"y1" : 68,
-		"x2" : 556,
-		"y2" : 141,
-		"curve" : 0.3
-	},
-	"2-0" : {
-		"x1" : 570,
-		"y1" : 130,
-		"x2" : 520,
-		"y2" : 58,
-		"curve" : 0.3
-	},
-	"4-6" : {
-		"x1" : 631,
-		"y1" : 257,
-		"x2" : 577,
-		"y2" : 328,
-		"curve" : 0.3
-	},
-	"6-4" : {
-		"x1" : 590,
-		"y1" : 336,
-		"x2" : 643,
-		"y2" : 269,
-		"curve" : 0.3
-	},
-	"0-3" : {
-		"x1" : 480,
-		"y1" : 50,
-		"x2" : 334,
-		"y2" : 234,
-		"curve" : 0.3
-	},
-};
-
 var VERTICES_FIXID_X_POS = [ 500, 425, 575, 350, 650, 425, 575, 500 ];
 var VERTICES_FIXID_Y_POS = [ 50, 150, 150, 250, 250, 350, 350, 450 ];
 
@@ -193,19 +126,13 @@ Graph.prototype.setup = function() {
 	this.stackLeftLineID = this.nextIndex++;
 	this.stackRightLineID = this.nextIndex++;
 	
-	/*this.cmd("DrawLine", this.nextIndex++, 150, 400, 200, 400);
-	this.cmd("DrawLine", this.nextIndex++, 150, 400, 150, 200);
-	this.cmd("DrawLine", this.nextIndex++, 200, 400, 200, 200);
-	this.cmd("CreateLabel", this.nextIndex++, "stack", 175, 410)*/
-	
-	
 	this.animationManager.StartNewAnimation(this.commands);
 	this.animationManager.skipForward();
 	this.animationManager.clearHistory();
 }
 
 Graph.prototype.vertexCallback = function(event) {
-	if($(".btn").is(":disabled")) {
+	if($("#addVertexBtn").hasClass("disabled")) {
 		return;
 	}
 	
@@ -215,7 +142,7 @@ Graph.prototype.vertexCallback = function(event) {
 }
 
 Graph.prototype.edgeCallback = function(event) {
-	if($(".btn").is(":disabled")) {
+	if($("#addEdgeBtn").hasClass("disabled") || ($("#fromID button").text().trim() == "vertex" ||  $("#toID button").text().trim() == "vertex")) {
 		return;
 	}
 	
@@ -225,7 +152,7 @@ Graph.prototype.edgeCallback = function(event) {
 }
 
 Graph.prototype.dfsCallback = function(event) {
-	if($(".btn").is(":disabled")) {
+	if($("#dfsBtn").hasClass("disabled") || $("#dfsVal button").text().trim() == "vertex") {
 		return;
 	}
 	this.implementAction(this.dfs.bind(this), "");
@@ -282,30 +209,15 @@ Graph.prototype.vertex = function() {
 	if (VERTICES_SIZE == 8) {
 		$("#addVertexBtn").addClass("disabled");
 	}
-	this.cmd("Pause")
-	this.cmd("Step");
-	this.cmd("CreateLabel", this.nextIndex++, "ABCD", 700, 100);
-	this.cmd("Step");
-	this.cmd("Step");
-	this.cmd("CreateLabel", this.nextIndex++, "EFGH", 600, 100);
-	this.cmd("Step");
-	console.log(this);
+	
 	return this.commands;
 }
 
-Graph.prototype.mani = function(event) {
-	//this.commands = new Array();
-	console.log(this);
-	
-	this.cmd("Step");
-	this.cmd("CreateLabel", this.nextIndex++, "Mani", 500, 300);
-	this.cmd("Step");
-	
-	return this.commands;
-}
+
 
 var parentsMap = {};
 var childsMap = {};
+var stackTopIDArr = [];
 
 Graph.prototype.edge = function() {
 	this.commands = new Array();
@@ -317,15 +229,15 @@ Graph.prototype.edge = function() {
 		var key = fromEdge + "-" + toEdge;
 		if (edgesMap[toEdge + "-" + fromEdge] != undefined) {
 			this.cmd("DisConnect", this.vertices[toEdge], this.vertices[fromEdge]);
-			this.cmd("Connect", this.vertices[toEdge], this.vertices[fromEdge], "", 0.3);
-			this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "", 0.3);
+			this.cmd("Connect", this.vertices[toEdge], this.vertices[fromEdge], "#000000", 0.3, 1, "");
+			this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "#000000", 0.3, 1, "");
 			edgesMap[fromEdge + "-" + toEdge] = true;
 		} else {
 			if ((key == "0-3" || key == "3-0") || (key == "0-4" || key == "4-0")
 				|| (key == "3-7" || key == "7-3")  || (key == "4-7" || key == "7-4") ) {
-				this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "", 0.3);
+				this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "#000000", 0.3, 1, "");
 			} else {
-				this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge]);
+				this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "#000000", 0, 1, "");
 			}
 			edgesMap[fromEdge + "-" + toEdge] = true;
 		}
@@ -414,12 +326,13 @@ Graph.prototype.dfs = function() {
 	this.cmd("DFSButton", "play");
 	this.cmd("Step");
 	
-	stackToID = this.nextIndex++;
+	stackTopID = this.nextIndex++;
+	stackTopIDArr.push(stackTopID);
 	stackTop = 370;
-	this.cmd("CreateRectangle", stackToID, startingVertex, 30, 30, 175, 180);
-	this.cmd("SetBackgroundColor", stackToID, colorsArr[usedColorsCount]);
+	this.cmd("CreateRectangle", stackTopIDArr.slice(-1), startingVertex, 30, 30, 175, 180);
+	this.cmd("SetBackgroundColor", stackTopIDArr.slice(-1), colorsArr[usedColorsCount]);
 	usedColorsCount++;
-	this.cmd("Move", stackToID, 175, stackTop);
+	this.cmd("Move", stackTopIDArr.slice(-1), 175, stackTop);
 	this.cmd("Step");
 	this.cmd("DFSButton", "play");
 	this.cmd("Step");
@@ -427,6 +340,7 @@ Graph.prototype.dfs = function() {
 	this.cmd("DFSStep");
 	
 	this.testing(currentVertex);
+	
 	//console.log("DFS result : ");
 	/*for (i = 0; i < VERTICES_SIZE; i++) {
 		console.log(visit[i] + "  ");
@@ -434,7 +348,11 @@ Graph.prototype.dfs = function() {
 	return this.commands;
 }
 
+var visitedVerticesMap = {};
+
 Graph.prototype.testing = function(currentVertex) {
+	visitedVerticesMap[currentVertex] = true;
+	console.log("testing =====> ", currentVertex);
 	var text = "Now, find all the adjacent vertices of <y>" + currentVertex + "</y>, ";
 	if (dfs[currentVertex] == undefined || dfs[currentVertex].length == 0) {
 		text = text + "but there is <r>no</r> adjacent vertices for vertex <y>" + currentVertex + "</y>";
@@ -446,15 +364,15 @@ Graph.prototype.testing = function(currentVertex) {
 	this.cmd("DFSButton", "play");
 	this.cmd("Step");
 	
-	if (dfs[currentVertex] != undefined) {
+	if (dfs[currentVertex] != undefined && visitedVerticesMap[dfs[currentVertex].slice(-1)] == undefined) {
 		for (let i = 0; i < dfs[currentVertex].length; i++) {
 			this.cmd("SetBackgroundColor", dfs[currentVertex][i], colorsArr[usedColorsCount]);
 		}
 		var text;
 		if (dfs[currentVertex].length > 1) {
-			text = "Now, travel any one of the adjacent vertex, in my case <y>" + dfs[currentVertex].slice(-1).pop() + "</y>";
+			text = "Now, travel any one of the adjacent vertex, in my case <y>" + dfs[currentVertex].slice(-1) + "</y>";
 		} else {
-			text = "Now, travel the adjacent vertex i.e. <y>" + dfs[currentVertex].slice(-1).pop() + "</y>";
+			text = "Now, travel the adjacent vertex i.e. <y>" + dfs[currentVertex].slice(-1) + "</y>";
 		}
 		this.cmd("DFSText", text);
 		this.cmd("Step");
@@ -463,23 +381,24 @@ Graph.prototype.testing = function(currentVertex) {
 		
 		this.cmd("DFSTooltipPos", 220, 200);
 		this.cmd("DFSStep");
-		var text = "Now, adjacent vertex <y>" + dfs[currentVertex].slice(-1).pop() + "</y> is insert into the <y>stack</y>.";
+		var text = "Now, adjacent vertex <y>" + dfs[currentVertex].slice(-1) + "</y> is insert into the <y>stack</y>.";
 		this.cmd("DFSText", text);
 		this.cmd("Step");
 		this.cmd("DFSButton", "play");
 		this.cmd("Step");
 		
-		stackToID = this.nextIndex++;
+		stackTopID = this.nextIndex++;
+		stackTopIDArr.push(stackTopID);
 		stackTop = stackTop - 35;
-		this.cmd("CreateRectangle", stackToID, dfs[currentVertex].slice(-1).pop(), 30, 30, 175, 180);
-		this.cmd("SetBackgroundColor", stackToID, colorsArr[usedColorsCount]);
-		this.cmd("Move", stackToID, 175, stackTop);
+		this.cmd("CreateRectangle", stackTopIDArr.slice(-1), dfs[currentVertex].slice(-1), 30, 30, 175, 180);
+		this.cmd("SetBackgroundColor", stackTopIDArr.slice(-1), colorsArr[usedColorsCount]);
+		this.cmd("Move", stackTopIDArr.slice(-1), 175, stackTop);
 		this.cmd("Step");
 		this.cmd("DFSButton", "play");
 		this.cmd("Step");
 		this.cmd("DFSTooltipPos", VERTICES_FIXID_X_POS[currentVertex] + 30, VERTICES_FIXID_Y_POS[currentVertex] - 20);
 		this.cmd("DFSStep");
-		var text = "Now visit vertex <y>" + dfs[currentVertex].slice(-1).pop() + "</y>.";
+		var text = "Now visit vertex <y>" + dfs[currentVertex].slice(-1) + "</y>.";
 		this.cmd("DFSText", text);
 		this.cmd("Step");
 		this.cmd("DFSButton", "play");
@@ -489,7 +408,7 @@ Graph.prototype.testing = function(currentVertex) {
 				VERTICES_FIXID_X_POS[currentVertex], VERTICES_FIXID_Y_POS[currentVertex]);
 		this.cmd("Step");
 		parentVertex = currentVertex;
-		currentVertex = dfs[currentVertex].pop();
+		currentVertex = dfs[currentVertex].slice(-1);
 		this.cmd("Move", this.highlightCircleID, VERTICES_FIXID_X_POS[currentVertex], VERTICES_FIXID_Y_POS[currentVertex]);
 		this.cmd("Step");
 		this.cmd("SetHighlight", currentVertex, 1);
@@ -499,15 +418,34 @@ Graph.prototype.testing = function(currentVertex) {
 		this.cmd("DFSTooltipPos", VERTICES_FIXID_X_POS[currentVertex] + 30, VERTICES_FIXID_Y_POS[currentVertex] - 20);
 		this.cmd("DFSStep");
 		
-		if (dfs[currentVertex] != undefined) {
+		if (visitedVerticesMap[currentVertex] != undefined) {
+			console.log("visited.......");		
+		} else if (dfs[currentVertex] != undefined) {
 			this.testing(currentVertex);
-		} else {
+		} else {			
 			this.backTracking(currentVertex);
 		}
+		
+	} else if (dfs[currentVertex] != undefined && visitedVerticesMap[dfs[currentVertex].slice(-1)] != undefined) {
+		var text = "But Vertex <r>" + dfs[currentVertex].slice(-1) + "</r> is already visited, so don't visit again.";
+		this.cmd("DFSText", text);
+		this.cmd("Step");
+		this.cmd("DFSButton", "play");
+		this.cmd("Step");		
+		parentsMap[dfs[currentVertex].slice(-1)].pop();
+		dfs[currentVertex].pop();		
+		if (dfs[currentVertex].length > 0) {
+			//parentsMap[currentVertex].pop();
+			this.testing(currentVertex);
+		} else {
+			console.log("parentVertex ====", parentsMap[currentVertex]);
+			parentVertex = parentsMap[currentVertex].slice(-1);			
+			this.backTracking(currentVertex);
+		}
+		console.log("visited.......");
 	} else if (parentsMap[currentVertex] != undefined && parentsMap[currentVertex].length > 0) {
-		console.log("parentVertex ====", parentsMap[currentVertex]);
-		//parentsMap[currentVertex].pop();
-		//currentVertex = parentsMap[currentVertex].pop();
+		//console.log("parentVertex ====", parentsMap[currentVertex]);		
+		parentVertex = parentsMap[currentVertex].sort().slice(-1);		
 		this.backTracking(currentVertex);
 	} else {
 		var text = "DFS Completed."
@@ -517,8 +455,9 @@ Graph.prototype.testing = function(currentVertex) {
 }
 
 Graph.prototype.backTracking = function(currentVertex) {
+	console.log("backTracking =====> ", currentVertex);	
 	var text = "There is no adjacent vertices for vertex <y>" + currentVertex + "</y>, " 
-		+ "so back tracking to parent vertex and remove from the <y>stack</y>.";
+				+ "so back tracking to parent vertex and remove from the <y>stack</y>.";
 	this.cmd("DFSText", text);
 	this.cmd("Step");
 	this.cmd("DFSButton", "play");
@@ -544,9 +483,10 @@ Graph.prototype.backTracking = function(currentVertex) {
 	this.cmd("DFSButton", "play");
 	this.cmd("Step");
 	stackTop = stackTop + 35;
-	this.cmd("Move", stackToID, 175, 175);
+	this.cmd("Move", stackTopIDArr.slice(-1), 175, 175);
 	this.cmd("Step");
-	this.cmd("Delete", stackToID);
+	this.cmd("Delete", stackTopIDArr.slice(-1));
+	stackTopIDArr.pop();
 	this.cmd("DFSButton", "play");
 	this.cmd("Step");
 	var text = "Now, back to parent vertex.";
@@ -556,10 +496,32 @@ Graph.prototype.backTracking = function(currentVertex) {
 	this.cmd("Step");
 	this.cmd("DFSTooltipPos", VERTICES_FIXID_X_POS[currentVertex] + 30, VERTICES_FIXID_Y_POS[currentVertex] - 20);
 	this.cmd("DFSStep");
-	if (dfs[currentVertex] != undefined || dfs[currentVertex].length == 0) {
+	
+	if (dfs[currentVertex] != undefined) {
+		dfs[currentVertex].pop();
+		
+		/*for(let i = 0; i < VERTICES_SIZE; i++) {
+			if (dfs[i] != undefined && dfs[i].length > 0) {				
+				dfs[i].splice(dfs[i].indexOf(currentVertex), 1);
+			}
+		}*/
+		
+		
+		if (dfs[currentVertex].length == 0) {
+			delete dfs[currentVertex];
+		}
+		this.testing(currentVertex);
+	} 
+	
+	
+	
+	/*if (dfs[currentVertex] != undefined || dfs[currentVertex].length == 0) {
 		dfs[currentVertex] = undefined;
 	}
-	this.testing(currentVertex);
+	this.testing(currentVertex);*/
+	
+	console.log(dfs);
+	//this.testing(currentVertex);
 }
 
 Graph.prototype.seqSearch = function(visit, n, currentVertex) {

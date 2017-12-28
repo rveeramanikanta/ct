@@ -296,7 +296,7 @@ canvas {
 								<div class='col-sm-12'>
 									<div class="input-group" id='addVertexBtnDiv'>
 										<span class="input-group-addon input-group-addon-border">
-											<span id="addVertexBtn" class="btn btn-sm btn-success">Add
+											<span id="addVertexBtn" class="btn btn-sm btn-success disabled">Add
 												Vertex</span>
 										</span>
 									</div>
@@ -311,7 +311,7 @@ canvas {
 														: </b></td>
 												<td>
 													<div class="dropdown dropdown-select" id='fromID'>
-														<button class="btn dropdown-toggle btn-info btn-xs"
+														<button class="btn dropdown-toggle btn-info btn-xs disabled"
 															type="button" data-toggle="dropdown">
 															vertex &nbsp;<span class="caret"></span>
 														</button>
@@ -325,7 +325,7 @@ canvas {
 														&emsp;&emsp;: </b></td>
 												<td>
 													<div class="dropdown dropdown-select" id='toID'>
-														<button class="btn dropdown-toggle btn-info btn-xs"
+														<button class="btn dropdown-toggle btn-info btn-xs disabled"
 															type="button" data-toggle="dropdown">
 															vertex &nbsp;<span class="caret"></span>
 														</button>
@@ -340,7 +340,7 @@ canvas {
 										<div class='col-sm-12'>
 											<div class="input-group">
 												<span class="input-group-addon input-group-addon-border">
-													<span id="addEdgeBtn" class="btn btn-sm btn-success">Add
+													<span id="addEdgeBtn" class="btn btn-sm btn-success disabled">Add
 														Edge</span>
 												</span>
 											</div>
@@ -357,7 +357,7 @@ canvas {
 											<td><b style="font-family: monospace;">Starting Vertex : </b></td>
 											<td>
 												<div class="dropdown dropdown-select" id='dfsVal'>
-													<button class="btn dropdown-toggle btn-info btn-xs"
+													<button class="btn dropdown-toggle btn-info btn-xs disabled"
 														type="button" data-toggle="dropdown">
 														vertex &nbsp;<span class="caret"></span>
 													</button>
@@ -367,7 +367,7 @@ canvas {
 											<td>
 												<div class="input-group">
 													<span class="input-group-addon input-group-addon-border">
-														<span id="dfsBtn" class="btn btn-sm btn-success">Start</span>
+														<span id="dfsBtn" class="btn btn-sm btn-success disabled">Start</span>
 													</span>
 												</div>
 											</td>
@@ -412,7 +412,7 @@ canvas {
 				$(this).parent('li').addClass('active');
 				$(this).parents('.dropdown-select').find('.dropdown-toggle').html($(this).text() + ' &nbsp;<span class="caret"></span>');
 			});
-			//introGuide();
+			introGuide();
 		});
 	</script>
 </body>

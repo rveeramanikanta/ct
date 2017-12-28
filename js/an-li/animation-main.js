@@ -516,7 +516,7 @@ function AnimationManager(objectManager) {
 					doPlayPause();
 				});
 			} else if (nextCommand[0].toUpperCase() == "BFSSTEP" || nextCommand[0].toUpperCase() == "DFSSTEP") {
-				$(".canvas-tooltip-text").append("<code class='steps'>Step : " + ($("code").length + 1)+ "</code>");
+				/*$(".canvas-tooltip-text").append("<code class='steps'>Step : " + ($("code").length + 1)+ "</code>");*/
 				$(".canvas-tooltip-text").append("<ul></ul>");
 			} else if (nextCommand[0].toUpperCase() == "BFSTEXT" || nextCommand[0].toUpperCase() == "DFSTEXT") {
 				doPlayPause();

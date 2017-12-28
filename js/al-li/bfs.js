@@ -5,73 +5,6 @@ var edgesMap = {};
 var bfs = {};
 var visited = {};
 
-
-var edgesPointsMap = {
-	"0-1" : {
-		"x1" : 484,
-		"y1" : 61,
-		"x2" : 431,
-		"y2" : 130,
-		"curve" : 0.3
-	},
-	"1-0" : {
-		"x1" : 440,
-		"y1" : 135,
-		"x2" : 492,
-		"y2" : 69,
-		"curve" : 0.3
-	},
-	"1-3" : {
-		"x1" : 407,
-		"y1" : 162,
-		"x2" : 352,
-		"y2" : 229,
-		"curve" : 0.3
-	},
-	"3-1" : {
-		"x1" : 363,
-		"y1" : 233,
-		"x2" : 418,
-		"y2" : 169,
-		"curve" : 0.3
-	},
-	"0-2" : {
-		"x1" : 510,
-		"y1" : 68,
-		"x2" : 556,
-		"y2" : 141,
-		"curve" : 0.3
-	},
-	"2-0" : {
-		"x1" : 570,
-		"y1" : 130,
-		"x2" : 520,
-		"y2" : 58,
-		"curve" : 0.3
-	},
-	"4-6" : {
-		"x1" : 631,
-		"y1" : 257,
-		"x2" : 577,
-		"y2" : 328,
-		"curve" : 0.3
-	},
-	"6-4" : {
-		"x1" : 590,
-		"y1" : 336,
-		"x2" : 643,
-		"y2" : 269,
-		"curve" : 0.3
-	},
-	"0-3" : {
-		"x1" : 480,
-		"y1" : 50,
-		"x2" : 334,
-		"y2" : 234,
-		"curve" : 0.3
-	},
-};
-
 var VERTICES_FIXID_X_POS = [ 500, 425, 575, 350, 650, 425, 575, 500 ];
 var VERTICES_FIXID_Y_POS = [ 50, 150, 150, 250, 250, 350, 350, 450 ];
 
@@ -166,141 +99,18 @@ Graph.prototype.setup = function() {
 	
 	this.visitedVertices = new Array(MAX_VERTICES_SIZE);
 	this.parentVertices = new Array(MAX_VERTICES_SIZE);
-	
-	/*this.adjacentTableID = new Array(64);*/
-	
-	/*for (let i = 0; i < 8; i++) {
-		for (let j = 0; j < 8; j++) {
-			this.cmd("CreateLabel", i + "" + j, 0, 775, 100);
-		}
-	}*/
-	
-	/*console.log(this.adjacentTableID);*/
 	for (var i = 0; i < MAX_VERTICES_SIZE; i++) {
 		this.vertices[i] = this.nextIndex++;
-		//this.cmd("CreateCircle", this.vertices[i], i, VERTICES_FIXID_X_POS[i], VERTICES_FIXID_Y_POS[i]);
-		//$("#fromID").append("<option>" + i + "</option>");
-		//$("#toID").append("<option>" + i + "</option>");
 	}
-	//var VISITED_VERTEX_X_POS = 150;
+
 	for (var i = 0; i < MAX_VERTICES_SIZE; i++) {
 		this.visitedVertices[i] = this.nextIndex++;
 		this.parentVertices[i] = this.nextIndex++;
-		/*this.cmd("CreateLabel", this.nextIndex++, i, VISITED_VERTEX_X_POS, 60);
-		this.cmd("CreateRectangle", this.nextIndex++, "-1", 25, 25, VISITED_VERTEX_X_POS, 80);
-		this.cmd("CreateRectangle", this.nextIndex++, "-", 25, 25, VISITED_VERTEX_X_POS, 105);
-		VISITED_VERTEX_X_POS = VISITED_VERTEX_X_POS + 25;*/
 	}
-	
-	
 	this.ADJACENT_TABLE_HORIZONTAL_LINE = this.nextIndex++;
 	this.ADJACENT_TABLE_VERTICAL_LINE = this.nextIndex++;
 	this.CURRENT_INDEX_LABEL = this.nextIndex++;
 	this.CURRENT_INDEX_POINTER = this.nextIndex++;
-	
-	/*this.cmd("CreateLabel", this.nextIndex++, "Visited", 110, 80);
-	this.cmd("CreateLabel", this.nextIndex++, "Parent", 110, 105);*/
-	
-	/*this.cmd("CreateLabel", this.nextIndex++, 0, 775, 100);
-	this.cmd("CreateLabel", this.nextIndex++, 1, 800, 100);
-	this.cmd("CreateLabel", this.nextIndex++, 2, 825, 100);
-	this.cmd("CreateLabel", this.nextIndex++, 3, 850, 100);
-	this.cmd("CreateLabel", this.nextIndex++, 4, 875, 100);
-	this.cmd("CreateLabel", this.nextIndex++, 5, 900, 100);
-	this.cmd("CreateLabel", this.nextIndex++, 6, 925, 100);
-	this.cmd("CreateLabel", this.nextIndex++, 7, 950, 100);
-	
-	this.cmd("DrawLine", this.nextIndex++, 725, 110, 975, 110);
-	this.cmd("DrawLine", this.nextIndex++, 765, 85, 765, 315);
-	
-	
-	this.cmd("CreateLabel", this.nextIndex++, 0, 750, 125);
-	this.cmd("CreateLabel", this.nextIndex++, 1, 750, 150);
-	this.cmd("CreateLabel", this.nextIndex++, 2, 750, 175);
-	this.cmd("CreateLabel", this.nextIndex++, 3, 750, 200);
-	this.cmd("CreateLabel", this.nextIndex++, 4, 750, 225);
-	this.cmd("CreateLabel", this.nextIndex++, 5, 750, 250);
-	this.cmd("CreateLabel", this.nextIndex++, 6, 750, 275);
-	this.cmd("CreateLabel", this.nextIndex++, 7, 750, 300);*/
-	
-	//this.cmd("Connect", this.vertices[3], this.vertices[7], "", 0.3)
-	//this.cmd("Connect", this.vertices[7], this.vertices[3], "", 0.3)
-	
-	/*this.cmd("DrawLine", this.nextIndex++, 520, 54, 485, 37, 1, 2);*/
-	
-	/*// 0-1
-	this.cmd("DrawLine", this.nextIndex++, 484, 61, 431, 130, 1, 0.3);
-	this.cmd("DrawLine", this.nextIndex++, 440, 135, 492, 69, 1, 0.3);
-	
-	//1-3
-	this.cmd("DrawLine", this.nextIndex++, 407, 162, 352, 229, 1, 0.3);
-	this.cmd("DrawLine", this.nextIndex++, 363, 233, 418, 169, 1, 0.3);
-	
-	//0-2
-	this.cmd("DrawLine", this.nextIndex++, 510, 68, 556, 141, 1, 0.3);
-	this.cmd("DrawLine", this.nextIndex++, 570, 130, 520, 58, 1, 0.3);
-	
-	
-	//4-6
-	this.cmd("DrawLine", this.nextIndex++, 631, 257, 577, 328, 1, 0.3);
-	this.cmd("DrawLine", this.nextIndex++, 590, 336, 643, 269, 1, 0.3);
-	
-	
-	//0-3
-	this.cmd("DrawLine", this.nextIndex++, 480, 50, 334, 234, 1, 0.3);
-	this.cmd("DrawLine", this.nextIndex++, 590, 336, 643, 269, 1, 0.3);
-	
-	//0-4
-	this.cmd("DrawLine", this.nextIndex++, 519, 42, 665, 235, 1, -0.3);
-	
-	//3-7
-	this.cmd("DrawLine", this.nextIndex++, 334, 263, 480, 450, 1, 0.3);*/
-	
-	/*-------------------------------------------------------------------------------------------------------*/
-	/*//0-1
-	this.cmd("DrawLine", this.nextIndex++, VERTICES_FIXID_X_POS[0] - 10, VERTICES_FIXID_Y_POS[0] + 18,
-			VERTICES_FIXID_X_POS[1] + 10, VERTICES_FIXID_Y_POS[1] - 20, 1, 0.3);
-	
-	//1-0
-	this.cmd("DrawLine", this.nextIndex++, VERTICES_FIXID_X_POS[1] + 15, VERTICES_FIXID_Y_POS[1] - 15,
-			VERTICES_FIXID_X_POS[0], VERTICES_FIXID_Y_POS[0] + 20, 1, 0.3);
-	
-	//1-3
-	this.cmd("DrawLine", this.nextIndex++, VERTICES_FIXID_X_POS[1] - 10, VERTICES_FIXID_Y_POS[1] + 18,
-			VERTICES_FIXID_X_POS[3] + 10, VERTICES_FIXID_Y_POS[3] - 20, 1, 0.3);
-	
-	
-	//3-1
-	this.cmd("DrawLine", this.nextIndex++, VERTICES_FIXID_X_POS[3] + 15, VERTICES_FIXID_Y_POS[3] - 15,
-			VERTICES_FIXID_X_POS[1], VERTICES_FIXID_Y_POS[1] + 20, 1, 0.3);
-	
-	
-	
-	//0-3
-	this.cmd("DrawLine", this.nextIndex++, VERTICES_FIXID_X_POS[0] - 20, VERTICES_FIXID_Y_POS[0] + 5,
-			VERTICES_FIXID_X_POS[3], VERTICES_FIXID_Y_POS[3] - 20, 1, 0.4);
-	
-	//3-0
-	this.cmd("DrawLine", this.nextIndex++, VERTICES_FIXID_X_POS[3] + 20, VERTICES_FIXID_Y_POS[3],
-			VERTICES_FIXID_X_POS[0] + 10, VERTICES_FIXID_Y_POS[0] + 20, 1, 0.4);
-	
-	
-	// 4-6
-	this.cmd("DrawLine", this.nextIndex++, VERTICES_FIXID_X_POS[4] - 10, VERTICES_FIXID_Y_POS[4] + 18,
-			VERTICES_FIXID_X_POS[6] + 15, VERTICES_FIXID_Y_POS[6] - 20, 1);*/
-	
-	
-	
-	
-	
-	/*this.cmd("Connect", this.vertices[0], this.vertices[1], "", 0.3);
-	this.cmd("Connect", this.vertices[1], this.vertices[0], "", 0.3);*/
-	/*this.cmd("Connect", this.vertices[0], this.vertices[1], "", 0.15);
-	this.cmd("Connect", this.vertices[1], this.vertices[0], "", 0.15);
-	
-	
-	this.cmd("Connect", this.vertices[0], this.vertices[3], "", 0.4);
-	this.cmd("Connect", this.vertices[3], this.vertices[0], "", 0.4);*/
 	
 	this.animationManager.StartNewAnimation(this.commands);
 	this.animationManager.skipForward();
@@ -344,7 +154,6 @@ Graph.prototype.vertex = function() {
 	$("#fromID ul").append("<li><a href='#'>" + VERTICES_SIZE + "</a></li>");
 	$("#toID ul").append("<li><a href='#'>" + VERTICES_SIZE + "</a></li>");
 	$("#bfsVal ul").append("<li><a href='#'>" + VERTICES_SIZE + "</a></li>");
-	
 	this.cmd("CreateLabel", this.nextIndex++, VERTICES_SIZE, ADJACENT_TABLE_HORIZONTAL_X_POS, ADJACENT_TABLE_HORIZONTAL_Y_POS);
 	this.cmd("CreateLabel", this.nextIndex++, VERTICES_SIZE, ADJACENT_TABLE_VERTICAL_X_POS, ADJACENT_TABLE_VERTICAL_Y_POS);
 	if (ADJACENT_TABLE_LINE_FLAG) {
@@ -354,7 +163,6 @@ Graph.prototype.vertex = function() {
 	this.cmd("DrawLine", this.ADJACENT_TABLE_HORIZONTAL_LINE, 675, 110, 
 			ADJACENT_TABLE_HORIZONTAL_X_POS + 25, 110);
 	this.cmd("DrawLine", this.ADJACENT_TABLE_VERTICAL_LINE, 710, 85, 710, ADJACENT_TABLE_VERTICAL_Y_POS + 25);
-	
 	this.cmd("CreateLabel", this.nextIndex++, 0, ADJACENT_TABLE_HORIZONTAL_X_POS, ADJACENT_TABLE_HORIZONTAL_Y_POS + 25);
 	adjacentTableMap["0-" + VERTICES_SIZE] = this.nextIndex - 1;
 	if (ADJACENT_TABLE_LINE_FLAG) {
@@ -373,15 +181,12 @@ Graph.prototype.vertex = function() {
 	this.cmd("CreateRectangle", this.parentVertices[VERTICES_SIZE], "-", 25, 25, VISITED_VERTEX_X_POS, 105);
 	this.cmd("CreateRectangle", this.visitedVertices[VERTICES_SIZE], "-1", 25, 25, VISITED_VERTEX_X_POS, 80);
 	VISITED_VERTEX_X_POS = VISITED_VERTEX_X_POS + 25;
-	
 	if (!ADJACENT_TABLE_LINE_FLAG) {
 		this.cmd("CreateLabel", this.nextIndex++, "Visited : ", 110, 80);
 		this.cmd("CreateLabel", this.nextIndex++, "Parent : ", 110, 105);
 	}
-	
 	ADJACENT_TABLE_LINE_FLAG = true;
 	VERTICES_SIZE++;
-	
 	if (VERTICES_SIZE == 8) {
 		$("#addVertexBtn").addClass("disabled");
 	}
@@ -398,15 +203,15 @@ Graph.prototype.edge = function() {
 		var key = fromEdge + "-" + toEdge;
 		if (edgesMap[toEdge + "-" + fromEdge] != undefined) {
 			this.cmd("DisConnect", this.vertices[toEdge], this.vertices[fromEdge]);
-			this.cmd("Connect", this.vertices[toEdge], this.vertices[fromEdge], "", 0.3);
-			this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "", 0.3);
+			this.cmd("Connect", this.vertices[toEdge], this.vertices[fromEdge], "#000000", 0.3, 1, "");
+			this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "#000000", 0.3, 1, "");
 			edgesMap[fromEdge + "-" + toEdge] = true;
 		} else {
 			if ((key == "0-3" || key == "3-0") || (key == "0-4" || key == "4-0")
 				|| (key == "3-7" || key == "7-3")  || (key == "4-7" || key == "7-4") ) {
-				this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "", 0.3);
+				this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "#000000", 0.3, 1, "");
 			} else {
-				this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge]);
+				this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "#000000", 0, 1, "");
 			}
 			edgesMap[fromEdge + "-" + toEdge] = true;
 		}
@@ -422,44 +227,6 @@ Graph.prototype.edge = function() {
 		this.cmd("SetText", adjacentTableMap[key], 1);
 		this.cmd("SetForegroundColor", adjacentTableMap[key], "#cd3232");
 	}
-	
-	/*if (edgesMap[fromEdge + "-" + toEdge] == undefined) {
-		if (edgesMap[toEdge + "-" + fromEdge] != undefined) {
-			this.cmd("DisConnect", this.vertices[toEdge], this.vertices[fromEdge]);
-			edgesMap[fromEdge + "-" + toEdge] = this.nextIndex;
-			this.cmd("DrawLine", this.nextIndex++, edgesPointsMap[fromEdge + "-" + toEdge].x1, edgesPointsMap[fromEdge + "-" + toEdge].y1,
-					edgesPointsMap[fromEdge + "-" + toEdge].x2, 
-					edgesPointsMap[fromEdge + "-" + toEdge].y2, 1,
-					edgesPointsMap[fromEdge + "-" + toEdge].curve);
-			
-			this.cmd("DrawLine", this.nextIndex++, edgesPointsMap[toEdge + "-" + fromEdge].x1, edgesPointsMap[toEdge + "-" + fromEdge].y1,
-					edgesPointsMap[toEdge + "-" + fromEdge].x2, 
-					edgesPointsMap[toEdge + "-" + fromEdge].y2, 1,
-					edgesPointsMap[toEdge + "-" + fromEdge].curve);
-		} else {
-			edgesMap[fromEdge + "-" + toEdge] = fromEdge + "-" + toEdge;
-			var key = fromEdge + "-" + toEdge;
-			
-			if ((key == "0-3" || key == "3-0") || (key == "0-4" || key == "4-0")
-					|| (key == "3-7" || key == "7-3")  || (key == "4-7" || key == "7-4") ) {
-				this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "", 0.5);
-			} else {
-				this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge]);
-			}
-		}
-	}*/
-	
-	/*if (edgesMap[fromEdge + "-" + toEdge] == undefined) {
-		var curve = 0;
-		if (edgesMap[toEdge + "-" + fromEdge] != undefined) {
-			this.cmd("DisConnect", this.vertices[toEdge], this.vertices[fromEdge]);
-			this.cmd("Connect", this.vertices[toEdge], this.vertices[fromEdge], "", 0.15);
-			curve = 0.15;
-		}
-		
-		this.cmd("Connect", this.vertices[fromEdge], this.vertices[toEdge], "", curve);
-		edgesMap[fromEdge + "-" + toEdge] = fromEdge + "-" + toEdge; 
-	}*/
 	return this.commands;
 }
 
@@ -500,7 +267,6 @@ Graph.prototype.bfs = function() {
 	fp["data"] = currentVertex;
 	fp["next"] = null;
 	pp = fp;
-	//$(".introjs-tooltip").removeClass("hide");
 	this.cmd("BFSTooltipPos", VERTICES_FIXID_X_POS[currentVertex] + 30, VERTICES_FIXID_Y_POS[currentVertex] - 20);
 	this.cmd("BFSStep");
 	var text = "Initially, we should start traversing from the <y>given vertex</y>, i.e. <y id='startingVertex'>" + startingVertex + "</y>";
@@ -699,13 +465,11 @@ Graph.prototype.bfs = function() {
 	this.cmd("Step");
 	var text = "All vertices are visited.";
 	this.cmd("BFSText", text);
-	console.log("BFS result : ");
 	this.cmd("Step");
 	var text = "BFS result : ";
 	for (let i = 0; i < VERTICES_SIZE; i++) {
 		text = text + " <y>" + visit[i] + "</y>";
-	}
-	console.log(text);
+	}	
 	this.cmd("BFSText", text);
 	visit = visited;
 	currentVertex = startingVertex;
@@ -790,19 +554,8 @@ function step1() {
 	TweenMax.to("#dummy", 1, {top : topVal - 5, left: leftVal - 5, onComplete: function() {
 		$("#dummy").remove();
 		doPlayPause();
-	}});
-	
-	
-	/*$(".popover-content").append("<div class='customPopover'></div>");
-	var text = "Now, starting vertex <y>" + startingVertex + "</y> is pushed into the <y>queue</y>.";
-	typing($(".customPopover:last"), text, function() {
-		$(".customPopover:last").append("<br/><a class='introjs-button user-btn' onclick='play()' style='float: right;'>Next &#8594;</a>");
-	});*/
+	}});	
 }
-
-/*var step2 = function() {
-	console.log("STEP2 CALLED");
-}*/
 
 var currentAlg;
 function init() {
